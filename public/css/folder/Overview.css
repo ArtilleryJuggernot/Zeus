@@ -1,0 +1,34 @@
+/* Styles pour la div contenant les boutons */
+.folders-header {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+}
+
+/* Styles pour les boutons */
+.folders-header button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #ccc;
+    cursor: pointer;
+}
+
+.folders-header button.active {
+    background-color: #333;
+    color: white;
+}
+
+/* Styles pour les cartes des dossiers */
+.folders {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 20px;
+}
+
+.folder-card {
+    width: calc(16.666% - 20px); /* Pour avoir 6 catégories par ligne avec un espace entre */
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}

@@ -1,0 +1,31 @@
+/* Styles pour la section des dossiers */
+.folders {
+    margin: 20px;
+}
+
+.folder-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.folder-item h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+/* Styles pour les listes des note et des tâches */
+.recent-notes,
+.recent-tasks {
+    list-style: none;
+    padding: 0;
+}
+
+.recent-notes li,
+.recent-tasks li {
+    margin-bottom: 5px;
+}
+
+
+/* Autres styles restent inchangés */
+

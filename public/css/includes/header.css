@@ -1,0 +1,77 @@
+/* Styles pour le bandeau */
+
+/* Styles pour le conteneur du bandeau */
+.header {
+    display: flex;
+    align-items: center; /* Aligner verticalement les éléments */
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+}
+
+/* Styles pour le logo */
+.logo {
+    display: flex; /* Afficher le logo et le texte en ligne */
+    align-items: center; /* Aligner verticalement les éléments du logo */
+}
+
+.logo img {
+    width: 75px;
+    height: 75px;
+    margin-right: 10px; /* Espacement entre le logo et le texte */
+}
+
+/* Styles pour les informations de l'utilisateur */
+.user-info {
+    font-size: 18px;
+    margin-left: 1cm;
+
+    margin-right: 1cm;
+}
+
+/* Styles pour la barre de navigation */
+.navbar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.navbar ul li {
+    display: inline-block;
+    position: relative; /* Position relative pour les sous-menus */
+    margin-right: 20px;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: #fff;
+    transition: color 0.3s ease;
+}
+
+.navbar ul li a:hover {
+    color: #ffd700; /* Changez la couleur au survol */
+}
+
+/* Sous-menu */
+.submenu {
+    display: none;
+    position: absolute;
+    background-color: #333;
+    z-index: 1;
+    top: 100%; /* Positionnement sous l'élément parent */
+    left: 0;
+    width: 150px; /* Largeur du sous-menu */
+}
+
+.navbar ul li:hover .submenu {
+    display: block;
+}
+
+.submenu li {
+    display: block;
+    margin: 5px 0;
+}
+
+.submenu li a {
+    color: #fff;
+}
