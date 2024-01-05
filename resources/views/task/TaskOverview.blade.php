@@ -53,6 +53,7 @@
                     @csrf
                 </form>
             </div>
+
             <!-- Autres détails du dossier si nécessaire -->
         </div>
     @endforeach

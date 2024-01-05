@@ -58,6 +58,14 @@
         background-color:rgba(227, 55, 55, 0.5)
     }
 
+    #resultblock > .task{
+        background-color: rgba(6, 255, 0, 0.5)
+    }
+
+    #resultblock > .project{
+        background-color: rgba(255, 232, 0, 0.5)
+    }
+
 </style>
 
 <script>
@@ -92,13 +100,22 @@
                     child.classList.add("search")
                     if(elem["type"] == "folder"){
                         child.href = "/view_folder/" + elem["id"]
-                        child.innerHTML = "<h3>"+ "[D] " + elem["name"] + "</h3";
+                        child.innerHTML = "<h3>"+ "[D] " + elem["name"] + "</h3>";
                         div.appendChild(child)
                     }
                     if(elem["type"] == "note"){
                         child.href = "/note_view/" + elem["id"]
-                        child.innerHTML = "<h3>" + "[F] " + elem["name"] + "</h3";
+                        child.innerHTML = "<h3>" + "[F] " + elem["name"] + "</h3>";
                     }
+                    if(elem["type"] == "task"){
+                        child.href = "/view_task/" + elem["id"]
+                        child.innerHTML = "<h3>" + "[T] " + elem["name"] + "</h3>"
+                    }
+                    if(elem["type"] == "project"){
+                        child.href = "/projet_view/" + elem["id"]
+                        child.innerHTML = "<h3>" + "[P] " + elem["name"] + "</h3>"
+                    }
+
                     child.classList.add(elem["type"]);
                     div.appendChild(child)
                     div.innerHTML += "<br>"

@@ -11,4 +11,11 @@ class Task extends Model
 
     public $primaryKey = "task_id";
     public $table = "tasks";
+
+    public function getPositionForProject($projectId)
+    {
+        return insideprojet::where('task_id', $this->task_id)
+            ->where('projet_id', $projectId)
+            ->value('pos');
+    }
 }

@@ -63,7 +63,6 @@
                 <li>
                     <a href="{{ route("projet_overview") }}">Mes Projets</a>
                     <ul class="submenu">
-                        <li><a href="{{ route('AddProjet') }}">Ajouter un projet</a></li>
                     </ul>
                 </li>
             @endif

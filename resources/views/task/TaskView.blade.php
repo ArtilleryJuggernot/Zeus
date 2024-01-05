@@ -80,6 +80,15 @@
 
 <button onclick="saveTask()">Sauvegarder la tache</button>
 
+<div class="delete">
+    <form action="{{route("delete_task")}}" method="post">
+        <input name="id" type="hidden" value="{{$task->task_id}}"/>
+        <button type="submit">Supprimer la tâche définitivement</button>
+        @csrf
+    </form>
+</div>
+<span>Attention ! Supprimer une tâche implique qu'elle sera supprimé dans tout les projets</span>
+
 
 <script>
 

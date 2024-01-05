@@ -127,7 +127,27 @@ Route::get("/projet_overview",[\App\Http\Controllers\ProjetController::class,"Ov
     ->middleware("auth")
     ->name("projet_overview");
 
-Route::get("/add_projet",[\App\Http\Controllers\ProjetController::class,"Add"])
+Route::get("/projet_view/{id}",[\App\Http\Controllers\ProjetController::class,"View"])
     ->middleware("auth")
-    ->name("AddProjet");
+    ->name("projet_view");
 
+Route::post("/add_task_projet",[\App\Http\Controllers\ProjetController::class,"AddTask"])
+    ->middleware("auth")
+    ->name("add_task_projet");
+
+Route::post("/store_projet",[\App\Http\Controllers\ProjetController::class,"Store"])
+    ->middleware("auth")
+    ->name("store_projet");
+
+Route::post("/remove_task_from_project",[\App\Http\Controllers\ProjetController::class,"RemoveTaskFromProject"])
+    ->middleware("auth")
+    ->name("remove_task_from_project");
+
+
+Route::post("/check_task_project",[\App\Http\Controllers\ProjetController::class,"CheckTaskTODO"])
+    ->middleware("auth")
+    ->name("check_task_project");
+
+Route::post("/uncheck_task_project",[\App\Http\Controllers\ProjetController::class,"UncheckTaskDone"])
+    ->middleware("auth")
+    ->name("uncheck_task_project");

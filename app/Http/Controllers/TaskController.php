@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Folder;
+use App\Models\insideprojet;
 use App\Models\Task;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -83,8 +84,9 @@ class TaskController extends Controller
     {
         $id = $request->get("id");
         $task = Task::find($id);
+        insideprojet::where("task_id",$id)->delete();
         $task->delete();
-        return redirect()->back()->with(["success" => "Tâche supprimé avec succès"]);
+        return redirect()->route("task_overview")->with(["success" => "Tâche supprimé avec succès"]);
     }
 
 }
