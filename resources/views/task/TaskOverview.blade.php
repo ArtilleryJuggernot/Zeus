@@ -13,6 +13,18 @@
     <h3>{{session("success")}}</h3>
 @endif
 
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <h2>Il y a eu des erreurs</h2>
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <div class="add-task">
     <h2>Ajouter une tâche : </h2>
     <form action="{{ route('store_task') }}" method="POST">

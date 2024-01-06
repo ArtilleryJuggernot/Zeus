@@ -33,9 +33,7 @@ Route::get("/folder_overview",[\App\Http\Controllers\FolderController::class,"Ov
     ->middleware("auth")
     ->name("folder_overview");
 
-Route::get("/add_folder",[\App\Http\Controllers\FolderController::class,"Add"])
-    ->middleware("auth")
-    ->name("AddFolder");
+
 
 
 Route::post("/add_folder",[\App\Http\Controllers\FolderController::class,"Store"])
@@ -50,9 +48,7 @@ Route::get("/view_folder/{id}",[\App\Http\Controllers\FolderController::class,"V
 
 //<editor-fold desc="Folder POST">
 
-Route::post("/store_folder",[\App\Http\Controllers\FolderController::class,"Store2"])
-    ->middleware("auth")
-    ->name("store_folder");
+
 
 Route::post("/delete_folder",[\App\Http\Controllers\FolderController::class,"Delete"])
     ->middleware("auth")
@@ -71,11 +67,6 @@ Route::post("/delete_note",[\App\Http\Controllers\NoteController::class,"Delete"
 Route::get("/note_overview",[\App\Http\Controllers\NoteController::class,"OverView"])
     ->middleware("auth")
     ->name("notes_overview");
-
-Route::get("/add_note",[\App\Http\Controllers\NoteController::class,"Add"])
-    ->middleware("auth")
-    ->name("AddNote");
-
 
 Route::post("/add_note",[\App\Http\Controllers\NoteController::class,"Store"])
     ->middleware("auth")
@@ -100,9 +91,6 @@ Route::get("/view_task/{id}",[\App\Http\Controllers\TaskController::class,"View"
     ->middleware("auth")
     ->name("view_task");
 
-Route::get("/add_task",[\App\Http\Controllers\TaskController::class,"Add"])
-    ->middleware("auth")
-    ->name("AddTask");
 
 Route::post("/store_task",[\App\Http\Controllers\TaskController::class,"Store"])
     ->middleware("auth")

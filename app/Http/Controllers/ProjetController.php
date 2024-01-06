@@ -24,6 +24,10 @@ class ProjetController extends Controller
     {
         $user_id = Auth::user()->id;
         $projet = Projet::with('tasks')->find($id);
+
+        if(!$projet)
+            return redirect()->route("home")->with("failure","Le projet que vous souhaitez voir n'existe pas");
+
         $taskFinish = $projet->tasks->where("is_finish", 1);
         $taskTODO = $projet->tasks->where("is_finish", 0);
 
@@ -31,7 +35,9 @@ class ProjetController extends Controller
             $task->pos = $task->getPositionForProject($id);
         }
 
-        $progression = (count($taskFinish) / (count($taskTODO)  + count($taskFinish))) * 100 ;
+        if((count($taskTODO)  + count($taskFinish)) == 0) $progression = 100; // Division par 0
+
+        else $progression = (count($taskFinish) / (count($taskTODO)  + count($taskFinish))) * 100 ;
 
         //dd($tasks);
         if($projet->owner_id == $user_id){
@@ -43,27 +49,42 @@ class ProjetController extends Controller
                 "progression" => $progression,
             ]);
         }
-        return view("home");
+        return redirect()->route("home")->with("failure","Vous n'êtes pas autorisé à voir cette ressource");
     }
 
 
     public function AddTask(Request $request)
     {
         //dd($request);
+        if($request->has('is_due')){
+            $validateData = $request->validate([
+                "tache_name" => ["required","string","max:250"],
+                "is_due" => ["nullable","in:on,off"],
+                "dt_input" => ["nullable","date"],
+                "project_id" => ["required","integer"]
+            ]);
+        }
+        else{
+            $validateData = $request->validate([
+                "tache_name" => ["required","string","max:250"],
+                "project_id" => ["required","integer"]
+            ]);
+        }
 
-        $name = $request->get("tache_name");
+
+        $name = $validateData["tache_name"];
         $task = new Task();
         $task->task_name = $name;
         $task->owner_id = Auth::user()->id;
 
-        if($request->get("is_due") == "on"){
-            $task->due_date = $request->get("dt_input"); // Date limite
+        if($request->has("is_due") && $validateData["is_due"] == "on"){
+            $task->due_date = $validateData["dt_input"]; // Date limite
         }
         $task->save();
 
 
         // Inside project save
-        $projet_id = $request->get("project_id");
+        $projet_id = $validateData["project_id"];
 
         $inside = new insideprojet();
         $inside->task_id = $task->task_id;
@@ -75,7 +96,6 @@ class ProjetController extends Controller
         $inside->pos = $max +1;
         $inside->save();
 
-
         return redirect()->back()->with(["success" => "La tâche à bien été créer"]);
 
     }
@@ -83,29 +103,46 @@ class ProjetController extends Controller
     public function Store(Request $request)
     {
         //dd($request);
-        $name = $request->get("projet_name");
-        $task = new Projet();
-        $task->name = $name;
-        $task->owner_id = Auth::user()->id;
-        $task->save();
+        $validateData = $request->validate([
+            "projet_name" => ["required","string","max:250"]
+        ]);
+        $name = $validateData["projet_name"];
+        $projet = new Projet();
+        $projet->name = $name;
+        $projet->owner_id = Auth::user()->id;
+        $projet->save();
         return redirect()->back()->with(["success" => "Le projet à bien été créer"]);
     }
 
     public function RemoveTaskFromProject(Request $request)
     {
-        $Task_id = $request->get("task_id");
-        $Project_id = $request->get("project_id");
+        $validateData = $request->validate([
+            "task_id" => ["required","integer"],
+            "project_id" => ["required","integer"]
+        ]);
+        $Task_id = $validateData["task_id"];
+        $Project_id = $validateData["project_id"];
 
         $projet = Projet::find($Project_id);
+
+        if(!$projet) return redirect()->route("home")->with("failure","Le projet auxquel vous tentez d'accéder n'existe pas");
+
         $projet->tasks()->detach($Task_id);
+        Task::find($Task_id)->delete();
         return redirect()->back()->with(["success" => "Tâche supprimé du projet avec succès"]);
     }
 
     // TaskTODO -> TaskDone
     public function CheckTaskTODO(Request $request)
     {
-        $id = $request->get("task_id");
+        $validateData = $request->validate([
+            "task_id" => ["required","integer"]
+        ]);
+        $id = $validateData["task_id"];
         $task = Task::find($id);
+
+        if(!$task) return redirect()->route("home")->with("failure","La tache que vous tentez de modifier n'existe pas");
+
         $task->is_finish = true;
         $task->save();
         return redirect()->back()->with(["success" => "Tâche du projet validée avec succès"]);
@@ -114,8 +151,14 @@ class ProjetController extends Controller
     // TaskDone -> TaskTODO
     public function UncheckTaskDone(Request $request)
     {
-        $id = $request->get("task_id");
+        $validateData = $request->validate([
+            "task_id" => ["required","integer"]
+        ]);
+        $id = $validateData["task_id"];
         $task = Task::find($id);
+
+        if(!$task) return redirect()->route("home")->with("failure","La tache que vous tentez de modifier n'existe pas");
+
         $task->is_finish = false;
         $task->save();
         return redirect()->back()->with(["success" => "Tâche remise dans le projet avec succès"]);

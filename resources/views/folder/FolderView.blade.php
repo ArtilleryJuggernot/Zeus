@@ -13,13 +13,32 @@
     {{session("success")}}
 @endif
 
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <h2>Il y a eu des erreurs</h2>
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
+
 <div class="previous-folder">
 
     @if($parent_content["id"] == "Racine")
         <h3>Vous êtes à la racine</h3>
     @else
         <h3>Dossier parent : <a href="{{route("folder_view",$parent_content["id"])}}"><h3>{{$parent_content["name"]}}</h3></a></h3>
+        <h3>Vous êtes dans le dossier : {{$folder_name}}</h3>
     @endif
+</div>
+
+<div>
+
 </div>
 
 <div class="add-section">
@@ -51,7 +70,7 @@
     @foreach($folderContents as $item)
         <div class="folder-card">
            @if($item["type"] == "folder")
-               <a href="{{route("folder_view",$item["id"])}}"><h3>{{$item["name"]}}</h3></a>
+               <a href="{{route("folder_view",$item["id"])}}"><h3>[D] - {{$item["name"]}}</h3></a>
                <div class="delete">
                    <form action="{{route("delete_folder")}}" method="post">
                        <input name="id" type="hidden" value="{{$item["id"]}}"/>
@@ -60,7 +79,7 @@
                    </form>
                </div>
             @else
-                <a href="{{route("note_view",$item["id"])}}"><h3>{{$item["name"]}}</h3></a>
+                <a href="{{route("note_view",$item["id"])}}"><h3>[N] - {{$item["name"]}}</h3></a>
                 <div class="delete">
                     <form action="{{route("delete_note")}}" method="post">
                     <input name="id" type="hidden" value="{{$item["id"]}}"/>

@@ -82,9 +82,19 @@ class NoteController extends Controller
 
     public function View(int $id)
     {
-
+        $user_id = Auth::user()->id;
         // Récupérer le chemin de la note par son ID
         $note = Note::findOrFail($id);
+
+        // Verification
+
+        if(!$note){
+            return redirect()->route("home")->with("failure","La note n'existe pas");
+        }
+
+        if($note->owner_id != Auth::user()->id) // TODO : Système d'autorisation accès
+            return redirect()->route("home")->with("failure","Vous n'êtes pas autorisé à voir cette ressource");
+
         $path = storage_path('app/' . $note->path);
 
         // Lire le contenu du fichier
@@ -94,23 +104,27 @@ class NoteController extends Controller
             ['note' => $note]);
     }
 
-    public function Add()
-    {
-        return view("note.AddNote");
-    }
+
 
     // Avec AJAX
     public function saveNote(Request $request)
     {
         // Récupérer le contenu du textarea
-        $content = $request->input('content');
-        $user_id = $request->input("user_id");
-        $note_id = $request->input("note_id");
 
-        if($user_id == Auth::user()->id){
+        $validateData = $request->validate([
+           "content" => ["required","string"],
+           "user_id" => ["required","integer"],
+            "note_id" => ["required","integer"]
+        ]);
+
+        $content = $validateData["content"];
+        $user_id = $validateData["user_id"];
+        $note_id = $validateData["note_id"];
+
+        if($user_id == Auth::user()->id){ // TODO : Système d'autorisation accès
             $note = Note::where("note_id","=",$note_id)->first();
 
-            if($note->owner_id == Auth::user()->id){
+            if($note->owner_id == Auth::user()->id){ // TODO : Système d'autorisation accès
                 $check = Storage::put($note->path,$content);
                 return response()->json(['success' => true]);
             }
@@ -124,21 +138,29 @@ class NoteController extends Controller
 
         public function Store(Request $request)
     {
+
+        $validateData = $request->validate([
+           "add-note" => ["required",'regex:/^(?!.*[.]{2})[A-Za-z0-9]+(\.[A-Za-z0-9]+)?$/'],
+           "path_current" => ["required","string"] // TODO : Sensible , regex chemin ?
+        ]);
         // Nom du dossier à créer
-        $name = $request->get("add-note");
+        $name = $validateData["add-note"];
         // Chemin du dossier à créer
-        $path_current = $request->get("path_current");
+        $path_current = $validateData["path_current"];
+
+
+        $user_id = Auth::user()->id;
 
         // Verif de la localisation
         if($path_current == "Racine")
-            $path_current = "/user_" . Auth::user()->id;
+            $path_current = "/user_" . $user_id;
         $path_current .= "/";
         $path_final = $path_current . $name;
         //dd($path_final);
 
         // Creation du model
         $newNote = new Note();
-        $newNote->owner_id = Auth::user()->id;
+        $newNote->owner_id = $user_id;
         $newNote->name = $name;
         $newNote->path = $path_final;
 
@@ -150,10 +172,26 @@ class NoteController extends Controller
 
         public function Delete(Request $request)
         {
-            $id =  $request->get("id");
+            // TODO validate
+            $validateData = $request->validate([
+                "id" => ["required","integer"]
+            ]);
+            $id =  $validateData["id"];
             $note = Note::find($id);
+
+            if(!$note)
+                return redirect()->route("home")->with("failure","La note que vous souhaitez supprimé n'a pas été trouvé");
+
+
+            $user_id = Auth::user()->id;
+
+            if($note->owner_id != $user_id)
+                return redirect()->route("home")->with("failure","Vous n'êtes pas autoriser à modifier sur cette ressource");
+
             //dd(storage_path($folder->path));
             //dd(Storage::exists($folder->path));
+
+
             Storage::delete($note->path);
             $note->delete();
             return redirect()->back()->with(["success" => "Note supprimé avec succès"]);

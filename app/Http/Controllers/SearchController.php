@@ -7,6 +7,7 @@ use App\Models\Note;
 use App\Models\Projet;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SearchController extends Controller
 {
@@ -20,11 +21,24 @@ class SearchController extends Controller
     {
         $query = $request->get("query");
 
-        $resultFolder = Folder::where('name', 'LIKE', "%{$query}%")->get();
-        $resultNote = Note::where('name', 'LIKE', "%{$query}%")->get();
-        // Tache et Projet
-        $resultTache = Task::where("task_name","LIKE","%{$query}%")->get();
-        $resultProjet = Projet::where("name","LIKE","%{$query}%")->get();
+        $user_id = Auth::user()->id;
+
+        $resultFolder = Folder::where('name', 'LIKE', "%{$query}%")
+            ->where('owner_id', $user_id)
+            ->get();
+
+        $resultNote = Note::where('name', 'LIKE', "%{$query}%")
+            ->where('owner_id', $user_id)
+            ->get();
+
+        $resultTache = Task::where("task_name", "LIKE", "%{$query}%")
+            ->where('owner_id', $user_id)
+            ->get();
+
+        $resultProjet = Projet::where("name", "LIKE", "%{$query}%")
+            ->where('owner_id', $user_id)
+            ->get();
+
         $final = [];
 
         foreach ($resultNote as $note){

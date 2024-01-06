@@ -35,7 +35,6 @@
                 <li>
                     <a href="{{ route("folder_overview") }}">Mes dossiers</a>
                     <ul class="submenu">
-                        <li><a href="{{ route('AddFolder') }}">Ajouter un dossier</a></li>
                     </ul>
                 </li>
             @endif
@@ -44,7 +43,6 @@
                 <li>
                     <a href="{{ route("notes_overview") }}">Mes notes</a>
                     <ul class="submenu">
-                        <li><a href="{{ route('AddNote') }}">Ajouter une note</a></li>
                     </ul>
                 </li>
             @endif
@@ -53,7 +51,6 @@
                 <li>
                     <a href="{{ route("task_overview") }}">Mes tâches</a>
                     <ul class="submenu">
-                        <li><a href="{{ route('AddTask') }}">Ajouter une tâche</a></li>
                     </ul>
                 </li>
             @endif

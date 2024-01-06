@@ -2,6 +2,7 @@
 
 namespace App\Actions\Fortify;
 
+use App\Models\Folder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -47,7 +48,11 @@ class CreateNewUser implements CreatesNewUsers
 
         // Création du dossier pour l'utilisateur dans le répertoire "files"
         $directoryName = 'files/user_' . $userId;
-
+        $folder = new Folder();
+        $folder->owner_id = $userId;
+        $folder->path = '/' . $directoryName;
+        $folder->name = "user_" . $userId;
+        $folder->save();
         // Vérifiez si le dossier existe déjà avant de le créer
         if (!Storage::exists($directoryName)) {
             Storage::makeDirectory($directoryName);
@@ -55,6 +60,7 @@ class CreateNewUser implements CreatesNewUsers
 
         else{
             Storage::deleteDirectory($directoryName);
+            Storage::makeDirectory($directoryName);
         }
         return $user;
 

@@ -1,6 +1,5 @@
 @include('includes.header')
-
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -28,7 +27,7 @@
 
         textarea {
             height: 700px;
-            width: 700px;
+            width: 100%;
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #ccc;
@@ -84,6 +83,7 @@ $Notename = explode("/",$note->path);
         // Utilisation de la bibliothèque Marked.js pour convertir le Markdown en HTML
         let html = marked.marked(noteContent);
         document.getElementById('preview').innerHTML = html;
+        saveNote()
     }
 
     // Appliquer le Markdown automatiquement lors de la saisie dans le textarea

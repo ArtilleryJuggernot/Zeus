@@ -101,6 +101,7 @@
         // Utilisation de la bibliothèque Marked.js pour convertir le Markdown en HTML
         let html = marked.marked(noteContent);
         document.getElementById('preview').innerHTML = html;
+        saveTask()
     }
 
     // Appliquer le Markdown automatiquement lors de la saisie dans le textarea

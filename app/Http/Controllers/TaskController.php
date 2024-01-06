@@ -16,7 +16,7 @@ class TaskController extends Controller
     {
 
         $user_id = Auth::user()->id; // Récupérer l'utilisateur actuel
-        DB::enableQueryLog();
+        //DB::enableQueryLog();
         $task_list =    Task::where("owner_id",$user_id)->get();
         //dd($task_list);
         //dd(DB::getQueryLog());
@@ -30,51 +30,78 @@ class TaskController extends Controller
     {
 
         $task = Task::find($id);
+
+        if(!$task)
+            return redirect()->route("home")->with("failure","La tache que vous tentez de modifier n'existe pas");
+
+
         return view("task.TaskView",[
             "task" => $task
         ]);
     }
 
-    public function Add()
-    {
-        return view("task.AddTask");
-    }
-
     public function Save(Request $request)
     {
-        $content = $request->input('content');
-        $user_id = $request->input("user_id");
-        $note_id = $request->input("task_id");
+        $validateData = $request->validate([
+            "content" => ["required","string"],
+            "user_id" => ["required","integer"],
+            "task_id" => ["required","integer"],
+            "btn_is_finished" => ["required","in:on,off"]
+        ]);
+        $content = $validateData['content'];
+        $user_id = $validateData["user_id"];
+        $note_id = $validateData["task_id"];
 
         if ($user_id == Auth::user()->id) {
             $task = Task::find($note_id);
 
-            if ($task->owner_id == Auth::user()->id) {
+            if(!$task)
+                return redirect()->route("home")->with("failure","La tache que vous tentez de modifier n'existe pas");
+
+
+            if ($task->owner_id == Auth::user()->id) { // TODO : Système d'autorisation
                 $task->description = $content;
 
-                if($request->input("btn_is_finished") == "on"){
+                if($validateData["btn_is_finished"] == "on"){
                     $task->is_finish = true;
                     $task->finished_at = Carbon::now();
                 }
-                else{
+                else
                     $task->is_finish = false;
-                }
+
                 $task->save();
                 return response()->json(['success' => true]);
             }
+            return response()->with("failure",false);
 
         }
     }
 
     public function Store(Request $request)
     {
-        $name = $request->get("tache_name");
+        //dd($request);
+
+        if($request->has('is_due')){
+            $validateData = $request->validate([
+                "tache_name" => ["required","string","max:250"],
+                "is_due" => ["nullable","in:on,off"],
+                "dt_input" => ["nullable","date"]
+            ]);
+        }
+        else{
+            $validateData = $request->validate([
+                "tache_name" => ["required","string","max:250"],
+            ]);
+        }
+
+
+        $name = $validateData["tache_name"];
         $task = new Task();
         $task->task_name = $name;
         $task->owner_id = Auth::user()->id;
 
-        if($request->get("is_due") == "on"){
-            $task->due_date = $request->get("dt_input"); // Date limite
+        if($request->has("is_due") && $validateData["is_due"] == "on"){
+            $task->due_date = $validateData["dt_input"]; // Date limite
         }
         $task->save();
         return redirect()->back()->with(["success" => "La tâche à bien été créer"]);
@@ -82,11 +109,19 @@ class TaskController extends Controller
 
     public function Delete(Request $request)
     {
-        $id = $request->get("id");
+        $validateData = $request->validate([
+            "id" => ["required","integer"]
+        ]);
+        $id = $validateData["id"];
         $task = Task::find($id);
+
+        if(!$task)
+            return redirect()->route("home")->with("failure","La tache que vous tentez de modifier n'existe pas");
+
+
         insideprojet::where("task_id",$id)->delete();
         $task->delete();
-        return redirect()->route("task_overview")->with(["success" => "Tâche supprimé avec succès"]);
+        return redirect()->back()->with(["success" => "Tâche supprimé avec succès"]);
     }
 
 }
