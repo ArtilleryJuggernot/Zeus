@@ -54,14 +54,48 @@
             color: white;
             cursor: pointer;
         }
+        td {
+            border: 1px solid black
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <h2>Il y a eu des erreurs</h2>
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+@if(session("success"))
+    <h3>{{session("success")}}</h3>
+@endif
 
 
 <h1>Editeur de Tâche - {{$task->task_name}}</h1>
+
+@if($task->owner_id != \Illuminate\Support\Facades\Auth::user()->id)
+
+    <h3 class="it">Vous êtes sur la tâche de {{\App\Models\User::find($task->owner_id)->name}}</h3>
+    <h3 class="it">Vous avez des droits de :
+    @if($perm_user == "F")
+        Total
+        @else
+            @if($perm_user->perm == "RO") Lecture Seule
+            @elseif($perm_user->perm == "RW") Lecture et Ecriture
+            @elseif($perm_user->perm == "F" ) Total
+            sur cette note
+            @endif</h3>
+    @endif
+
+
+@endif
 
 <div>
     <label>La tâche est t'elle finis ?</label>
@@ -89,6 +123,70 @@
 </div>
 <span>Attention ! Supprimer une tâche implique qu'elle sera supprimé dans tout les projets</span>
 
+
+
+
+
+@if($task->owner_id == \Illuminate\Support\Facades\Auth::user()->id)
+
+    <h1>Section partage utilisateur</h1>
+
+    <p>Vous pouvez partagez cette tâche à d'autre utilisateur</p>
+
+    <div class="add-share">
+        <form action="{{route("add_task_share")}}" method="post">
+            <label for="id_share">Entrez l'identifiant de la personne à qui vous souhaitez partagez la tache :</label>
+            <input name="id_share" type="number" min="0"/>
+            <br>
+            <br>
+            <label for="right">Selectionnez le droit que l'utilisateur aura sur la note</label>
+            <select name="right">
+                <option value="RO">Lecture Seul (Read Only)</option>
+                <option value="RW">Lecture et Ecriture</option>
+                <option value="F">Tout (Lecture , Ecriture, Suppression, Renommer)</option>
+            </select>
+            <input type="hidden" name="task_id" value="{{$task->task_id}}">
+            <input type="submit" value="Envoyer" />
+
+            @csrf
+        </form>
+    </div>
+
+    <h1>Liste des autorisations utilisateurs</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Nom d'utilisateur</th>
+            <th>ID de l'utilisateur</th>
+            <th>Droit</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach($usersPermissionList as $perm)
+            <tr>
+                <td>{{ \App\Models\User::find($perm->dest_id)->name }}</td> <!-- Remplacez 'name' par le champ correspondant dans le modèle User -->
+                <td>{{ $perm->dest_id }}</td>
+                <td>{{ $perm->perm }}</td>
+                <td>
+                    <form action="{{ route('delete_perm', ['id' => $perm->id]) }}" method="POST">
+                        @csrf
+                        <button type="submit">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        @endforeach
+        </tbody>
+    </table>
+
+
+
+
+@endif
+
+
+
 <script>
     function saveTask() {
         let content = document.getElementById('note-content').value;
@@ -98,6 +196,24 @@
             is_finish = "on"
         else
             is_finish = "off"
+
+
+        // Autorisation
+        @if(\Illuminate\Support\Facades\Auth::user()->id == $task->owner_id)
+            perm = "F"; // L'utilisateur propriétaire à tout les droits
+        @else
+
+            @if($perm_user == "F")
+            perm = "F"
+            @else
+            perm = "{{$perm_user->perm }}";
+
+        @endif
+
+        @endif
+
+
+        console.log(perm);
 
         console.log("Le contenu est : ")
         console.log(is_finish);
@@ -112,6 +228,7 @@
                 task_id: {{ $task->task_id}},
                 user_id: {{\Illuminate\Support\Facades\Auth::user()->id}},
                 btn_is_finished : is_finish,
+                perm : perm
             })
 
         })

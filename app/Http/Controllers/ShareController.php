@@ -153,4 +153,107 @@ class ShareController extends Controller
 
         return redirect()->back()->with("success","Le droit à bien été supprimmé");
     }
+
+
+    public function TacheStore(Request $request)
+    {
+        $user_id = Auth::user()->id;
+
+        $validateData = $request->validate([
+            "id_share" => ["required","integer"],
+            "right" => ["required","in:RO,RW,F"],
+            "task_id" => ["required","integer"]
+        ]);
+
+        $folder = Task::findOrFail($validateData["task_id"]);
+
+        if(!$folder) return redirect()->route("home")->with("failure","La note que vous voulez partagez n'existe pas");
+        if($folder->owner_id != $user_id) return redirect()->route("home")->with("failure","Vous n'êtes pas autorisé à faire cette action");
+
+        $user_to_share = User::findOrFail($validateData["id_share"]);
+        if(!$user_to_share) return redirect()->route("home")->with("failure","L'utilisateur a qui vous souhaitez partagez cette ressource n'existe pas");
+
+
+        // Verification si il n'y a pas déjà un droit accordé à la personne sur la ressource
+
+        $previousAccess = Acces::where([
+            ["ressource_id",$validateData["task_id"]],
+            ["type","task"],
+            ["dest_id",$validateData["id_share"]]
+        ])->first();
+
+        //dd($previousAccess);
+
+        // Il y a dejà un droit
+        if($previousAccess){
+            //dd($previousAccess);
+            //DB::enableQueryLog();
+            Acces::where("id",$previousAccess->id)->first()->delete();
+            //$previousAccess->delete();
+        }
+
+        // Creation de l'accès / partage
+        $acces = new Acces();
+        $acces->ressource_id = $validateData["task_id"];
+        $acces->type = "task";
+        $acces->perm = $validateData["right"];
+        $acces->dest_id = $validateData["id_share"];
+        $acces->id = Acces::max('id') + 1;
+
+        $acces->save();
+        //dd("ALORS");
+        return redirect()->back()->with("success","La tâche à bien été partagé à " . $user_to_share->name);
+
+    }
+
+    public function ProjetStore(Request $request)
+    {
+        $user_id = Auth::user()->id;
+
+        $validateData = $request->validate([
+            "id_share" => ["required","integer"],
+            "right" => ["required","in:RO,RW,F"],
+            "projet_id" => ["required","integer"]
+        ]);
+
+        $folder = Folder::findOrFail($validateData["projet_id"]);
+
+        if(!$folder) return redirect()->route("home")->with("failure","Le projet que vous voulez partagez n'existe pas");
+        if($folder->owner_id != $user_id) return redirect()->route("home")->with("failure","Vous n'êtes pas autorisé à faire cette action");
+
+        $user_to_share = User::findOrFail($validateData["id_share"]);
+        if(!$user_to_share) return redirect()->route("home")->with("failure","L'utilisateur a qui vous souhaitez partagez cette ressource n'existe pas");
+
+
+        // Verification si il n'y a pas déjà un droit accordé à la personne sur la ressource
+
+        $previousAccess = Acces::where([
+            ["ressource_id",$validateData["projet_id"]],
+            ["type","project"],
+            ["dest_id",$validateData["id_share"]]
+        ])->first();
+
+        //dd($previousAccess);
+
+        // Il y a dejà un droit
+        if($previousAccess){
+            //dd($previousAccess);
+            //DB::enableQueryLog();
+            Acces::where("id",$previousAccess->id)->first()->delete();
+            //$previousAccess->delete();
+        }
+
+        // Creation de l'accès / partage
+        $acces = new Acces();
+        $acces->ressource_id = $validateData["projet_id"];
+        $acces->type = "project";
+        $acces->perm = $validateData["right"];
+        $acces->dest_id = $validateData["id_share"];
+        $acces->id = Acces::max('id') + 1;
+
+        $acces->save();
+        //dd("ALORS");
+        return redirect()->route("projet_view",$acces->ressource_id)->with("success","Le projet à bien été partagé à " . $user_to_share->name);
+    }
+
 }

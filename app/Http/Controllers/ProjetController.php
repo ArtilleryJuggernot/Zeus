@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Acces;
 use App\Models\insideprojet;
 use App\Models\Projet;
 use App\Models\Task;
@@ -40,15 +41,45 @@ class ProjetController extends Controller
         else $progression = (count($taskFinish) / (count($taskTODO)  + count($taskFinish))) * 100 ;
 
         //dd($tasks);
-        if($projet->owner_id == $user_id){
+
+
+        $usersPermissionsOnNote = Acces::getUsersPermissionsOnProject($id);
+        $perm_user = 0;
+        $autorisation_partage = false;
+        foreach ($usersPermissionsOnNote as $acces){
+            if($acces->dest_id == $user_id){
+                $autorisation_partage = true;
+                $perm_user = $acces;
+                break;
+            }
+        }
+        $usersPermissionsOnNote = Acces::getUsersPermissionsOnProject($id);
+        $perm_user = 0;
+        $autorisation_partage = false;
+        foreach ($usersPermissionsOnNote as $acces){
+            if($acces->dest_id == $user_id){
+                $autorisation_partage = true;
+                $perm_user = $acces;
+                break;
+            }
+        }
+
+
+        if($projet->owner_id == $user_id || $autorisation_partage){ // TODO : Modif pour collab
             return view("projet.ProjetView",
             [
                 "projet" => $projet,
                 "taskFinish" => $taskFinish,
                 "taskTODO" => $taskTODO,
                 "progression" => $progression,
+                "usersPermissionList" => $usersPermissionsOnNote,
+                "perm_user" => $perm_user
             ]);
         }
+
+
+
+
         return redirect()->route("home")->with("failure","Vous n'êtes pas autorisé à voir cette ressource");
     }
 

@@ -179,6 +179,66 @@
 
 
 
+@if($projet->owner_id == \Illuminate\Support\Facades\Auth::user()->id)
+
+    <h1>Section partage utilisateur</h1>
+
+    <p>Vous pouvez partagez ce projet à d'autre utilisateur</p>
+
+    <div class="add-share">
+        <form action="{{route("add_projet_share")}}" method="post">
+            <label for="id_share">Entrez l'identifiant de la personne à qui vous souhaitez partagez le projet :</label>
+            <input name="id_share" type="number" min="0"/>
+
+            <br>
+            <br>
+            <label for="right">Selectionnez le droit que l'utilisateur aura sur la note</label>
+            <select name="right">
+                <option value="RO">Lecture Seul (Read Only)</option>
+                <option value="RW">Lecture et Ecriture</option>
+                <option value="F">Tout (Lecture , Ecriture, Suppression, Renommer)</option>
+            </select>
+            <input type="hidden" name="projet_id" value="{{$projet->id}}">
+            <input type="submit" value="Envoyer" />
+
+            @csrf
+        </form>
+    </div>
+
+    <h1>Liste des autorisations utilisateurs</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Nom d'utilisateur</th>
+            <th>ID de l'utilisateur</th>
+            <th>Droit</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach($usersPermissionList as $perm)
+            <tr>
+                <td>{{ \App\Models\User::find($perm->dest_id)->name }}</td> <!-- Remplacez 'name' par le champ correspondant dans le modèle User -->
+                <td>{{ $perm->dest_id }}</td>
+                <td>{{ $perm->perm }}</td>
+                <td>
+                    <form action="{{ route('delete_perm', ['id' => $perm->id]) }}" method="POST">
+                        @csrf
+                        <button type="submit">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        @endforeach
+        </tbody>
+    </table>
+
+
+
+
+@endif
+
+
 </body>
 </html>
 

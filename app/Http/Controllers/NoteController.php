@@ -85,7 +85,8 @@ class NoteController extends Controller
 
 
     private function checkHasPermissionView(int $id)
-    {// Check Permission
+    {
+        // Check Permission
         $user_id = Auth::user()->id;
 
         $acces = Acces::where([
@@ -128,15 +129,10 @@ class NoteController extends Controller
     public function View(int $id)       // TODO : Système d'autorisation par dossier recursif
     {                                   // TODO : En voyant le dossier parent
         $user_id = Auth::user()->id;
-        // Récupérer le chemin de la note par son ID
         $note = Note::findOrFail($id);
 
-        // Verification
+        if(!$note) return redirect()->route("home")->with("failure","La note n'existe pas");
 
-
-        if(!$note){
-            return redirect()->route("home")->with("failure","La note n'existe pas");
-        }
 
 
         $usersPermissionsOnNote = Acces::getUsersPermissionsOnNote($id);
@@ -154,7 +150,6 @@ class NoteController extends Controller
         if($note->owner_id != $user_id) // Pas l'utilisateur propriétaire, on regarde si l'utilisateur courant à les droits sur au moins un dossier supérieur
         {
             // A partir de note_id -> folder_id
-
             $path = $note->path;
             $path_parent = "";
             $arr_path = explode("/",$path);
