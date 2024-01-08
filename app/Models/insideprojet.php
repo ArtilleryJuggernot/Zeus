@@ -10,4 +10,7 @@ class insideprojet extends Model
     use HasFactory;
     public $table = "inside_projet";
     public $timestamps = false;
+
+
+
 }

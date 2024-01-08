@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Acces;
 use App\Models\Folder;
 use App\Models\Note;
 use Illuminate\Http\Request;
@@ -77,9 +78,52 @@ class FolderController extends Controller
     }
 
 
+    // l'ID du dossier à vérifié
+    private function checkHasPermissionView(int $id)
+    {// Check Permission
+        $user_id = Auth::user()->id;
 
-    public function View(int $id)
+        $acces = Acces::where([
+            ["ressource_id",$id],
+            ["type","folder"],
+            ["dest_id",$user_id]
+        ])->first();
+
+        if($acces){ // Accès trouvé
+            return $acces;
+        }
+
+        // Si c'est null
+
+        // Si pas de permission trouvé, on remonte sur le dossier du dessus
+        $folder = Folder::findOrFail($id);
+        $path = $folder->path;
+        // Recupérer le dossier parent
+        $path_parent = "";
+        $arr_path = explode("/",$path);
+        for ($i = 0; $i < count($arr_path) - 1; $i++){
+            if($i == count($arr_path) - 2 ) $path_parent .=  $arr_path[$i];
+            else $path_parent .=  $arr_path[$i] . "/";
+        }
+
+        if($path_parent == "/files") // On a atteint la racine, il n'y a pas de droit
+        {
+            return null;
+        }
+        else
+        {
+            //dd($path_parent);
+            $parent_folder = Folder::where("path",$path_parent)->first();
+            return $this->checkHasPermissionView($parent_folder->folder_id);
+        }
+        //dd($path_parent);
+    }
+
+
+    public function View(int $id) // TODO : Verification arborescente
     {
+
+        $user_id = Auth::user()->id;
         $folder = Folder::where("folder_id","=",$id)->first();
 
         if(!$folder){
@@ -88,9 +132,33 @@ class FolderController extends Controller
 
         $folder_path = $folder->path;
 
-        //dd($folder->owner_id . "vs" .Auth::user()->id);
+        // Partage & Permission
+        $usersPermissionsOnNote = Acces::getUsersPermissionsOnFolder($id);
+        $perm_user = 0;
+        $autorisation_partage = false;
+        foreach ($usersPermissionsOnNote as $acces){
+            if($acces->dest_id == $user_id){
+                $autorisation_partage = true;
+                $perm_user = $acces;
+                break;
+            }
+        }
+
+
+
+
         // Check user authorization
-        if($folder->owner_id != Auth::user()->id){ // TODO système d'autorisation accès
+        $pas_user = $folder->owner_id != Auth::user()->id;
+        $accesRecursif = false;
+        if($pas_user) // Pas l'utilisateur propriétaire, on regarde si l'utilisateur courant à les droits sur au moins un dossier supérieur
+        {
+            $accesRecursif = $this->checkHasPermissionView($id);
+            //dd($accesRecursif);
+//            dd(!$accesRecursif);
+        }
+//        if( ($pas_user && !$autorisation_partage) || !isset($accesRecursif)){
+        //dd($pas_user && !$accesRecursif);
+        if( ($pas_user) && !$accesRecursif){
              return redirect()->route("home")->with("failure","Vous n'êtes pas autorisé à voir cette ressource");
         }
 
@@ -110,14 +178,16 @@ class FolderController extends Controller
                     "name" => basename($folder_parent_path)
                 ];
             }
-
         $folderContents = $this->getFolderContents($id);
             //dd($folderContents);
         return view("folder.FolderView",
         ["folderContents" => $folderContents,
         "parent_content" => $parent_content,
             "folder_path" => $folder_path,
-            "folder_name" => $folder->name]);
+            "folder" => $folder,
+         "usersPermissionList" => $usersPermissionsOnNote,
+            "perm_user" => $perm_user,
+        ]);
     }
 
     public function Add()

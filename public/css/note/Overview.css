@@ -10,6 +10,14 @@ ul {
     font-weight: bold;
 }
 
+
+/* Styles pour les notes */
+
+.note-link{
+    color: #993366;
+}
+
+
 .folder::before {
     content: "▸";
     margin-right: 5px;

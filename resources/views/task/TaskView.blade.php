@@ -89,31 +89,19 @@
 </div>
 <span>Attention ! Supprimer une tâche implique qu'elle sera supprimé dans tout les projets</span>
 
-
-<script>
-
-
-    function previewMarkdown() {
-        console.log("sinj");
-        // Fonction JavaScript pour prévisualiser le contenu Markdown
-        let noteContent = document.getElementById('note-content').value;
-
-        // Utilisation de la bibliothèque Marked.js pour convertir le Markdown en HTML
-        let html = marked.marked(noteContent);
-        document.getElementById('preview').innerHTML = html;
-        saveTask()
-    }
-
-    // Appliquer le Markdown automatiquement lors de la saisie dans le textarea
-    document.getElementById('note-content').addEventListener('input', () => previewMarkdown() );
-    previewMarkdown();
-</script>
-
-<!-- Ajoutez ce code dans votre vue HTML -->
 <script>
     function saveTask() {
         let content = document.getElementById('note-content').value;
         let is_finish = document.getElementById("is_finish").checked;
+
+        if(is_finish)
+            is_finish = "on"
+        else
+            is_finish = "off"
+
+        console.log("Le contenu est : ")
+        console.log(is_finish);
+
         fetch('/save-task', {
             method: 'POST',
             headers: {
@@ -149,6 +137,27 @@
         }
     });
 </script>
+<script>
+
+
+    function previewMarkdown() {
+        console.log("sinj");
+        // Fonction JavaScript pour prévisualiser le contenu Markdown
+        let noteContent = document.getElementById('note-content').value;
+
+        // Utilisation de la bibliothèque Marked.js pour convertir le Markdown en HTML
+        let html = marked.marked(noteContent);
+        document.getElementById('preview').innerHTML = html;
+        saveTask()
+    }
+
+    // Appliquer le Markdown automatiquement lors de la saisie dans le textarea
+    document.getElementById('note-content').addEventListener('input', () => previewMarkdown() );
+    previewMarkdown();
+</script>
+
+<!-- Ajoutez ce code dans votre vue HTML -->
+
 
 
 </body>

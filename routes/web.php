@@ -139,3 +139,30 @@ Route::post("/check_task_project",[\App\Http\Controllers\ProjetController::class
 Route::post("/uncheck_task_project",[\App\Http\Controllers\ProjetController::class,"UncheckTaskDone"])
     ->middleware("auth")
     ->name("uncheck_task_project");
+
+
+// Share
+
+// Il faut
+/*
+ * - Store Dossier
+ * - Store Note
+ * - Store Projet
+ * - Store Tache
+ *
+ * Et pareil pour les removes (4)
+ * */
+
+Route::post("/add_note_share/",[\App\Http\Controllers\ShareController::class,"NoteStore"])
+    ->middleware("auth")
+    ->name("add_note_share");
+
+
+Route::post("/add_folder_share/",[\App\Http\Controllers\ShareController::class,"FolderStore"])
+    ->middleware("auth")
+    ->name("add_folder_share");
+
+
+Route::post("/delete_perm/{id}",[\App\Http\Controllers\ShareController::class,"DeletePermById"])
+    ->middleware("auth")
+    ->name("delete_perm");

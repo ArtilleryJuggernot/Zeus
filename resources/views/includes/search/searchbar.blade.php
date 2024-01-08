@@ -9,6 +9,11 @@
 
 <style scoped>
 
+    *{
+        overflow-x: auto;
+        overflow-y: auto;
+    }
+
     #searchtitle{
         text-align: center;
         color: white;

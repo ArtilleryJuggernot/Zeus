@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class TaskController extends Controller
 {
@@ -42,15 +44,30 @@ class TaskController extends Controller
 
     public function Save(Request $request)
     {
+        $output = new ConsoleOutput();
+        $output->writeln("Je suis dans save consoleOutput");
+
+        if($request->has("btn_is_finished")){
+            $output->writeln("BTN IS FINISHED DEFINIT. LA VALEUR EST : ");
+            $output->writeln( (string) $request->get("btn_is_finished"));
+        }
+
+        $output->writeln("Debut de la verification");
         $validateData = $request->validate([
-            "content" => ["required","string"],
-            "user_id" => ["required","integer"],
-            "task_id" => ["required","integer"],
-            "btn_is_finished" => ["required","in:on,off"]
-        ]);
+                "content" => ["required","string"],
+                "user_id" => ["required","integer"],
+                "task_id" => ["required","integer"],
+                "btn_is_finished" => ["required","in:on,off"]
+            ]);
+
+        $output->writeln("Fin de la verification");
+
+
         $content = $validateData['content'];
         $user_id = $validateData["user_id"];
         $note_id = $validateData["task_id"];
+
+
 
         if ($user_id == Auth::user()->id) {
             $task = Task::find($note_id);
@@ -60,14 +77,20 @@ class TaskController extends Controller
 
 
             if ($task->owner_id == Auth::user()->id) { // TODO : Système d'autorisation
+
+                $output->writeln("Assignation description");
                 $task->description = $content;
 
                 if($validateData["btn_is_finished"] == "on"){
+                    $output->writeln("Je suis dans la condition");
                     $task->is_finish = true;
                     $task->finished_at = Carbon::now();
                 }
-                else
+                else{
+                    $output->writeln("Je suis dans le else");
                     $task->is_finish = false;
+                }
+
 
                 $task->save();
                 return response()->json(['success' => true]);
