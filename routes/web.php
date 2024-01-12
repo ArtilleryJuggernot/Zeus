@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-// Home
+// Home view welcome
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route("home");
 });
 
 Route::get("/home",[\App\Http\Controllers\HomeController::class,'HomeView'])
@@ -177,3 +177,26 @@ Route::post("/delete_perm/{id}",[\App\Http\Controllers\ShareController::class,"D
     ->name("delete_perm");
 
 
+// Categorie
+
+Route::get("/categorie_overview/",[\App\Http\Controllers\CategorieController::class,"Overview"])
+    ->middleware("auth")
+    ->name("categorie_overview");
+
+Route::post("/delete_categorie/",[\App\Http\Controllers\CategorieController::class,"Delete"])
+    ->middleware("auth")
+    ->name("delete_categorie");
+
+Route::post("/store_categorie/",[\App\Http\Controllers\CategorieController::class,"Store"])
+    ->middleware("auth")
+    ->name("store_categorie");
+
+
+Route::post("/addCategory/",[\App\Http\Controllers\CategorieController::class,"AddCategorieToRessource"])
+    ->middleware("auth")
+    ->name("addCategory");
+
+
+Route::post("/removeCategory/",[\App\Http\Controllers\CategorieController::class,"RemoveCategorieToRessource"])
+    ->middleware("auth")
+    ->name("removeCategory");

@@ -85,8 +85,6 @@ class TaskController extends Controller
         }
 
 
-        // TODO Si user 2 créer une tache, pb d'autorisation pour user 1
-
         $output = new ConsoleOutput();
         //$output->writeln();
         //dd($autorisation_partage); // false car il n'y a pas de partage direct de la tâche
@@ -127,11 +125,7 @@ class TaskController extends Controller
 
 
         $perm_test = $perm == "RW" || $perm == "F";
-        $output = new ConsoleOutput();
-        $output->writeln($perm_test);
         if ($task->owner_id == Auth::user()->id || $perm_test) { // TODO : Système d'autorisation
-                if($task->owner_id) $output->writeln("Il s'agit du propriétaire");
-                $output->writeln("Autorisation OK! Je peux sauvegarder");
                 $task->description = $content;
                 if($validateData["btn_is_finished"] == "on"){
                     $task->is_finish = true;

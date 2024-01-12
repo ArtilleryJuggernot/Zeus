@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Acces;
+use App\Models\Categorie;
 use App\Models\Folder;
 use App\Models\Note;
+use App\Models\possede_categorie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -120,7 +122,7 @@ class FolderController extends Controller
     }
 
 
-    public function View(int $id) // TODO : Verification arborescente
+    public function View(int $id)
     {
 
         $user_id = Auth::user()->id;
@@ -179,7 +181,26 @@ class FolderController extends Controller
                 ];
             }
         $folderContents = $this->getFolderContents($id);
-            //dd($folderContents);
+
+
+        // Categories
+
+// Assurez-vous que vous utilisez les modèles Eloquent correspondants
+        $resourceCategories = possede_categorie::where('ressource_id', $id)
+            ->where('type_ressource', "folder")
+            ->where('owner_id', $user_id)->get();
+
+// Obtenez toutes les catégories en utilisant le modèle Categorie
+        $allCategories = Categorie::all(['category_id', 'category_name']);
+
+// Obtenez les catégories possédées par la ressource
+        $ownedCategoryIds = $resourceCategories->pluck('categorie_id')->toArray();
+
+// Séparez les catégories possédées et non possédées
+        $ownedCategories = $allCategories->whereIn('category_id', $ownedCategoryIds)->pluck('category_name', 'category_id')->toArray();
+        $notOwnedCategories = $allCategories->whereNotIn('category_id', $ownedCategoryIds)->pluck('category_name', 'category_id')->toArray();
+
+
         return view("folder.FolderView",
         ["folderContents" => $folderContents,
         "parent_content" => $parent_content,
@@ -187,6 +208,9 @@ class FolderController extends Controller
             "folder" => $folder,
          "usersPermissionList" => $usersPermissionsOnNote,
             "perm_user" => $perm_user,
+            "ressourceCategories" => $resourceCategories,
+            "ownedCategories" => $ownedCategories,
+            "notOwnedCategories" => $notOwnedCategories
         ]);
     }
 

@@ -211,9 +211,7 @@ class NoteController extends Controller
 
         if($access && ($access->perm == "RW" || $access->perm == "F")) { // Verifié si il existe un accès pour l'utilisateur + auto
             $autorisation = true;
-            $output = new ConsoleOutput();
-            $output->writeln("Autorisation true");
-        }
+            }
 
         // Permission par arbo recurif dossier
 

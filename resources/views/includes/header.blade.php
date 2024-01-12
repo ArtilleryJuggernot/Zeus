@@ -1,7 +1,10 @@
 <head>
     <link rel="stylesheet" href="/css/includes/header.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/img/favicon/site.webmanifest">
 </head>
-
 <div class="header">
     <!-- Logo du jeu -->
     <div class="logo">
@@ -64,8 +67,11 @@
                 </li>
             @endif
 
-
-
+            @if(\Illuminate\Support\Facades\Auth::user())
+                <li>
+                    <a href="{{route("categorie_overview")}}">Mes categories</a>
+                </li>
+            @endif
 
 
             @if(Auth::user())

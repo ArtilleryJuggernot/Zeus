@@ -7,6 +7,17 @@
     <title>Liste des dossiers</title>
     <link rel="stylesheet" href="/css/folder/Overview.css"> <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
 </head>
+
+<style>
+    .category {
+        display: inline-block;
+        padding: 8px;
+        border-radius: 20px;
+        color: #fff; /* Couleur du texte, ajustez selon vos besoins */
+        margin: 5px; /* Marge autour de chaque catégorie */
+    }
+
+</style>
 <body>
 
 @if(session("success"))
@@ -95,7 +106,49 @@
         </div>
     @endforeach
 </div>
+<div class="cat_display">
 
+    <h2>Liste des catégories</h2>
+
+    @foreach($ressourceCategories as $category)
+        @php
+        $category = \App\Models\Categorie::find($category->categorie_id);
+        @endphp
+        <div class="category" style="background-color: {{ $category->color }};">
+            {{ $category->category_name }}
+        </div>
+    @endforeach
+</div>
+
+<button class="accordion">Gestion des categories</button>
+<div class="panel">
+    <h2>Gestion des categories</h2>
+    <form method="post" action="{{ route('addCategory', ['resourceId' => $folder->folder_id, 'resourceType' => "folder"]) }}">
+        @csrf
+        <label for="category">Ajouter une catégorie :</label>
+        <select name="category" id="category">
+            @foreach($notOwnedCategories as $categoryId => $categoryName)
+                <option value="{{ $categoryId }}">{{ $categoryName }}</option>
+            @endforeach
+        </select>
+        <input name="ressourceId" value="{{$folder->folder_id}}" type="hidden">
+        <input name="ressourceType" value="folder" type="hidden">
+        <button type="submit">Ajouter</button>
+    </form>
+
+
+    <form method="post" action="{{ route('removeCategory', ['resourceId' => $folder->folder_id, 'resourceType' => "folder"]) }}">
+        @csrf
+        <label for="removeCategory">Supprimer une catégorie :</label>
+        <select name="removeCategory" id="removeCategory">
+            @foreach($ressourceCategories as $categoryId => $category)
+                <option value="{{ $category->id }}">{{ \App\Models\Categorie::find($category->categorie_id)->category_name }}</option>
+            @endforeach
+        </select>
+        <button type="submit">Supprimer</button>
+    </form>
+
+</div>
 
 
 @if($folder->owner_id == \Illuminate\Support\Facades\Auth::user()->id)
@@ -162,11 +215,6 @@
 <script src="/js/accordeon.js"></script>
 </body>
 
-
-
-
-
-{{dd($perm_user)}}
 
 
 
