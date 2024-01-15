@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Acces;
 use App\Models\Folder;
 use App\Models\Note;
+use App\Models\Projet;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 
 class ShareController extends Controller
 {
@@ -123,8 +125,14 @@ class ShareController extends Controller
 
         $acces = Acces::findOrFail($id);
 
-        if (!$acces)
+        //dd($acces);
+
+        //dd(!$acces);
+        if (!$acces){
             return redirect()->route("home")->with("failure","Les droits associés que vous tentez de modifié n'existe pas");
+
+        }
+
 
 
         // Recuperation de la ressource lié à l'accès
@@ -132,15 +140,19 @@ class ShareController extends Controller
             case "note":
                 $ressource = Note::findOrFail($acces->ressource_id);
                 break;
+
             case "folder":
                 $ressource = Folder::findOrFail($acces->ressource_id);
                 break;
+
             case "task":
                 $ressource = Task::findOrFail($acces->ressource_id);
                 break;
+
             case "project":
-                $ressource = Task::findOrFail($acces->ressource_id);
-                break;
+                //dd("switch cased"); <- est atteint
+                $ressource = Projet::findOrFail($acces->ressource_id);
+
         }
 
 
