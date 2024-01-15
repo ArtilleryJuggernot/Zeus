@@ -6,16 +6,11 @@
     <meta charset="UTF-8">
     <title>Liste des dossiers</title>
     <link rel="stylesheet" href="/css/folder/Overview.css"> <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
+    <link rel="stylesheet" href="/css/category.css">
 </head>
 
 <style>
-    .category {
-        display: inline-block;
-        padding: 8px;
-        border-radius: 20px;
-        color: #fff; /* Couleur du texte, ajustez selon vos besoins */
-        margin: 5px; /* Marge autour de chaque catégorie */
-    }
+
 
 </style>
 <body>
@@ -123,7 +118,7 @@
 <button class="accordion">Gestion des categories</button>
 <div class="panel">
     <h2>Gestion des categories</h2>
-    <form method="post" action="{{ route('addCategory', ['resourceId' => $folder->folder_id, 'resourceType' => "folder"]) }}">
+    <form method="post" action="{{ route('addCategory')}}">
         @csrf
         <label for="category">Ajouter une catégorie :</label>
         <select name="category" id="category">
@@ -137,7 +132,7 @@
     </form>
 
 
-    <form method="post" action="{{ route('removeCategory', ['resourceId' => $folder->folder_id, 'resourceType' => "folder"]) }}">
+    <form method="post" action="{{ route('removeCategory') }}">
         @csrf
         <label for="removeCategory">Supprimer une catégorie :</label>
         <select name="removeCategory" id="removeCategory">

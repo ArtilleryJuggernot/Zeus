@@ -1,0 +1,7 @@
+.category {
+    display: inline-block;
+    padding: 8px;
+    border-radius: 20px;
+    color: #fff; /* Couleur du texte, ajustez selon vos besoins */
+    margin: 5px; /* Marge autour de chaque catégorie */
+}

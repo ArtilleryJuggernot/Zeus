@@ -1,0 +1,48 @@
+.progress-status{
+    text-align: center;
+}
+.project-title > h3{
+    text-align: center;
+    font-size: 25px;
+}
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background-color: red;
+    border-radius: 4px;
+    overflow: hidden; /* Cache le débordement */
+    margin-bottom: 10px;
+    position: relative; /* Positionnement relatif pour les éléments internes */
+}
+
+.progress-bg {
+    height: 100%;
+    width: 100%;
+    position: absolute; /* Positionnement absolu pour l'arrière-plan */
+    top: 0;
+    left: 0;
+    z-index: -1; /* Derrière la barre de progression principale */
+}
+
+.progress {
+    height: 100%;
+    transition: width 0.5s ease;
+}
+
+.green {
+    background-color: green;
+}
+
+.task-todo{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.task-done{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.folder-card{
+    flex: 1 0 21%; /* explanation below */
+}

@@ -200,3 +200,8 @@ Route::post("/addCategory/",[\App\Http\Controllers\CategorieController::class,"A
 Route::post("/removeCategory/",[\App\Http\Controllers\CategorieController::class,"RemoveCategorieToRessource"])
     ->middleware("auth")
     ->name("removeCategory");
+
+Route::post("/searchCategory/",[\App\Http\Controllers\CategorieController::class,"Search"])
+    ->middleware("auth")
+
+    ->name("searchCategory");

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Acces;
+use App\Models\Categorie;
 use App\Models\Folder;
 use App\Models\insideprojet;
+use App\Models\possede_categorie;
 use App\Models\Projet;
 use App\Models\Task;
 use Carbon\Carbon;
@@ -85,7 +87,6 @@ class TaskController extends Controller
         }
 
 
-        $output = new ConsoleOutput();
         //$output->writeln();
         //dd($autorisation_partage); // false car il n'y a pas de partage direct de la tâche
         //dd($autorisation_partage_p_rec); // false aussi car il le propriétaire n'a une une autorisation pour lui même
@@ -94,10 +95,33 @@ class TaskController extends Controller
             return redirect()->route("home")->with("failure","Vous n'avez pas l'autorisation de voir cette ressource2");
 
 
+
+
+        $resourceCategories = possede_categorie::where('ressource_id', $id)
+            ->where('type_ressource', "task")
+            ->where('owner_id', $user_id)->get();
+
+// Obtenez toutes les catégories en utilisant le modèle Categorie
+        $allCategories = Categorie::all(['category_id', 'category_name']);
+
+// Obtenez les catégories possédées par la ressource
+        $ownedCategoryIds = $resourceCategories->pluck('categorie_id')->toArray();
+
+// Séparez les catégories possédées et non possédées
+        $ownedCategories = $allCategories->whereIn('category_id', $ownedCategoryIds)->pluck('category_name', 'category_id')->toArray();
+        $notOwnedCategories = $allCategories->whereNotIn('category_id', $ownedCategoryIds)->pluck('category_name', 'category_id')->toArray();
+
+
+
+
+
         return view("task.TaskView",[
             "task" => $task,
              "usersPermissionList" => $usersPermissionsOnNote,
-            "perm_user" => $perm_user       // TODO : Remplacer par $accesRecursif quand la collab par projet sera là avec la fonction qui va bien cf NoteController
+            "perm_user" => $perm_user,       // TODO : Remplacer par $accesRecursif quand la collab par projet sera là avec la fonction qui va bien cf NoteController
+                 "ressourceCategories" => $resourceCategories,
+                "ownedCategories" => $ownedCategories,
+                "notOwnedCategories" => $notOwnedCategories
         ]);
     }
 

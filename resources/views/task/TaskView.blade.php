@@ -5,59 +5,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Editeur de Tache</title>
-    <style>
-        /* Ajoutez vos styles CSS pour l'éditeur de note ici */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .note-editor {
-            width: 100%;
-            display: flex;
-            background-color: #fff;
-            border-radius: 5px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        textarea {
-            height: 400px;
-            width: 700px;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        #preview {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-            background-color: #fff;
-            min-height: 400px;
-            overflow-y: auto;
-        }
-
-        /* Style pour le bouton */
-        button {
-            margin-bottom: 20px;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 5px;
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-        }
-        td {
-            border: 1px solid black
-        }
-    </style>
+    <link rel="stylesheet" href="/css/category.css">
+    <link rel="stylesheet" href="/css/tableau.css">
+    <link rel="stylesheet" href="/css/accordion.css">
+    <link rel="stylesheet" href="/css/note/editor.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
@@ -98,7 +49,7 @@
 @endif
 
 <div>
-    <label>La tâche est t'elle finis ?</label>
+    <label>La tâche est t'elle fini ?</label>
     <input id="is_finish" type="checkbox" @if($task->is_finish) checked @endif name="is_finish">
 </div>
 
@@ -125,6 +76,50 @@
 
 
 
+<div class="cat_display">
+
+    <h2>Liste des catégories</h2>
+
+    @foreach($ressourceCategories as $category)
+        @php
+            $category = \App\Models\Categorie::find($category->categorie_id);
+        @endphp
+        <div class="category" style="background-color: {{ $category->color }};">
+            {{ $category->category_name }}
+        </div>
+    @endforeach
+</div>
+
+
+<button class="accordion">Gestion des categories</button>
+<div class="panel">
+    <h2>Gestion des categories</h2>
+    <form method="post" action="{{ route('addCategory') }}">
+        @csrf
+        <label for="category">Ajouter une catégorie :</label>
+        <select name="category" id="category">
+            @foreach($notOwnedCategories as $categoryId => $categoryName)
+                <option value="{{ $categoryId }}">{{ $categoryName }}</option>
+            @endforeach
+        </select>
+        <input name="ressourceId" value="{{$task->task_id}}" type="hidden">
+        <input name="ressourceType" value="task" type="hidden">
+        <button type="submit">Ajouter</button>
+    </form>
+
+
+    <form method="post" action="{{ route('removeCategory') }}">
+        @csrf
+        <label for="removeCategory">Supprimer une catégorie :</label>
+        <select name="removeCategory" id="removeCategory">
+            @foreach($ressourceCategories as $categoryId => $category)
+                <option value="{{ $category->id }}">{{ \App\Models\Categorie::find($category->categorie_id)->category_name }}</option>
+            @endforeach
+        </select>
+        <button type="submit">Supprimer</button>
+    </form>
+
+</div>
 
 
 @if($task->owner_id == \Illuminate\Support\Facades\Auth::user()->id)
@@ -179,11 +174,9 @@
         @endforeach
         </tbody>
     </table>
-
-
-
-
 @endif
+
+
 
 
 
@@ -272,6 +265,7 @@
     document.getElementById('note-content').addEventListener('input', () => previewMarkdown() );
     previewMarkdown();
 </script>
+<script src="/js/accordeon.js"></script>
 
 <!-- Ajoutez ce code dans votre vue HTML -->
 

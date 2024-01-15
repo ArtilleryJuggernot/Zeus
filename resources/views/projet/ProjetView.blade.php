@@ -5,57 +5,11 @@
     <meta charset="UTF-8">
     <title>Projet : {{$projet->name}}</title>
     <link rel="stylesheet" href="/css/folder/Overview.css"> <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
+    <link rel="stylesheet" href="/css/accordion.css">
+    <link rel="stylesheet" href="/css/category.css">
+    <link rel="stylesheet" href="/css/projet/View.css">
+
     <style>
-
-        .progress-status{
-            text-align: center;
-        }
-        .project-title > h3{
-            text-align: center;
-            font-size: 25px;
-        }
-        .progress-bar {
-            width: 100%;
-            height: 20px;
-            background-color: red;
-            border-radius: 4px;
-            overflow: hidden; /* Cache le débordement */
-            margin-bottom: 10px;
-            position: relative; /* Positionnement relatif pour les éléments internes */
-        }
-
-        .progress-bg {
-            height: 100%;
-            width: 100%;
-            position: absolute; /* Positionnement absolu pour l'arrière-plan */
-            top: 0;
-            left: 0;
-            z-index: -1; /* Derrière la barre de progression principale */
-        }
-
-        .progress {
-            height: 100%;
-            transition: width 0.5s ease;
-        }
-
-        .green {
-            background-color: green;
-        }
-
-        .task-todo{
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .task-done{
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .folder-card{
-            flex: 1 0 21%; /* explanation below */
-        }
-
     </style>
 </head>
 <body>
@@ -239,8 +193,53 @@
 @endif
 
 
+
+<div class="cat_display">
+
+    <h2>Liste des catégories</h2>
+
+    @foreach($ressourceCategories as $category)
+        @php
+            $category = \App\Models\Categorie::find($category->categorie_id);
+        @endphp
+        <div class="category" style="background-color: {{ $category->color }};">
+            {{ $category->category_name }}
+        </div>
+    @endforeach
+</div>
+
+
+<button class="accordion">Gestion des categories</button>
+<div class="panel">
+    <h2>Gestion des categories</h2>
+    <form method="post" action="{{ route('addCategory') }}">
+        @csrf
+        <label for="category">Ajouter une catégorie :</label>
+        <select name="category" id="category">
+            @foreach($notOwnedCategories as $categoryId => $categoryName)
+                <option value="{{ $categoryId }}">{{ $categoryName }}</option>
+            @endforeach
+        </select>
+        <input name="ressourceId" value="{{$projet->id}}" type="hidden">
+        <input name="ressourceType" value="project" type="hidden">
+        <button type="submit">Ajouter</button>
+    </form>
+
+
+    <form method="post" action="{{ route('removeCategory') }}">
+        @csrf
+        <label for="removeCategory">Supprimer une catégorie :</label>
+        <select name="removeCategory" id="removeCategory">
+            @foreach($ressourceCategories as $categoryId => $category)
+                <option value="{{ $category->id }}">{{ \App\Models\Categorie::find($category->categorie_id)->category_name }}</option>
+            @endforeach
+        </select>
+        <button type="submit">Supprimer</button>
+    </form>
+
+</div>
+
 </body>
-</html>
 
 <script>
     // Récupérer la valeur de progression depuis votre backend (PHP/Blade)
@@ -265,6 +264,10 @@
     document.getElementById("is_due").addEventListener("click" ,() => enableDate());
 
 </script>
+<script src="/js/accordeon.js"></script>
+</html>
+
+
 
 
 

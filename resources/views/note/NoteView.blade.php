@@ -4,65 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Editeur de Note</title>
+    <link rel="stylesheet" href="/css/category.css">
+    <link rel="stylesheet" href="/css/tableau.css">
+    <link rel="stylesheet" href="/css/accordion.css">
+    <link rel="stylesheet" href="/css/note/editor.css">
+
     <style>
         /* Ajoutez vos styles CSS pour l'éditeur de note ici */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-x: auto;
-            overflow-y: auto;
-        }
 
-        .note-editor {
-            width: 100%;
-            display: flex;
-            background-color: #fff;
-            border-radius: 5px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
 
-        .it{
-            font-style: italic;
-        }
 
-        textarea {
-            height: 700px;
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
 
-        #preview {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-            background-color: #fff;
-            min-height: 400px;
-            overflow-y: auto;
-        }
-
-        /* Style pour le bouton */
-        button {
-            margin-bottom: 20px;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 5px;
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-        }
-
-        td {
-            border: 1px solid black
-        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
@@ -110,6 +62,51 @@
 
 <button onclick="saveNote()">Sauvegarder la note</button>
 
+
+<div class="cat_display">
+
+    <h2>Liste des catégories</h2>
+
+    @foreach($ressourceCategories as $category)
+        @php
+            $category = \App\Models\Categorie::find($category->categorie_id);
+        @endphp
+        <div class="category" style="background-color: {{ $category->color }};">
+            {{ $category->category_name }}
+        </div>
+    @endforeach
+</div>
+
+
+<button class="accordion">Gestion des categories</button>
+<div class="panel">
+    <h2>Gestion des categories</h2>
+    <form method="post" action="{{ route('addCategory') }}">
+        @csrf
+        <label for="category">Ajouter une catégorie :</label>
+        <select name="category" id="category">
+            @foreach($notOwnedCategories as $categoryId => $categoryName)
+                <option value="{{ $categoryId }}">{{ $categoryName }}</option>
+            @endforeach
+        </select>
+        <input name="ressourceId" value="{{$note->note_id}}" type="hidden">
+        <input name="ressourceType" value="note" type="hidden">
+        <button type="submit">Ajouter</button>
+    </form>
+
+
+    <form method="post" action="{{ route('removeCategory') }}">
+        @csrf
+        <label for="removeCategory">Supprimer une catégorie :</label>
+        <select name="removeCategory" id="removeCategory">
+            @foreach($ressourceCategories as $categoryId => $category)
+                <option value="{{ $category->id }}">{{ \App\Models\Categorie::find($category->categorie_id)->category_name }}</option>
+            @endforeach
+        </select>
+        <button type="submit">Supprimer</button>
+    </form>
+
+</div>
 
 
 @if($note->owner_id == \Illuminate\Support\Facades\Auth::user()->id)
@@ -226,6 +223,7 @@
     });
 
 </script>
+<script src="/js/accordeon.js"></script>
 
 <script>
     function previewMarkdown() {

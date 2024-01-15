@@ -6,6 +6,7 @@ use App\Models\Categorie;
 use App\Models\possede_categorie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CategorieController extends Controller
 {
@@ -34,6 +35,13 @@ class CategorieController extends Controller
         if(!$cat)
             return redirect()->route("home")->with("failure","La categorie que vous tentez de modifier n'existe pas");
 
+
+
+
+        $ps = possede_categorie::where("categorie_id",$cat->category_id)->get();
+        foreach ($ps as $elem)
+            $elem->delete();
+
         $cat->delete();
         return redirect()->back()->with(["success" => "La catégorie supprimé avec succès"]);
     }
@@ -43,11 +51,15 @@ class CategorieController extends Controller
     {
         $validateData = $request->validate([
                 "categorie_name" => ["required","string","max:250"],
+                "color" => ["required","string"]
             ]);
 
         $name = $validateData["categorie_name"];
+        $color = $validateData["color"];
+
         $cat = new Categorie();
         $cat->category_name = $name;
+        $cat->color = $color;
         $cat->owner_id = Auth::user()->id;
 
         $cat->save();
@@ -110,6 +122,32 @@ class CategorieController extends Controller
 
     }
 
+
+
+    public function Search(Request $request)
+    {
+        //dd($request);
+        $user_id = Auth::user()->id;
+        $validateData = $request->validate([
+            "category" => ["required","integer"]
+        ]);
+
+        $ressources = possede_categorie::where(
+            [
+                ["categorie_id",$validateData["category"]],
+                ["owner_id",$user_id]
+
+            ])->get();
+
+
+        return view("categorie.searchByCategorie",
+
+        [
+            "ressources" => $ressources
+        ]
+        );
+
+    }
 
 }
 

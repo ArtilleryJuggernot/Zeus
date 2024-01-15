@@ -1,0 +1,61 @@
+*{
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+#searchtitle{
+    text-align: center;
+    color: white;
+    font-size: 30px;
+}
+
+.overlay {
+    position: fixed; /* Position fixée pour rester en place lors du défilement */
+    top: 0;
+    left: 0;
+    width: 100%; /* Prend toute la largeur de la fenêtre */
+    height: 100%; /* Prend toute la hauteur de la fenêtre */
+    background-color: rgba(0, 0, 0, 0.7); /* Fond noir semi-transparent */
+    z-index: 999; /* Assure que l'overlay est au-dessus du contenu */
+    display: none; /* Masque l'overlay par défaut */
+}
+
+/* Styliser le contenu de l'overlay */
+.overlay h3 {
+    color: white;
+}
+
+.overlay textarea {
+    width: 80%;
+    height: 200px;
+    margin: 20px auto;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: white; /* Fond blanc pour le textarea */
+}
+#resultblock{
+    display: flex;
+    flex-wrap: wrap;
+}
+#resultblock > a {
+    margin: 10px;
+    flex: 1 0 21%; /* explanation below */
+}
+
+#resultblock > .folder{
+    background-color:rgba(55, 55, 246, 0.5);
+}
+
+#resultblock > .note{
+    background-color:rgba(227, 55, 55, 0.5)
+}
+
+#resultblock > .task{
+    background-color: rgba(6, 255, 0, 0.5)
+}
+
+#resultblock > .project{
+    background-color: rgba(255, 232, 0, 0.5)
+}

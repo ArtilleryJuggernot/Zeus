@@ -1,0 +1,9 @@
+.box {
+    float: left;
+    height: 20px;
+    width: 20px;
+    margin-bottom: 15px;
+    border: 1px;
+    clear: both;
+    border-radius: 50%;
+}

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Acces;
+use App\Models\Categorie;
 use App\Models\insideprojet;
+use App\Models\possede_categorie;
 use App\Models\Projet;
 use App\Models\Task;
 use Illuminate\Http\Request;
@@ -65,6 +67,23 @@ class ProjetController extends Controller
         }
 
 
+
+        $resourceCategories = possede_categorie::where('ressource_id', $id)
+            ->where('type_ressource', "project")
+            ->where('owner_id', $user_id)->get();
+
+// Obtenez toutes les catégories en utilisant le modèle Categorie
+        $allCategories = Categorie::all(['category_id', 'category_name']);
+
+// Obtenez les catégories possédées par la ressource
+        $ownedCategoryIds = $resourceCategories->pluck('categorie_id')->toArray();
+
+// Séparez les catégories possédées et non possédées
+        $ownedCategories = $allCategories->whereIn('category_id', $ownedCategoryIds)->pluck('category_name', 'category_id')->toArray();
+        $notOwnedCategories = $allCategories->whereNotIn('category_id', $ownedCategoryIds)->pluck('category_name', 'category_id')->toArray();
+
+
+
         if($projet->owner_id == $user_id || $autorisation_partage){ // TODO : Modif pour collab
             return view("projet.ProjetView",
             [
@@ -73,7 +92,10 @@ class ProjetController extends Controller
                 "taskTODO" => $taskTODO,
                 "progression" => $progression,
                 "usersPermissionList" => $usersPermissionsOnNote,
-                "perm_user" => $perm_user
+                "perm_user" => $perm_user,
+                "ressourceCategories" => $resourceCategories,
+                "ownedCategories" => $ownedCategories,
+                "notOwnedCategories" => $notOwnedCategories
             ]);
         }
 
