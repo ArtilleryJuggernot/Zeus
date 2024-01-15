@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Editeur de Note</title>
-    <link rel="stylesheet" href="/css/category.css">
-    <link rel="stylesheet" href="/css/tableau.css">
-    <link rel="stylesheet" href="/css/accordion.css">
-    <link rel="stylesheet" href="/css/note/editor.css">
+    <link rel="stylesheet" href="{{asset("css/category.css")}}">
+    <link rel="stylesheet" href="{{asset("css/tableau.css")}}">
+    <link rel="stylesheet" href="{{asset("css/accordion.css")}}">
+    <link rel="stylesheet" href="{{asset("css/note/editor.css")}}">
 
     <style>
         /* Ajoutez vos styles CSS pour l'éditeur de note ici */
@@ -223,7 +223,7 @@
     });
 
 </script>
-<script src="/js/accordeon.js"></script>
+<script src="{{asset("js/accordeon.js")}}}"></script>
 
 <script>
     function previewMarkdown() {

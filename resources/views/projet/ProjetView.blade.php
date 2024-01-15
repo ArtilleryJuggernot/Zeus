@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Projet : {{$projet->name}}</title>
-    <link rel="stylesheet" href="/css/folder/Overview.css"> <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
-    <link rel="stylesheet" href="/css/accordion.css">
-    <link rel="stylesheet" href="/css/category.css">
-    <link rel="stylesheet" href="/css/projet/View.css">
+    <link rel="stylesheet" href="{{asset("css/folder/Overview.css")}}"> <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
+    <link rel="stylesheet" href="{{asset("css/accordion.css")}}">
+    <link rel="stylesheet" href="{{asset("css/category.css")}}">
+    <link rel="stylesheet" href="{{asset("css/projet/View.css")}}">
 
     <style>
     </style>
@@ -264,7 +264,7 @@
     document.getElementById("is_due").addEventListener("click" ,() => enableDate());
 
 </script>
-<script src="/js/accordeon.js"></script>
+<script src="{{asset("js/accordeon.js")}}"></script>
 </html>
 
 

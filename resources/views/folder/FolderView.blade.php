@@ -5,8 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Liste des dossiers</title>
-    <link rel="stylesheet" href="/css/folder/Overview.css"> <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
-    <link rel="stylesheet" href="/css/category.css">
+    <link rel="stylesheet" href="{{asset("css/folder/Overview.css")}}"> <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
+    <link rel="stylesheet" href="{{asset("css/category.css")}}">
 </head>
 
 <style>
@@ -207,7 +207,7 @@
 
 
 
-<script src="/js/accordeon.js"></script>
+<script src="{{asset("js/accordeon.js")}}"></script>
 </body>
 
 

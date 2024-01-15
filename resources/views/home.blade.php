@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Accueil - Zeus</title>
-    <link rel="stylesheet" href="/css/folder/Overview.css">
+    <link rel="stylesheet" href="{{asset("css/folder/Overview.css")}}">
 
 </head>
 

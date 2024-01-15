@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>File Explorer</title>
-    <link rel="stylesheet" href="/css/note/Overview.css">
+    <link rel="stylesheet" href="{{asset("css/note/Overview.css")}}">
 </head>
 <body>
 

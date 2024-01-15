@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Liste des dossiers</title>
-    <link rel="stylesheet" href="/css/search/searchbar.css"> <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
+    <link rel="stylesheet" href="{{asset("css/search/searchbar.css")}}"> <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
 </head>
 <body>
 </body>
 </html>
 
-<base href="http://127.0.0.1:8000/" />
+<base href="
+@php
+echo url('/');
+@endphp
+" />
 <div class="overlay" id="container">
     <h2 id="searchtitle">Que voulez-vous chercher ?</h2>
     <textarea id="search" placeholder="Recherche..."></textarea>
