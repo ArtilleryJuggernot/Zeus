@@ -228,7 +228,8 @@ class ShareController extends Controller
             "projet_id" => ["required","integer"]
         ]);
 
-        $folder = Folder::findOrFail($validateData["projet_id"]);
+
+        $folder = Projet::findOrFail($validateData["projet_id"]);
 
         if(!$folder) return redirect()->route("home")->with("failure","Le projet que vous voulez partagez n'existe pas");
         if($folder->owner_id != $user_id) return redirect()->route("home")->with("failure","Vous n'êtes pas autorisé à faire cette action");
