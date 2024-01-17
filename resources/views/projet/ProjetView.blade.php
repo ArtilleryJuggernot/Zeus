@@ -1,10 +1,11 @@
 @include("includes.header")
-    <!DOCTYPE html>
+        <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Projet : {{$projet->name}}</title>
-    <link rel="stylesheet" href="{{asset("css/folder/Overview.css")}}"> <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
+    <link rel="stylesheet" href="{{asset("css/folder/Overview.css")}}">
+    <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
     <link rel="stylesheet" href="{{asset("css/accordion.css")}}">
     <link rel="stylesheet" href="{{asset("css/category.css")}}">
     <link rel="stylesheet" href="{{asset("css/projet/View.css")}}">
@@ -62,9 +63,13 @@
 </div>
 
 
-
 <h2>Tâches à faire</h2>
 <div class="task-todo">
+
+    @if($taskTODO->isEmpty())
+        <h4> > Il n'y a actuellement pas de tâche à faire</h4>
+    @endif
+
     @foreach($taskTODO as $taskT)
         <div class="folder-card">
             <div class="info-task">
@@ -100,6 +105,12 @@
 </div>
 <h2>Tâches réalisées</h2>
 <div class="task-done">
+
+
+    @if($taskFinish->isEmpty())
+        <h4> > Il n'y a actuellement pas de tâche réalisé</h4>
+    @endif
+
     @foreach($taskFinish as $taskF)
         <div class="folder-card">
             <div class="info-task">
@@ -132,68 +143,6 @@
 </div>
 
 
-
-@if($projet->owner_id == \Illuminate\Support\Facades\Auth::user()->id)
-
-    <h1>Section partage utilisateur</h1>
-
-    <p>Vous pouvez partagez ce projet à d'autre utilisateur</p>
-
-    <div class="add-share">
-        <form action="{{route("add_projet_share")}}" method="post">
-            <label for="id_share">Entrez l'identifiant de la personne à qui vous souhaitez partagez le projet :</label>
-            <input name="id_share" type="number" min="0"/>
-
-            <br>
-            <br>
-            <label for="right">Selectionnez le droit que l'utilisateur aura sur la note</label>
-            <select name="right">
-                <option value="RO">Lecture Seul (Read Only)</option>
-                <option value="RW">Lecture et Ecriture</option>
-                <option value="F">Tout (Lecture , Ecriture, Suppression, Renommer)</option>
-            </select>
-            <input type="hidden" name="projet_id" value="{{$projet->id}}">
-            <input type="submit" value="Envoyer" />
-
-            @csrf
-        </form>
-    </div>
-
-    <h1>Liste des autorisations utilisateurs</h1>
-
-    <table>
-        <thead>
-        <tr>
-            <th>Nom d'utilisateur</th>
-            <th>ID de l'utilisateur</th>
-            <th>Droit</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach($usersPermissionList as $perm)
-            <tr>
-                <td>{{ \App\Models\User::find($perm->dest_id)->name }}</td> <!-- Remplacez 'name' par le champ correspondant dans le modèle User -->
-                <td>{{ $perm->dest_id }}</td>
-                <td>{{ $perm->perm }}</td>
-                <td>
-                    <form action="{{ route('delete_perm', ['id' => $perm->id]) }}" method="POST">
-                        @csrf
-                        <button type="submit">Supprimer</button>
-                    </form>
-                </td>
-            </tr>
-        @endforeach
-        </tbody>
-    </table>
-
-
-
-
-@endif
-
-
-
 <div class="cat_display">
 
     <h2>Liste des catégories</h2>
@@ -207,6 +156,69 @@
         </div>
     @endforeach
 </div>
+
+<h1>Liste des autorisations utilisateurs</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Nom d'utilisateur</th>
+        <th>ID de l'utilisateur</th>
+        <th>Droit</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach($usersPermissionList as $perm)
+        <tr>
+            <td>{{ \App\Models\User::find($perm->dest_id)->name }}</td>
+            <!-- Remplacez 'name' par le champ correspondant dans le modèle User -->
+            <td>{{ $perm->dest_id }}</td>
+            <td>{{ $perm->perm }}</td>
+            <td>
+                <form action="{{ route('delete_perm', ['id' => $perm->id]) }}" method="POST">
+                    @csrf
+                    <button type="submit">Supprimer</button>
+                </form>
+            </td>
+        </tr>
+    @endforeach
+    </tbody>
+</table>
+
+
+@if($projet->owner_id == \Illuminate\Support\Facades\Auth::user()->id)
+    <button class="accordion">Gestion des partages utilisateurs</button>
+    <div class="panel">
+        <h1>Section partage utilisateur</h1>
+
+        <p>Vous pouvez partagez ce projet à d'autre utilisateur</p>
+
+        <div class="add-share">
+            <form action="{{route("add_projet_share")}}" method="post">
+                <label for="id_share">Entrez l'identifiant de la personne à qui vous souhaitez partagez le projet
+                    :</label>
+                <input name="id_share" type="number" min="0"/>
+
+                <br>
+                <br>
+                <label for="right">Selectionnez le droit que l'utilisateur aura sur la note</label>
+                <select name="right">
+                    <option value="RO">Lecture Seul (Read Only)</option>
+                    <option value="RW">Lecture et Ecriture</option>
+                    <option value="F">Tout (Lecture , Ecriture, Suppression, Renommer)</option>
+                </select>
+                <input type="hidden" name="projet_id" value="{{$projet->id}}">
+                <input type="submit" value="Envoyer"/>
+
+                @csrf
+            </form>
+        </div>
+
+
+    </div>
+
+@endif
 
 
 <button class="accordion">Gestion des categories</button>
@@ -256,12 +268,12 @@
     bgElement.style.width = bgWidth + '%';
 
 
-    function enableDate(){
+    function enableDate() {
         let radio_is_due = document.getElementById("is_due").checked
         let dt_input = document.getElementById("dt_input").disabled = !radio_is_due;
     }
 
-    document.getElementById("is_due").addEventListener("click" ,() => enableDate());
+    document.getElementById("is_due").addEventListener("click", () => enableDate());
 
 </script>
 <script src="{{asset("js/accordeon.js")}}"></script>

@@ -1,5 +1,5 @@
 @include('includes.header')
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,8 +11,6 @@
     <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
     <style>
         /* Ajoutez vos styles CSS pour l'éditeur de note ici */
-
-
 
 
     </style>
@@ -36,8 +34,6 @@
 @endif
 
 
-
-
 <h1>Editeur de Note - {{$note->name}}</h1>
 
 
@@ -45,10 +41,13 @@
 
     <h3 class="it">Vous êtes sur la note de {{\App\Models\User::find($note->owner_id)->name}}</h3>
     <h3 class="it">Vous avez des droits de :
-        @if($perm_user->perm == "RO") Lecture Seule
-        @elseif($perm_user->perm == "RW") Lecture et Ecriture
-        @elseif($perm_user->perm == "F" ) Total
-        sur cette note
+        @if($perm_user->perm == "RO")
+            Lecture Seule
+        @elseif($perm_user->perm == "RW")
+            Lecture et Ecriture
+        @elseif($perm_user->perm == "F" )
+            Total
+            sur cette note
         @endif</h3>
 @endif
 
@@ -101,7 +100,8 @@
         <label for="removeCategory">Supprimer une catégorie :</label>
         <select name="removeCategory" id="removeCategory">
             @foreach($ressourceCategories as $categoryId => $category)
-                <option value="{{ $category->id }}">{{ \App\Models\Categorie::find($category->categorie_id)->category_name }}</option>
+                <option
+                    value="{{ $category->id }}">{{ \App\Models\Categorie::find($category->categorie_id)->category_name }}</option>
             @endforeach
         </select>
         <button type="submit">Supprimer</button>
@@ -114,60 +114,60 @@
 
     <button class="accordion">Gestion des partages utilisateurs</button>
     <div class="panel">
-<h1>Section partage utilisateur</h1>
+        <h1>Section partage utilisateur</h1>
 
-<p>Vous pouvez partagez cette note à d'autre utilisateur</p>
+        <p>Vous pouvez partagez cette note à d'autre utilisateur</p>
 
-<div class="add-share">
-    <form action="{{route("add_note_share")}}" method="post">
-        <label for="id_share">Entrez l'identifiant de la personne à qui vous souhaitez partagez la note :</label>
-        <input name="id_share" type="number" min="0"/>
+        <div class="add-share">
+            <form action="{{route("add_note_share")}}" method="post">
+                <label for="id_share">Entrez l'identifiant de la personne à qui vous souhaitez partagez la note
+                    :</label>
+                <input name="id_share" type="number" min="0"/>
 
-        <br>
-        <br>
-        <label for="right">Selectionnez le droit que l'utilisateur aura sur la note</label>
-        <select name="right">
-            <option value="RO">Lecture Seul (Read Only)</option>
-            <option value="RW">Lecture et Ecriture</option>
-            <option value="F">Tout (Lecture , Ecriture, Suppression, Renommer)</option>
-        </select>
-        <input type="hidden" name="note_id" value="{{$note->note_id}}">
-        <input type="submit" value="Envoyer" />
+                <br>
+                <br>
+                <label for="right">Selectionnez le droit que l'utilisateur aura sur la note</label>
+                <select name="right">
+                    <option value="RO">Lecture Seul (Read Only)</option>
+                    <option value="RW">Lecture et Ecriture</option>
+                    <option value="F">Tout (Lecture , Ecriture, Suppression, Renommer)</option>
+                </select>
+                <input type="hidden" name="note_id" value="{{$note->note_id}}">
+                <input type="submit" value="Envoyer"/>
 
-        @csrf
-    </form>
-</div>
+                @csrf
+            </form>
+        </div>
 
-<h1>Liste des autorisations utilisateurs</h1>
+        <h1>Liste des autorisations utilisateurs</h1>
 
-<table>
-    <thead>
-    <tr>
-        <th>Nom d'utilisateur</th>
-        <th>ID de l'utilisateur</th>
-        <th>Droit</th>
-        <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach($usersPermissionList as $perm)
-        <tr>
-            <td>{{ \App\Models\User::find($perm->dest_id)->name }}</td> <!-- Remplacez 'name' par le champ correspondant dans le modèle User -->
-            <td>{{ $perm->dest_id }}</td>
-            <td>{{ $perm->perm }}</td>
-            <td>
-                <form action="{{ route('delete_perm', ['id' => $perm->id]) }}" method="POST">
-                    @csrf
-                    <button type="submit">Supprimer</button>
-                </form>
-            </td>
-        </tr>
-    @endforeach
-    </tbody>
-</table>
+        <table>
+            <thead>
+            <tr>
+                <th>Nom d'utilisateur</th>
+                <th>ID de l'utilisateur</th>
+                <th>Droit</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach($usersPermissionList as $perm)
+                <tr>
+                    <td>{{ \App\Models\User::find($perm->dest_id)->name }}</td>
+                    <!-- Remplacez 'name' par le champ correspondant dans le modèle User -->
+                    <td>{{ $perm->dest_id }}</td>
+                    <td>{{ $perm->perm }}</td>
+                    <td>
+                        <form action="{{ route('delete_perm', ['id' => $perm->id]) }}" method="POST">
+                            @csrf
+                            <button type="submit">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
     </div>
-
-
 
 @endif
 
@@ -175,7 +175,7 @@
 <script>
     function downloadPDF() {
         const element = document.getElementById('preview');
-            html2pdf().from(element).save();
+        html2pdf().from(element).save();
     }
 </script>
 
@@ -203,10 +203,11 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}' // Si vous utilisez le jeton CSRF
             },
-            body: JSON.stringify({ content: content,
+            body: JSON.stringify({
+                content: content,
                 note_id: {{ $note->note_id}},
                 user_id: {{\Illuminate\Support\Facades\Auth::user()->id}},
-                perm : perm
+                perm: perm
             })
 
         })
@@ -248,12 +249,11 @@
     }
 
     // Appliquer le Markdown automatiquement lors de la saisie dans le textarea
-    document.getElementById('note-content').addEventListener('input', () => previewMarkdown() );
+    document.getElementById('note-content').addEventListener('input', () => previewMarkdown());
     previewMarkdown();
 </script>
 
 <!-- Ajoutez ce code dans votre vue HTML -->
-
 
 
 </body>
