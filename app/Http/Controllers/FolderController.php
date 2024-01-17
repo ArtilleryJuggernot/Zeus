@@ -270,6 +270,23 @@ class FolderController extends Controller
         if(!$folder)
             return redirect()->route("home")->with("failure","Une erreur s'est produite lors de la recherche d'un dossier");
 
+
+
+        // Supprimer les droits associés à une note
+
+        Acces::where([
+            ["ressource_id",$id],
+            ["type","folder"],
+        ])->delete();
+
+
+        // Supprimer les catégories associés à la note
+
+        possede_categorie::where([
+            ["ressource_id",$id],
+            ["type_ressource","folder"]
+        ])->delete();
+
         Storage::deleteDirectory($folder->path);
         $folder->delete();
         return redirect()->back()->with(["success" => "Dossier supprimé avec succès"]);

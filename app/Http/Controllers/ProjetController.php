@@ -254,6 +254,22 @@ class ProjetController extends Controller
 
         insideprojet::where("projet_id",$project_id)->delete();
 
+
+        // Supprimer les droits associés à une note
+
+        Acces::where([
+            ["ressource_id",$project_id],
+            ["type","project"],
+        ])->delete();
+
+
+        // Supprimer les catégories associés à la note
+
+        possede_categorie::where([
+            ["ressource_id",$project_id],
+            ["type_ressource","project"]
+        ])->delete();
+
         $projet->delete();
 
 

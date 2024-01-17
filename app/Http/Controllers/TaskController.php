@@ -203,9 +203,23 @@ class TaskController extends Controller
         $id = $validateData["id"];
         $task = Task::find($id);
 
-        if(!$task)
-            return redirect()->route("home")->with("failure","La tache que vous tentez de modifier n'existe pas");
+        if(!$task) return redirect()->route("home")->with("failure","La tache que vous tentez de modifier n'existe pas");
 
+
+        // Supprimer les droits associés à une note
+
+        Acces::where([
+            ["ressource_id",$id],
+            ["type","task"],
+        ])->delete();
+
+
+        // Supprimer les catégories associés à la note
+
+        possede_categorie::where([
+            ["ressource_id",$id],
+            ["type_ressource","task"]
+        ])->delete();
 
         insideprojet::where("task_id",$id)->delete();
         $task->delete();

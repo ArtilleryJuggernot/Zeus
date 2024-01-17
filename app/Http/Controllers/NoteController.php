@@ -312,6 +312,14 @@ class NoteController extends Controller
                 ["type","note"],
             ])->delete();
 
+
+            // Supprimer les catégories associés à la note
+
+            possede_categorie::where([
+                ["ressource_id",$id],
+                ["type_ressource","note"]
+            ])->delete();
+
             Storage::delete($note->path);
             $note->delete();
             return redirect()->back()->with(["success" => "Note supprimé avec succès"]);

@@ -112,6 +112,8 @@
 
 @if($note->owner_id == \Illuminate\Support\Facades\Auth::user()->id)
 
+    <button class="accordion">Gestion des partages utilisateurs</button>
+    <div class="panel">
 <h1>Section partage utilisateur</h1>
 
 <p>Vous pouvez partagez cette note à d'autre utilisateur</p>
@@ -163,7 +165,7 @@
     @endforeach
     </tbody>
 </table>
-
+    </div>
 
 
 
@@ -231,7 +233,7 @@
     });
 
 </script>
-<script src="{{asset("js/accordeon.js")}}}"></script>
+<script src="{{asset("js/accordeon.js")}}"></script>
 
 <script>
     function previewMarkdown() {
