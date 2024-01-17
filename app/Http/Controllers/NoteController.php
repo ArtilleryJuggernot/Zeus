@@ -295,14 +295,12 @@ class NoteController extends Controller
             $id =  $validateData["id"];
             $note = Note::find($id);
 
-            if(!$note)
-                return redirect()->route("home")->with("failure","La note que vous souhaitez supprimé n'a pas été trouvé");
+            if(!$note) return redirect()->route("home")->with("failure","La note que vous souhaitez supprimé n'a pas été trouvé");
 
 
             $user_id = Auth::user()->id;
 
-            if($note->owner_id != $user_id)
-                return redirect()->route("home")->with("failure","Vous n'êtes pas autoriser à modifier sur cette ressource");
+            if($note->owner_id != $user_id) return redirect()->route("home")->with("failure","Vous n'êtes pas autoriser à modifier sur cette ressource");
 
             //dd(storage_path($folder->path));
             //dd(Storage::exists($folder->path));

@@ -31,6 +31,7 @@ class HomeController extends Controller
         ])->get();
 
 
+
         return view("home",[
             "user" => $user,
             "tachesTimed" => $tachesTimed,

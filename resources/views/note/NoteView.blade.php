@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{asset("css/tableau.css")}}">
     <link rel="stylesheet" href="{{asset("css/accordion.css")}}">
     <link rel="stylesheet" href="{{asset("css/note/editor.css")}}">
-
+    <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
     <style>
         /* Ajoutez vos styles CSS pour l'éditeur de note ici */
 
@@ -61,6 +61,7 @@
 </div>
 
 <button onclick="saveNote()">Sauvegarder la note</button>
+<button onclick="downloadPDF()">Télécharger le PDF</button>
 
 
 <div class="cat_display">
@@ -168,6 +169,13 @@
 
 @endif
 
+
+<script>
+    function downloadPDF() {
+        const element = document.getElementById('preview');
+            html2pdf().from(element).save();
+    }
+</script>
 
 
 <script>

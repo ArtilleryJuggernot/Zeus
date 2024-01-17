@@ -141,6 +141,15 @@ Route::post("/uncheck_task_project",[\App\Http\Controllers\ProjetController::cla
     ->name("uncheck_task_project");
 
 
+Route::post("/delete_project/",[\App\Http\Controllers\ProjetController::class,"Delete"])
+    ->middleware("auth")
+    ->name("delete_project");
+
+
+Route::post("/archive_project/",[\App\Http\Controllers\ProjetController::class,"CheckToggleAsDone"])
+    ->middleware("auth")
+    ->name("archive_project");
+
 // Share
 
 // Il faut

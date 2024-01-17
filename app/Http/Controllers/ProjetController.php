@@ -16,10 +16,26 @@ class ProjetController extends Controller
     public function Overview()
     {
         $user_id = Auth::user()->id;
-        $userProjets = Projet::where("owner_id","=",$user_id)->get();
+        $userProjetsDone = Projet::where([
+            ["owner_id","=",$user_id],
+            ["is_finish","=",1]
+        ])->get();
+
+
+        //dd($userProjetsDone);
+
+        $userProjetsUnDone  = Projet::where([
+            ["owner_id","=",$user_id],
+            ["is_finish","=",0]
+        ])->get();
+
+
+        //dd($userProjetsUnDone);
+
         return view("projet.ProjetOverview",
         [
-            "userProjets" => $userProjets
+            "userProjetsDone" => $userProjetsDone,
+            "userProjectUnDone" => $userProjetsUnDone,
         ]);
     }
 
@@ -216,4 +232,66 @@ class ProjetController extends Controller
         $task->save();
         return redirect()->back()->with(["success" => "Tâche remise dans le projet avec succès"]);
     }
+
+
+    public function Delete(Request $request)
+    {
+        $validateData = $request->validate([
+            "project_id" => ["integer","required"]
+        ]);
+        $user_id = Auth::user()->id;
+        $project_id = $validateData["project_id"];
+
+        $projet = Projet::find($project_id);
+
+        if (!$projet)  return redirect()->route("home")->with("failure","La projet que vous souhaitez supprimé n'a pas été trouvé");
+
+        if($projet->owner_id != $user_id) return redirect()->route("home")->with("failure","Vous n'êtes pas autoriser à modifier sur cette ressource");
+
+        $name = $projet->name;
+
+        // Avant de supprimé le projet, on supprime les tâche qui lui sont associé
+
+        insideprojet::where("projet_id",$project_id)->delete();
+
+        $projet->delete();
+
+
+        return redirect()->back()->with("success","Le projet " . $name . " a bien été supprimé.");
+
+    }
+
+    public function CheckToggleAsDone(Request $request)
+    {
+        $validateData = $request->validate([
+            "project_id" => ["integer","required"]
+        ]);
+        $user_id = Auth::user()->id;
+        $project_id = $validateData["project_id"];
+
+        $projet = Projet::find($project_id);
+
+        if (!$projet)  return redirect()->route("home")->with("failure","La projet que vous souhaitez supprimé n'a pas été trouvé");
+
+        if($projet->owner_id != $user_id) return redirect()->route("home")->with("failure","Vous n'êtes pas autoriser à modifier sur cette ressource");
+
+        $name = $projet->name;
+
+
+        $msg = " a bien été archiver";
+        if($projet->is_finish){
+            $msg = " a bien été dé-archiver";
+            $projet->is_finish = false;
+        }
+        else $projet->is_finish = true;
+
+
+        $projet->save();
+
+        return redirect()->back()->with("success","Le projet " . $name . $msg);
+
+
+    }
+
+
 }
