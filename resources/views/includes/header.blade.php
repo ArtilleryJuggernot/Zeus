@@ -83,6 +83,13 @@
                     </a></li>
 
             @endif
+
+            @if(Auth::user())
+                <li><a href="{{route("profile",Auth::user()->id)}}">
+                        Mon profil
+                    </a>
+                </li>
+            @endif
         </ul>
     </nav>
 </div>

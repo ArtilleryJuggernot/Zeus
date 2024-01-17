@@ -212,5 +212,15 @@ Route::post("/removeCategory/",[\App\Http\Controllers\CategorieController::class
 
 Route::post("/searchCategory/",[\App\Http\Controllers\CategorieController::class,"Search"])
     ->middleware("auth")
-
     ->name("searchCategory");
+
+
+// Profil
+
+Route::get("/profile/{id}",[\App\Http\Controllers\ProfilController::class,"View"])
+    ->middleware("auth")
+    ->name("profile");
+
+Route::post("/update_password",[\App\Http\Controllers\ProfilController::class,"ChangePassword"])
+    ->middleware("auth")
+    ->name("update_password");
