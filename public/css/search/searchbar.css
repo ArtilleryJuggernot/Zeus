@@ -1,4 +1,4 @@
-*{
+#resulblock , .overlay {
     overflow-x: auto;
     overflow-y: auto;
 }

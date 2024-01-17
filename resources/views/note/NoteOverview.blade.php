@@ -10,7 +10,6 @@
 
 <h1>Arbre de notes de {{\Illuminate\Support\Facades\Auth::user()->name}}</h1>
 
-<button>Créer un dossier à la racine</button>
 <div class="file-explorer">
     @include('arbo.folder', ['contents' => $directoryContent])
 </div>
