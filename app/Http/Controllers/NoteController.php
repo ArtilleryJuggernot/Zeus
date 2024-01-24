@@ -182,8 +182,8 @@ class NoteController extends Controller
 
 
 // Obtenez toutes les catégories en utilisant le modèle Categorie
-        $allCategories = Categorie::all(['category_id', 'category_name'])
-        ->where("owner_id",$user_id);
+        $allCategories = Categorie::all()->where("owner_id", $user_id);
+
 
 // Obtenez les catégories possédées par la ressource
         $ownedCategoryIds = $resourceCategories->pluck('categorie_id')->toArray();

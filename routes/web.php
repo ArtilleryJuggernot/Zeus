@@ -87,6 +87,11 @@ Route::get("/task_overview",[\App\Http\Controllers\TaskController::class,"OverVi
     ->middleware("auth")
     ->name("task_overview");
 
+
+Route::get("/task_overview_project",[\App\Http\Controllers\TaskController::class,"OverviewTaskProject"])
+    ->middleware("auth")
+    ->name("task_overview_project");
+
 Route::get("/view_task/{id}",[\App\Http\Controllers\TaskController::class,"View"])
     ->middleware("auth")
     ->name("view_task");
@@ -149,6 +154,11 @@ Route::post("/delete_project/",[\App\Http\Controllers\ProjetController::class,"D
 Route::post("/archive_project/",[\App\Http\Controllers\ProjetController::class,"CheckToggleAsDone"])
     ->middleware("auth")
     ->name("archive_project");
+
+
+Route::post("/add_existing_to_project",[\App\Http\Controllers\ProjetController::class,"AddExistingTaskToProject"])
+    ->middleware("auth")
+    ->name("add_existing_to_project");
 
 // Share
 

@@ -27,35 +27,34 @@
 
 <button class="accordion">Ajouter des tâches</button>
 <div class="panel">
-<div class="add-task">
-    <h2>Ajouter une tâche : </h2>
-    <form action="{{ route('store_task') }}" method="POST">
-        @csrf <!-- Ajout du jeton CSRF pour la sécurité -->
-        <label for="tache_name">Nom de la tâche:</label>
+    <div class="add-task">
+        <h2>Ajouter une tâche : </h2>
+        <form action="{{ route('store_task') }}" method="POST">
+            @csrf <!-- Ajout du jeton CSRF pour la sécurité -->
+            <label for="tache_name">Nom de la tâche:</label>
 
-        <br>
+            <br>
 
-        <input type="text" id="tache_name" name="tache_name" required>
+            <input type="text" id="tache_name" name="tache_name" required>
 
-        <br>
+            <br>
 
-        <label for="">La tache à t'elle une fin limite ?</label>
-        <br>
-        <input id="is_due" type="checkbox" name="is_due">
-        <input required disabled id="dt_input" type="date" name="dt_input">
+            <label for="">La tache à t'elle une fin limite ?</label>
+            <br>
+            <input id="is_due" type="checkbox" name="is_due">
+            <input required disabled id="dt_input" type="date" name="dt_input">
 
-        <input type="submit" value="Créer la tâche">
-    </form>
+            <input type="submit" value="Créer la tâche">
+        </form>
+    </div>
 </div>
-</div>
-
 
 <div class="folders-header">
-   <a href="{{route("task_overview")}}"><button  class="active">Mes tâches</button> </a>
+    <a href="{{route("task_overview")}}"><button  class="active">Mes tâches</button> </a>
     <a href="{{route("task_overview_project")}}"> <button>Tâches dans des projets</button> </a>
 </div>
 
-<h1>Liste des tâches hors projets</h1>
+<h1>Liste des tâches dans des projets</h1>
 <h2>Tâches en cours : </h2>
 <div class="folders">
     <!-- Boucle pour afficher les dossiers -->
@@ -64,17 +63,26 @@
             <a href="{{route("view_task",$task->task_id)}}"><h3>{{ $task->task_name}}</h3></a>
 
             <div class="task-due-date">
-            @if($task->due_date)
-                <p>Date limite : <span class="bold">{{$task->due_date}} </span></p>
-            @endif
+                @if($task->due_date)
+                    <p>Date limite : <span class="bold">{{$task->due_date}} </span></p>
+                @endif
             </div>
 
             <div class="task-is-finish">
-            @if($task->is_finish)
-                <p class="bold yes">Finis</p>
+                @if($task->is_finish)
+                    <p class="bold yes">Finis</p>
                 @else
-                <p class="bold todo">En cours</p>
+                    <p class="bold todo">En cours</p>
                 @endif
+            </div>
+
+            <div class="task-project">
+                <p>Projets associés :</p>
+                <ul>
+                    @foreach ($task->projects as $project)
+                        <li>{{ $project->name }}</li>
+                    @endforeach
+                </ul>
             </div>
 
             <div class="delete">
@@ -109,6 +117,15 @@
                 @else
                     <p class="bold todo">En cours</p>
                 @endif
+            </div>
+
+            <div class="task-project">
+                <p>Projets associés :</p>
+                <ul>
+                    @foreach ($task->projects as $project)
+                        <li>{{ $project->name }}</li>
+                    @endforeach
+                </ul>
             </div>
 
             <div class="delete">

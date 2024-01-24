@@ -122,6 +122,7 @@
 </div>
 
 
+
 @if($task->owner_id == \Illuminate\Support\Facades\Auth::user()->id)
 
     <h1>Section partage utilisateur</h1>

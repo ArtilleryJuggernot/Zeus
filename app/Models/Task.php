@@ -18,4 +18,25 @@ class Task extends Model
             ->where('projet_id', $projectId)
             ->value('pos');
     }
+
+
+    public function projects()
+    {
+        return $this->belongsToMany(Projet::class, 'inside_projet', 'task_id', 'projet_id');
+    }
+
+
+    public function availableProjects()
+    {
+        // Obtenez tous les projets
+        $allProjects = Projet::all();
+
+        // Obtenez les projets liés à la tâche
+        $linkedProjects = $this->projects->pluck('id')->toArray();
+
+        // Obtenez les projets non liés à la tâche
+        $availableProjects = $allProjects->whereNotIn('id', $linkedProjects);
+
+        return $availableProjects;
+    }
 }

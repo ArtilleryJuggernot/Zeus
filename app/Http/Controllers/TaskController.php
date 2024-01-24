@@ -18,17 +18,56 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 
 class TaskController extends Controller
 {
-    public function OverView()
+    public function OverView(Request $request)
     {
-
         $user_id = Auth::user()->id; // Récupérer l'utilisateur actuel
-        //DB::enableQueryLog();
-        $task_list = Task::where("owner_id", $user_id)->get();
-        //dd($task_list);
-        //dd(DB::getQueryLog());
+
+        $task_list_finish = Task::where([
+            ["owner_id", $user_id],
+            ["is_finish",1]
+            ])
+            ->whereDoesntHave('projects')
+            ->get();
+
+
+        $task_list_unfinish = Task::where([
+            ["owner_id", $user_id],
+            ["is_finish",0]
+            ])
+            ->whereDoesntHave('projects')
+            ->get();
+
         return view("task.TaskOverview",
             [
-                "task_list" => $task_list
+                "task_list_finish" => $task_list_finish,
+                "task_list_unfinish" => $task_list_unfinish,
+            ]);
+    }
+
+    public function OverviewTaskProject(Request $request)
+    {
+        $user_id = Auth::user()->id; // Récupérer l'utilisateur actuel
+
+        $task_list_finish =
+            Task::with('projects')->where([
+            ["owner_id", $user_id],
+            ["is_finish",1]
+        ])
+            ->whereHas('projects')
+            ->get();
+
+
+        $task_list_unfinish = Task::with('projects')->where([
+            ["owner_id", $user_id],
+            ["is_finish",0]
+        ])
+            ->whereHas('projects')
+            ->get();
+
+        return view("task.TaskOverviewProject",
+            [
+                "task_list_finish" => $task_list_finish,
+                "task_list_unfinish" => $task_list_unfinish,
             ]);
     }
 
@@ -40,6 +79,8 @@ class TaskController extends Controller
 
         if (!$task) return redirect()->route("home")->with("failure", "La tache que vous tentez de modifier n'existe pas");
 
+        $linkedProjects = $task->projects;
+        $availableProjects = $task->availableProjects();
 
         // Autorisation par visualisation Projet
 
@@ -98,7 +139,9 @@ class TaskController extends Controller
             ->where('owner_id', $user_id)->get();
 
 // Obtenez toutes les catégories en utilisant le modèle Categorie
-        $allCategories = Categorie::all(['category_id', 'category_name'])->where("owner_id", $user_id);;
+        $allCategories = Categorie::all()->where("owner_id", $user_id);
+
+        //dd($allCategories);
 
 // Obtenez les catégories possédées par la ressource
         $ownedCategoryIds = $resourceCategories->pluck('categorie_id')->toArray();
@@ -114,7 +157,9 @@ class TaskController extends Controller
             "perm_user" => $perm_user,       // TODO : Remplacer par $accesRecursif quand la collab par projet sera là avec la fonction qui va bien cf NoteController
             "ressourceCategories" => $resourceCategories,
             "ownedCategories" => $ownedCategories,
-            "notOwnedCategories" => $notOwnedCategories
+            "notOwnedCategories" => $notOwnedCategories,
+            "linkedProjects" => $linkedProjects,
+            "availableProjects" => $availableProjects
         ]);
     }
 
