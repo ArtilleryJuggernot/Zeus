@@ -10,7 +10,7 @@
 <footer>
     <div class="footer-container">
         <div class="footer-content">
-            <p>&copy; 2023 Zeus. Tous droits réservés.</p>
+            <p>&copy; 2024 Zeus. v1.0 Tous droits réservés.</p>
             <!-- Ajoutez d'autres informations ou liens de votre choix -->
         </div>
     </div>

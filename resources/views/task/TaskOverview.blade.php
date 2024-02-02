@@ -141,3 +141,4 @@
 
 <script src="{{asset("js/accordeon.js")}}"></script>
 
+@include("includes.footer")

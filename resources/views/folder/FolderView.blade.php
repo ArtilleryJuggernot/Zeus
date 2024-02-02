@@ -10,10 +10,7 @@
     <link rel="stylesheet" href="{{asset("css/category.css")}}">
 </head>
 
-<style>
 
-
-</style>
 <body>
 
 @if(session("success"))
@@ -220,4 +217,5 @@
 
 </html>
 
+@include("includes.footer")
 

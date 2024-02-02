@@ -282,5 +282,5 @@
 
 
 
-
+@include("includes.footer")
 

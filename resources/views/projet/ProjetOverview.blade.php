@@ -83,3 +83,5 @@
 
 
 </html>
+
+@include("includes.footer")

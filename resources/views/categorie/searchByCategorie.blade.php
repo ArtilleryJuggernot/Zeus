@@ -35,3 +35,5 @@
 
 </body>
 </html>
+
+@include("includes.footer")
