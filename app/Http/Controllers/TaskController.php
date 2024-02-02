@@ -20,29 +20,44 @@ class TaskController extends Controller
 {
     public function OverView(Request $request)
     {
-        $user_id = Auth::user()->id; // Récupérer l'utilisateur actuel
+        $user_id = Auth::user()->id;
 
-        $task_list_finish = Task::where([
-            ["owner_id", $user_id],
-            ["is_finish",1]
-            ])
-            ->whereDoesntHave('projects')
-            ->get();
+        $task_list_finish = $this->getTaskListWithCategories($user_id, 1);
+        $task_list_unfinish = $this->getTaskListWithCategories($user_id, 0);
 
-
-        $task_list_unfinish = Task::where([
-            ["owner_id", $user_id],
-            ["is_finish",0]
-            ])
-            ->whereDoesntHave('projects')
-            ->get();
-
-        return view("task.TaskOverview",
-            [
-                "task_list_finish" => $task_list_finish,
-                "task_list_unfinish" => $task_list_unfinish,
-            ]);
+        return view("task.TaskOverview", [
+            "task_list_finish" => $task_list_finish,
+            "task_list_unfinish" => $task_list_unfinish,
+        ]);
     }
+
+    protected function getTaskListWithCategories($user_id, $is_finish)
+    {
+        $tasks = Task::where([
+            ["owner_id", $user_id],
+            ["is_finish", $is_finish],
+        ])
+            ->whereDoesntHave('projects')
+            ->get();
+
+        foreach ($tasks as $task) {
+            $task->categories = $this->getTaskCategories($task->task_id, $user_id);
+        }
+
+        return $tasks;
+    }
+
+    protected function getTaskCategories($taskId, $user_id)
+    {
+        $resourceCategories = possede_categorie::where('ressource_id', $taskId)
+            ->where('type_ressource', 'task')
+            ->where('owner_id', $user_id)
+            ->get();
+
+
+        return $resourceCategories;
+    }
+
 
     public function OverviewTaskProject(Request $request)
     {

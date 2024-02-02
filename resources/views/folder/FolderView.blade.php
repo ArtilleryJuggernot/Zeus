@@ -89,6 +89,19 @@
                         <button type="submit">Delete</button>
                         @csrf
                     </form>
+
+                    <div class="list-cat">
+                        @foreach($item["categories"] as $category => $id)
+                            @php
+
+                                $category = \App\Models\Categorie::find($category);
+                            @endphp
+                            <div class="category" style="background-color: {{ $category->color }};">
+                                {{ $category->category_name }}
+                            </div>
+                        @endforeach
+                    </div>
+
                 </div>
             @else
                 <a class="note-link" href="{{route("note_view",$item["id"])}}"><h3>[N] - {{$item["name"]}}</h3></a>
@@ -98,7 +111,20 @@
                         <button type="submit">Delete</button>
                         @csrf
                     </form>
+
+                    <div class="list-cat">
+                        @foreach($item["categories"] as $category)
+                            @php
+                                $category = \App\Models\Categorie::find($category->categorie_id);
+                            @endphp
+                            <div class="category" style="background-color: {{ $category->color }};">
+                                {{ $category->category_name }}
+                            </div>
+                        @endforeach
+                    </div>
+
                 </div>
+
             @endif
 
         </div>

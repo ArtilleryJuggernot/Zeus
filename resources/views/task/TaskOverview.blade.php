@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <title>Liste des taches</title>
     <link rel="stylesheet" href="{{asset("css/folder/Overview.css")}}"> <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
+    <link rel="stylesheet" href="{{asset("css/category.css")}}">
+
 </head>
 <body>
 
@@ -61,6 +63,8 @@
     <!-- Boucle pour afficher les dossiers -->
     @foreach($task_list_unfinish as $task)
         <div class="folder-card">
+
+
             <a href="{{route("view_task",$task->task_id)}}"><h3>{{ $task->task_name}}</h3></a>
 
             <div class="task-due-date">
@@ -76,6 +80,22 @@
                 <p class="bold todo">En cours</p>
                 @endif
             </div>
+
+            <div class="list-category">
+                @foreach($task["categories"] as $cat)
+
+                    @php
+                        $category = \App\Models\Categorie::find($cat->categorie_id);
+                    @endphp
+                    <div class="category" style="background-color: {{ $category->color }};">
+                        {{ $category->category_name }}
+                    </div>
+
+                @endforeach
+
+
+            </div>
+
 
             <div class="delete">
                 <form action="{{route("delete_task")}}" method="post">

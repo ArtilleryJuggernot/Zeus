@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <title>Liste des projets</title>
     <link rel="stylesheet" href="{{asset("css/folder/Overview.css")}}"> <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
+    <link rel="stylesheet" href="{{asset("css/category.css")}}">
+
 </head>
 
 
@@ -49,6 +51,19 @@
                 <input type="submit" value="Supprimer le projet">
                 @csrf
             </form>
+
+
+            <div class="list-cat">
+                @foreach($projet->categories as $category => $id)
+                    @php
+                        $category = \App\Models\Categorie::find($category);
+                    @endphp
+                    <div class="category" style="background-color: {{ $category->color }};">
+                        {{ $category->category_name }}
+                    </div>
+                @endforeach
+            </div>
+
             <!-- Autres détails du dossier si nécessaire -->
         </div>
     @endforeach

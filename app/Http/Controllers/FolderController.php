@@ -24,6 +24,33 @@ class FolderController extends Controller
         return $this->View($root_folder_id);
     }
 
+    public function getFolderCategories($folderId) {
+        $user_id = Auth::user()->id;
+
+        $resourceCategories = possede_categorie::where('ressource_id', $folderId)
+            ->where('type_ressource', 'folder')
+            ->where('owner_id', $user_id)
+            ->get();
+
+        $allCategories = Categorie::all()->where('owner_id', $user_id);
+
+        $ownedCategoryIds = $resourceCategories->pluck('categorie_id')->toArray();
+        $ownedCategories = $allCategories->whereIn('category_id', $ownedCategoryIds)->pluck('category_name', 'category_id')->toArray();
+
+        return $ownedCategories;
+    }
+
+
+    public function  getNotesCategories($note_id)
+    {
+        $user_id = Auth::user()->id;
+        $resourceCategories = possede_categorie::where('ressource_id', $note_id)
+            ->where('type_ressource', 'note')
+            ->where('owner_id', $user_id)
+            ->get();
+
+        return $resourceCategories;
+    }
 
     public function getFolderIdFromPath($folderPath) {
         $folderPath = "/" . $folderPath;
@@ -58,21 +85,26 @@ class FolderController extends Controller
 
         $folderContents = [];
         foreach ($directories as $subFolder) {
+                $subFolderId = $this->getFolderIdFromPath($subFolder);
+                $categories = $this->getFolderCategories($subFolderId);
                 $folderContents[] = [
                     'type' => 'folder',
                     'name' => basename($subFolder),
                     'path' => $subFolder,
-                    'id' => $this->getFolderIdFromPath($subFolder)
+                    'id' => $this->getFolderIdFromPath($subFolder),
+                    'categories' => $categories,
                 ];
             }
 
 
             foreach ($files as $file) {
+                $categories = $this->getNotesCategories($this->getNoteIdFromPath($file));
                 $folderContents[] = [
                     'type' => 'note',
                     'name' => basename($file),
                     'path' => $file,
-                    'id' => $this->getNoteIdFromPath($file)
+                    'id' => $this->getNoteIdFromPath($file),
+                    'categories' => $categories
                     // Autres détails de la note si nécessaire
                 ];
             }

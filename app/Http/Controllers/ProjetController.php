@@ -16,28 +16,44 @@ class ProjetController extends Controller
     public function Overview()
     {
         $user_id = Auth::user()->id;
-        $userProjetsDone = Projet::where([
-            ["owner_id", "=", $user_id],
-            ["is_finish", "=", 1]
-        ])->get();
+        $userProjetsDone = $this->getProjectsListWithCategories($user_id, 1);
+        $userProjetsUnDone = $this->getProjectsListWithCategories($user_id, 0);
 
-
-        //dd($userProjetsDone);
-
-        $userProjetsUnDone = Projet::where([
-            ["owner_id", "=", $user_id],
-            ["is_finish", "=", 0]
-        ])->get();
-
-
-        //dd($userProjetsUnDone);
-
-        return view("projet.ProjetOverview",
-            [
-                "userProjetsDone" => $userProjetsDone,
-                "userProjectUnDone" => $userProjetsUnDone,
-            ]);
+        return view("projet.ProjetOverview", [
+            "userProjetsDone" => $userProjetsDone,
+            "userProjectUnDone" => $userProjetsUnDone,
+        ]);
     }
+
+    protected function getProjectsListWithCategories($user_id, $is_finish)
+    {
+        $projects = Projet::where([
+            ["owner_id", "=", $user_id],
+            ["is_finish", "=", $is_finish],
+        ])->get();
+
+        foreach ($projects as $project) {
+            $project->categories = $this->getProjectCategories($project->id, $user_id);
+        }
+
+        return $projects;
+    }
+
+    protected function getProjectCategories($projectId, $user_id)
+    {
+        $resourceCategories = possede_categorie::where('ressource_id', $projectId)
+            ->where('type_ressource', 'project')
+            ->where('owner_id', $user_id)
+            ->get();
+
+        $allCategories = Categorie::all()->where('owner_id', $user_id);
+
+        $ownedCategoryIds = $resourceCategories->pluck('categorie_id')->toArray();
+        $ownedCategories = $allCategories->whereIn('category_id', $ownedCategoryIds)->pluck('category_name', 'category_id')->toArray();
+
+        return $ownedCategories;
+    }
+
 
     public function View(int $id)
     {
