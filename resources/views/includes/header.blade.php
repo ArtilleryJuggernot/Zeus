@@ -90,6 +90,17 @@
                     </a>
                 </li>
             @endif
+
+            @if(\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->id == 1)
+                <li>
+                    <a>Administration</a>
+                    <ul class="submenu">
+                        <li><a href="{{ route("user_manage") }}">Gestion des utilisateurs</a></li>
+
+                        <li><a href="{{ route("logs_manage") }}">Gestion des logs</a></li>
+                    </ul>
+                </li>
+            @endif
         </ul>
     </nav>
 </div>

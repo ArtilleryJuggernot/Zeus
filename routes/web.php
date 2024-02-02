@@ -234,3 +234,21 @@ Route::get("/profile/{id}",[\App\Http\Controllers\ProfilController::class,"View"
 Route::post("/update_password",[\App\Http\Controllers\ProfilController::class,"ChangePassword"])
     ->middleware("auth")
     ->name("update_password");
+
+// Admin
+
+Route::get("/user_manage",[\App\Http\Controllers\AdminController::class,"AccountManager"])
+    ->middleware("auth")
+    ->name("user_manage");
+
+Route::get("/logs_manage",[\App\Http\Controllers\AdminController::class,"logs"])
+    ->middleware("auth")
+    ->name("logs_manage");
+
+
+// routes/web.php
+
+Route::patch('/user/ban/{user}', [\App\Http\Controllers\AdminController::class,"banUser"])->name('user.ban');
+Route::patch('/user/unban/{user}', [\App\Http\Controllers\AdminController::class,"unbanUser"])->name('user.unban');
+Route::patch('/user/reset-password/{user}', [\App\Http\Controllers\AdminController::class,"resetPassword"])->name('user.reset-password');
+
