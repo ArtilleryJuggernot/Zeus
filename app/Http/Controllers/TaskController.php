@@ -255,6 +255,7 @@ class TaskController extends Controller
         if ($request->has("is_due") && $validateData["is_due"] == "on") {
             $task->due_date = $validateData["dt_input"]; // Date limite
         }
+        $task->description = $validateData["tache_name"];
         $task->save();
         return redirect()->back()->with(["success" => "La tâche à bien été créer"]);
     }

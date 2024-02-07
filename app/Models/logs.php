@@ -14,4 +14,5 @@ class logs extends Model
 
     public $timestamps = false;
 
+
 }

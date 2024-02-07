@@ -260,7 +260,7 @@ class NoteController extends Controller
     {
 
         $validateData = $request->validate([
-           "add-note" => ["required",'regex:/^(?!.*[.]{2})[A-Za-z0-9]+(\.[A-Za-z0-9]+)?$/'],
+           "add-note" => ["required",'regex:/^(?=.*[A-Za-z0-9])[A-Za-z0-9._ -]+$/'],
            "path_current" => ["required","string"] // TODO : Sensible , regex chemin ?
         ]);
         // Nom du dossier à créer
