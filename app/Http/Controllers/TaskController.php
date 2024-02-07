@@ -6,9 +6,11 @@ use App\Models\Acces;
 use App\Models\Categorie;
 use App\Models\Folder;
 use App\Models\insideprojet;
+use App\Models\logs;
 use App\Models\possede_categorie;
 use App\Models\Projet;
 use App\Models\Task;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -46,6 +48,8 @@ class TaskController extends Controller
 
         return $tasks;
     }
+
+
 
     protected function getTaskCategories($taskId, $user_id)
     {
@@ -190,30 +194,40 @@ class TaskController extends Controller
         ]);
 
 
+
+
         $content = $validateData['content'];
         $user_id = $validateData["user_id"];
         $note_id = $validateData["task_id"];
         $perm = $validateData["perm"];
+        $btn_finish = $validateData["btn_is_finished"];
 
 
         $task = Task::find($note_id);
         if (!$task) return redirect()->route("home")->with("failure", "La tache que vous tentez de modifier n'existe pas");
 
 
+
+
+
         $perm_test = $perm == "RW" || $perm == "F";
         if ($task->owner_id == Auth::user()->id || $perm_test) { // TODO : Système d'autorisation
             $task->description = $content;
             if ($validateData["btn_is_finished"] == "on") {
-                $task->is_finish = true;
-                $task->finished_at = Carbon::now();
+                $task->is_finish = 1;
+                $task->finished_at = Carbon::now();  //kansi uml
             } else {
-                $task->is_finish = false;
+                $task->is_finish = 0;
             }
 
             $task->save();
+
+            LogsController::saveTask($user_id,$btn_finish,"SUCCESS",$note_id);
             return response()->json(['success' => true]);
         }
+        LogsController::saveTask($user_id,$btn_finish,"FAILURE",$note_id);
         return response()->with("failure", false);
+
     }
 
     public function Store(Request $request)

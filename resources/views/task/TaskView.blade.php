@@ -227,6 +227,7 @@
 
         })
             .then(response => {
+
                 if (response.ok) {
                     // Afficher un message de succès ou exécuter d'autres actions si nécessaire
                     console.log('Contenu sauvegardé avec succès!');
