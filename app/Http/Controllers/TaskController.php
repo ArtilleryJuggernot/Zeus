@@ -257,6 +257,8 @@ class TaskController extends Controller
         }
         $task->description = $validateData["tache_name"];
         $task->save();
+        LogsController::createTask(Auth::user()->id,$task->id,$name,"SUCCESS");
+
         return redirect()->back()->with(["success" => "La tâche à bien été créer"]);
     }
 
@@ -268,7 +270,10 @@ class TaskController extends Controller
         $id = $validateData["id"];
         $task = Task::find($id);
 
-        if (!$task) return redirect()->route("home")->with("failure", "La tache que vous tentez de modifier n'existe pas");
+        if (!$task) {
+            LogsController::deleteTask(Auth::user()->id,$id,"null","FAILURE");
+            return redirect()->route("home")->with("failure", "La tache que vous tentez de modifier n'existe pas");
+        }
 
 
         // Supprimer les droits associés à une note
@@ -286,6 +291,8 @@ class TaskController extends Controller
             ["type_ressource", "task"]
         ])->delete();
 
+
+        LogsController::deleteTask(Auth::user()->id,$id,$task->task_name,"SUCCESS");
         insideprojet::where("task_id", $id)->delete();
         $task->delete();
         return redirect()->back()->with(["success" => "Tâche supprimé avec succès"]);

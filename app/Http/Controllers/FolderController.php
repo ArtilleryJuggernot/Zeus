@@ -260,7 +260,7 @@ class FolderController extends Controller
     public  function Store(Request $request)
     {
         $validatedData = $request->validate([
-            'add-dossier' => ['required', 'regex:/^(?!.*[.]{2})[A-Za-z0-9]+(\.[A-Za-z0-9]+)?$/'],
+            'add-dossier' => ['required', 'regex:/^(?=.*[A-Za-z0-9])[A-Za-z0-9._ -]+$/'],
             'path_current' => 'required'
         ]);
         $name = $validatedData["add-dossier"];                  // Nom du dossier à créer
