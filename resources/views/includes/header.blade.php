@@ -24,15 +24,15 @@
     <nav class="navbar">
         <ul>
             <li>
-                <a href="{{ route('home') }}">Accueil</a>
+                <a href="{{ route('home') }}">🏠 Accueil</a>
                 <ul class="submenu">
-                    <li><a href="{{ route('about') }}">A propos du projet Zeus</a></li>
+                    <li><a href="{{ route('about') }}">🔥 A propos du projet Zeus</a></li>
                 </ul>
             </li>
 
             @if(Auth::user())
                 <li>
-                    <a href="{{ route("folder_overview") }}">Mes dossiers</a>
+                    <a href="{{ route("folder_overview") }}">📁 Mes dossiers</a>
                     <ul class="submenu">
                     </ul>
                 </li>
@@ -40,7 +40,7 @@
 
             @if(Auth::user())
                 <li>
-                    <a href="{{ route("notes_overview") }}">Mes notes</a>
+                    <a href="{{ route("notes_overview") }}">📝 Mes notes</a>
                     <ul class="submenu">
                     </ul>
                 </li>
@@ -48,7 +48,7 @@
 
             @if(Auth::user())
                 <li>
-                    <a href="{{ route("task_overview") }}">Mes tâches</a>
+                    <a href="{{ route("task_overview") }}">📚 Mes tâches</a>
                     <ul class="submenu">
                     </ul>
                 </li>
@@ -57,7 +57,7 @@
 
             @if(Auth::user())
                 <li>
-                    <a href="{{ route("projet_overview") }}">Mes Projets</a>
+                    <a href="{{ route("projet_overview") }}">🚧 Mes Projets</a>
                     <ul class="submenu">
                     </ul>
                 </li>
@@ -65,7 +65,7 @@
 
             @if(\Illuminate\Support\Facades\Auth::user())
                 <li>
-                    <a href="{{route("categorie_overview")}}">Mes categories</a>
+                    <a href="{{route("categorie_overview")}}">📌 Mes categories</a>
                 </li>
             @endif
 
@@ -93,11 +93,11 @@
 
             @if(\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->id == 1)
                 <li>
-                    <a>Administration</a>
+                    <a>👑 Administration</a>
                     <ul class="submenu">
-                        <li><a href="{{ route("user_manage") }}">Gestion des utilisateurs</a></li>
+                        <li><a href="{{ route("user_manage") }}">👑 Gestion des utilisateurs</a></li>
 
-                        <li><a href="{{ route("logs_manage") }}">Gestion des logs</a></li>
+                        <li><a href="{{ route("logs_manage") }}">👑 Gestion des logs</a></li>
                     </ul>
                 </li>
             @endif

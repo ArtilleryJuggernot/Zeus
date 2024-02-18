@@ -255,7 +255,7 @@ class TaskController extends Controller
         if ($request->has("is_due") && $validateData["is_due"] == "on") {
             $task->due_date = $validateData["dt_input"]; // Date limite
         }
-        $task->description = $validateData["tache_name"];
+        $task->description = "# " .  $name;
         $task->save();
         LogsController::createTask(Auth::user()->id,$task->id,$name,"SUCCESS");
 

@@ -245,8 +245,18 @@ Route::get("/logs_manage",[\App\Http\Controllers\AdminController::class,"logs"])
     ->middleware("auth")
     ->name("logs_manage");
 
+// Priorité tâche
+
+Route::post("/update-priority",[\App\Http\Controllers\PriorityController::class,"PriorityChange"])
+    ->middleware("auth")
+    ->name("update-priority");
+
+
+
+
 
 // routes/web.php
+
 
 Route::patch('/user/ban/{user}', [\App\Http\Controllers\AdminController::class,"banUser"])->name('user.ban');
 Route::patch('/user/unban/{user}', [\App\Http\Controllers\AdminController::class,"unbanUser"])->name('user.unban');

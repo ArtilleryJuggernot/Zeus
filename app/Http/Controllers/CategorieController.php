@@ -24,6 +24,8 @@ class CategorieController extends Controller
         ]);
     }
 
+
+    // TODO : verif des droits
     public function Delete(Request $request)
     {
         $validateData = $request->validate([
@@ -42,6 +44,9 @@ class CategorieController extends Controller
         foreach ($ps as $elem)
             $elem->delete();
 
+
+
+        LogsController::deleteCategory(Auth::user()->id,$cat->category_id,$cat->category_name);
         $cat->delete();
         return redirect()->back()->with(["success" => "La catégorie supprimé avec succès"]);
     }
@@ -63,6 +68,9 @@ class CategorieController extends Controller
         $cat->owner_id = Auth::user()->id;
 
         $cat->save();
+
+        LogsController::createCategory($cat->owner_id,$cat->category_id,$cat->category_name);
+
         return redirect()->back()->with(["success" => "La catégorie à bien été créer"]);
     }
 
@@ -95,6 +103,8 @@ class CategorieController extends Controller
 
        $CategoryName = Categorie::find($categoryId)->category_name;
 
+       LogsController::AddCategoryToRessources($user_id,$categoryId,$CategoryName,$ressourceId,$ressourceType);
+
        return redirect()->back()->with("success","La catégorie " . $CategoryName . " a bien été ajouter à la ressource");
 
     }
@@ -115,6 +125,13 @@ class CategorieController extends Controller
         if(!$ps){
             return redirect()->route("home")->with("failure","Erreur");
         }
+
+
+        $Category = Categorie::find($ps->categorie_id);
+        $CategoryName = $Category->category_name;
+
+        LogsController::RemoveCategoryToRessources(Auth::user()->id,$ps->categorie_id,$CategoryName,$ps->ressource_id,$ps->ressource_type);
+
         $ps->delete();
 
         return redirect()->back()->with("success","La categorie à bien été supprimé");

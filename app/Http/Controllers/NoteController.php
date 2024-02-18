@@ -84,8 +84,6 @@ class NoteController extends Controller
 
     }
 
-
-
     private function checkHasPermissionView(int $id)
     {
         // Check Permission
@@ -207,8 +205,6 @@ class NoteController extends Controller
         );
     }
 
-
-
     // Avec AJAX
     public function saveNote(Request $request)
     {
@@ -242,13 +238,16 @@ class NoteController extends Controller
 
         $perm_rec = $perm == "RW" || $perm == "F";
 
-        if($user_id == Auth::user()->id || $autorisation || $perm_rec){ // TODO : Système d'autorisation accès
+        if($user_id == Auth::user()->id || $autorisation || $perm_rec){
             $note = Note::where("note_id","=",$note_id)->first();
 
-            if($note->owner_id == Auth::user()->id || $autorisation || $perm_rec){ // TODO : Système d'autorisation accès
+            if($note->owner_id == Auth::user()->id || $autorisation || $perm_rec){
                 $check = Storage::put($note->path,$content);
+                LogsController::saveNote($user_id,$note_id,$note->name,"SUCCESS");
                 return response()->json(['success' => true]);
             }
+            LogsController::saveNote($user_id,$note_id,$note->name,"FAILURE");
+
 
         }
     }
@@ -285,26 +284,33 @@ class NoteController extends Controller
         $newNote->path = $path_final;
 
         // Persistance + save
-        Storage::put($newNote->path,"");
+        Storage::put($newNote->path,"# " . $name);
         $newNote->save();
+        LogsController::createNote($user_id,$newNote->note_id,$name,"SUCCESS");
         return redirect()->back()->with("success","La note a bien été créer !");
     }
 
         public function Delete(Request $request)
         {
-            // TODO validate
+            // TODO verification des accès
             $validateData = $request->validate([
                 "id" => ["required","integer"]
             ]);
             $id =  $validateData["id"];
             $note = Note::find($id);
-
-            if(!$note) return redirect()->route("home")->with("failure","La note que vous souhaitez supprimé n'a pas été trouvé");
-
-
             $user_id = Auth::user()->id;
 
-            if($note->owner_id != $user_id) return redirect()->route("home")->with("failure","Vous n'êtes pas autoriser à modifier sur cette ressource");
+            if(!$note) {
+                LogsController::deleteNote($user_id,$id,"","FAILURE");
+                return redirect()->route("home")->with("failure","La note que vous souhaitez supprimé n'a pas été trouvé");
+            }
+
+
+
+            if($note->owner_id != $user_id){
+                LogsController::deleteNote($user_id,$id,$note->name,"FAILURE");
+                return redirect()->route("home")->with("failure","Vous n'êtes pas autoriser à modifier sur cette ressource");
+            }
 
             //dd(storage_path($folder->path));
             //dd(Storage::exists($folder->path));
@@ -326,6 +332,7 @@ class NoteController extends Controller
 
             Storage::delete($note->path);
             $note->delete();
+            LogsController::deleteNote($user_id,$id,$note->name,"SUCCESS");
             return redirect()->back()->with(["success" => "Note supprimé avec succès"]);
         }
 }

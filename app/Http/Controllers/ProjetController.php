@@ -156,7 +156,7 @@ class ProjetController extends Controller
         $task = new Task();
         $task->task_name = $name;
         $task->owner_id = Auth::user()->id;
-
+        $task->description = "# " . $name;
         if ($request->has("is_due") && $validateData["is_due"] == "on") {
             $task->due_date = $validateData["dt_input"]; // Date limite
         }

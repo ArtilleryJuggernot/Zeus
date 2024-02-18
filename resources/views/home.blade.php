@@ -14,7 +14,7 @@
     <h2>{{session("failure")}}</h2>
 @endif
 
-<h1>Hello {{\Illuminate\Support\Facades\Auth::user()->name}}</h1>
+<h1>Hello {{\Illuminate\Support\Facades\Auth::user()->name}} ⚡</h1>
 
 
 
@@ -23,13 +23,51 @@
 <p>Votre identifiant est <strong>{{\Illuminate\Support\Facades\Auth::user()->id}}</strong>, vous pouvez le partagez à d'autre utilisateur pour qu'il autorise l'accès à leurs notes, dossiers, tâches et projets</p>
 
 
+
+
+<div class="task-current">
+    <h3>Liste des tâches à faire en priorité</h3>
+    <div class="folders">
+
+        @if($task_priority->isEmpty())
+            <span>Vous n'avez pas de tâche en priorité ✅</span>
+        @endif
+
+        @foreach($task_priority as $task)
+            @php
+            $priority = $task->priority;
+            $task = \App\Models\Task::find($task->task_id);
+            @endphp
+
+            <div class="folder-card">
+                <a href="{{route("view_task",$task->task_id)}}"><h3>{{ $task->task_name}}</h3></a>
+                <p style="color: red">{{$priority}}</p>
+                @if($task->due_date)
+                    <p>Tache à finir avant : </p> {{$task->due_date}}
+                @endif
+                <div class="delete">
+                    <form action="{{route("delete_task")}}" method="post">
+                        <input name="id" type="hidden" value="{{$task->task_id}}"/>
+                        <button type="submit">Delete</button>
+                        @csrf
+                    </form>
+                </div>
+            </div>
+
+
+                @endforeach
+    </div>
+
+
+</div>
+
 <div class="task-current">
     <h3>Liste des tâches actuelles à faire (avec date limite)</h3>
     <div class="folders">
         <!-- Boucle pour afficher les dossiers -->
 
         @if($tachesTimed->isEmpty())
-            <span>Vous n'avez pas de tâche à réaliser</span>
+            <span>Vous n'avez pas de tâche à réaliser ✅</span>
         @endif
 
         @foreach($tachesTimed as $task)
@@ -59,7 +97,7 @@
         <!-- Boucle pour afficher les dossiers -->
 
         @if($tachePasse->isEmpty())
-            <span>Vous n'avez pas de tâche non-réalisé</span>
+            <span>Vous n'avez pas de tâche non-réalisé ✅</span>
         @endif
 
         @foreach($tachePasse as $task)

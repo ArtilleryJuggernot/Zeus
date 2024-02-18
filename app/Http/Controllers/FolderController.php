@@ -40,7 +40,6 @@ class FolderController extends Controller
         return $ownedCategories;
     }
 
-
     public function  getNotesCategories($note_id)
     {
         $user_id = Auth::user()->id;
@@ -110,7 +109,6 @@ class FolderController extends Controller
             }
         return $folderContents;
     }
-
 
     // l'ID du dossier à vérifié
     private function checkHasPermissionView(int $id)
@@ -283,9 +281,13 @@ class FolderController extends Controller
         $check = Storage::makeDirectory($newFolder->path);               // Persistance + save
 
         if(!$check){
+            LogsController::createFolder($user_id,0,$name,"FAILURE");
             return redirect()->route("home")->with("failure","Une erreur s'est produite lors de la création d'un dossier");
         }
+
         $newFolder->save();
+        LogsController::createFolder($user_id,$newFolder->folder_id,$name,"SUCCESS");
+
         return redirect()->back()->with("success","Le dossier a bien été créer !");
     }
 
@@ -296,6 +298,7 @@ class FolderController extends Controller
         ]);
         $id =  $validatedData["id"];
         $folder = Folder::find($id);
+        $user_id = Auth::user()->id;
         //dd(storage_path($folder->path));
         //dd(Storage::exists($folder->path));
 
@@ -320,6 +323,7 @@ class FolderController extends Controller
         ])->delete();
 
         Storage::deleteDirectory($folder->path);
+        LogsController::deleteFolder($user_id,$folder->folder_id,$folder->name,"SUCCESS");
         $folder->delete();
         return redirect()->back()->with(["success" => "Dossier supprimé avec succès"]);
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\task_priorities;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,11 +32,18 @@ class HomeController extends Controller
         ])->get();
 
 
+        // Tache en priorité
+
+        $task_priority = task_priorities::where("user_id",$user->id)->get();
+
+        $task_priority = PriorityController::sortTasksByPriority($task_priority);
+
 
         return view("home",[
             "user" => $user,
             "tachesTimed" => $tachesTimed,
-            "tachePasse" => $tachesPasse
+            "tachePasse" => $tachesPasse,
+            "task_priority" => $task_priority,
         ]);
     }
 

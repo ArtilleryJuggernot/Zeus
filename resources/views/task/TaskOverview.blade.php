@@ -105,7 +105,32 @@
                 </form>
             </div>
 
-            <!-- Autres détails du dossier si nécessaire -->
+
+            @if(\App\Models\Task::find($task->task_id)->owner_id == \Illuminate\Support\Facades\Auth::user()->id)
+
+            @php
+            $exist = \App\Models\task_priorities::where([
+            "user_id" => \Illuminate\Support\Facades\Auth::user()->id,
+            "task_id" => $task->task_id
+        ])->first();
+
+            @endphp
+
+            <form id="priorityForm" method="POST" action="{{ route('update-priority') }}">
+                @csrf
+                <div class="form-group">
+                    <label for="priority">Priorité :</label>
+                    <select class="form-control" id="priority" name="priority" onchange="this.form.submit()">
+                        <option value="">Sélectionnez une priorité</option>
+                        <option @if($exist &&$exist->priority == "Urgence") selected @endif value="Urgence">Urgence</option>
+                        <option @if($exist && $exist->priority == "Grande priorité") selected @endif value="Grande priorité">Grande priorité</option>
+                        <option @if($exist && $exist->priority == "Prioritaire") selected @endif value="Prioritaire">Prioritaire</option>
+                    </select>
+                    <input name="id" type="hidden" value="{{$task->task_id}}">
+                </div>
+            </form>
+            @endif
+
         </div>
     @endforeach
 </div>
