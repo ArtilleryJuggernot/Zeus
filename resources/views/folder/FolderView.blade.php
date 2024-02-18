@@ -82,7 +82,7 @@
     @foreach($folderContents as $item)
         <div class="folder-card">
             @if($item["type"] == "folder")
-                <a class="folder-link" href="{{route("folder_view",$item["id"])}}"><h3>[D] - {{$item["name"]}}</h3></a>
+                <a class="folder-link" href="{{route("folder_view",$item["id"])}}"><h3>📁 - {{$item["name"]}}</h3></a>
                 <div class="delete">
                     <form action="{{route("delete_folder")}}" method="post">
                         <input name="id" type="hidden" value="{{$item["id"]}}"/>
@@ -104,7 +104,7 @@
 
                 </div>
             @else
-                <a class="note-link" href="{{route("note_view",$item["id"])}}"><h3>[N] - {{$item["name"]}}</h3></a>
+                <a class="note-link" href="{{route("note_view",$item["id"])}}"><h3>📝 - {{$item["name"]}}</h3></a>
                 <div class="delete">
                     <form action="{{route("delete_note")}}" method="post">
                         <input name="id" type="hidden" value="{{$item["id"]}}"/>

@@ -55,20 +55,20 @@ echo url('/');
                     child.classList.add("search")
                     if(elem["type"] == "folder"){
                         child.href = "/view_folder/" + elem["id"]
-                        child.innerHTML = "<h3>"+ "[D] " + elem["name"] + "</h3>";
+                        child.innerHTML = "<h3>"+ "📁 " + elem["name"] + "</h3>";
                         div.appendChild(child)
                     }
                     if(elem["type"] == "note"){
                         child.href = "/note_view/" + elem["id"]
-                        child.innerHTML = "<h3>" + "[F] " + elem["name"] + "</h3>";
+                        child.innerHTML = "<h3>" + "📝 " + elem["name"] + "</h3>";
                     }
                     if(elem["type"] == "task"){
                         child.href = "/view_task/" + elem["id"]
-                        child.innerHTML = "<h3>" + "[T] " + elem["name"] + "</h3>"
+                        child.innerHTML = "<h3>" + "📚 " + elem["name"] + "</h3>"
                     }
                     if(elem["type"] == "project"){
                         child.href = "/projet_view/" + elem["id"]
-                        child.innerHTML = "<h3>" + "[P] " + elem["name"] + "</h3>"
+                        child.innerHTML = "<h3>" + "🚧 " + elem["name"] + "</h3>"
                     }
 
                     child.classList.add(elem["type"]);

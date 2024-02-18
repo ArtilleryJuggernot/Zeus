@@ -14,15 +14,15 @@
 @foreach($ressources as $r)
     <div class="folder-card">
             @if($r->type_ressource == "note")
-                <a href="{{route("note_view",$r->ressource_id)}}"><h3> [N] - {{\App\Models\Note::find($r->ressource_id)->name}}</h3></a>
+                <a href="{{route("note_view",$r->ressource_id)}}"><h3> 📝 - {{\App\Models\Note::find($r->ressource_id)->name}}</h3></a>
             @endif
 
             @if($r->type_ressource == "task")
-                    <a href="{{route("view_task",$r->ressource_id)}}"><h3> [T] - {{\App\Models\Task::find($r->ressource_id)->task_name}}</h3></a>
+                    <a href="{{route("view_task",$r->ressource_id)}}"><h3> 📚 - {{\App\Models\Task::find($r->ressource_id)->task_name}}</h3></a>
                 @endif
 
             @if($r->type_ressource == "folder")
-                    <a href="{{route("folder_view",$r->ressource_id)}}"><h3>[D] - {{\App\Models\Folder::find($r->ressource_id)->name}}</h3></a>
+                    <a href="{{route("folder_view",$r->ressource_id)}}"><h3> 📁 - {{\App\Models\Folder::find($r->ressource_id)->name}}</h3></a>
 
                 @endif
 
