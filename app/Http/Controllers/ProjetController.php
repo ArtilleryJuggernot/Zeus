@@ -72,7 +72,7 @@ class ProjetController extends Controller
 
         if ((count($taskTODO) + count($taskFinish)) == 0) $progression = 100; // Division par 0
 
-        else $progression = (count($taskFinish) / (count($taskTODO) + count($taskFinish))) * 100;
+        else $progression =   round((count($taskFinish) / (count($taskTODO) + count($taskFinish))) * 100,3);
 
         //dd($tasks);
 

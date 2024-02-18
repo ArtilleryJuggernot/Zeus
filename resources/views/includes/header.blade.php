@@ -1,5 +1,7 @@
 <head>
     <link rel="stylesheet" href="{{asset("css/includes/header.css")}}">
+    <link rel="stylesheet" href="{{asset("css/includes/all.css")}}">
+
 </head>
 <div class="header">
     <!-- Logo du jeu -->

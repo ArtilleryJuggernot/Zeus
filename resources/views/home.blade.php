@@ -48,7 +48,7 @@
                 <div class="delete">
                     <form action="{{route("delete_task")}}" method="post">
                         <input name="id" type="hidden" value="{{$task->task_id}}"/>
-                        <button type="submit">Delete</button>
+                        <button class="del" type="submit">Delete</button>
                         @csrf
                     </form>
                 </div>
@@ -79,7 +79,7 @@
                 <div class="delete">
                     <form action="{{route("delete_task")}}" method="post">
                         <input name="id" type="hidden" value="{{$task->task_id}}"/>
-                        <button type="submit">Delete</button>
+                        <button class="del" type="submit">Delete</button>
                         @csrf
                     </form>
                 </div>
@@ -109,7 +109,7 @@
                 <div class="delete">
                     <form action="{{route("delete_task")}}" method="post">
                         <input name="id" type="hidden" value="{{$task->task_id}}"/>
-                        <button type="submit">Delete</button>
+                        <button class="del" type="submit">Delete</button>
                         @csrf
                     </form>
                 </div>

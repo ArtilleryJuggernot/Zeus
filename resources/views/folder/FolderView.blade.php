@@ -86,7 +86,7 @@
                 <div class="delete">
                     <form action="{{route("delete_folder")}}" method="post">
                         <input name="id" type="hidden" value="{{$item["id"]}}"/>
-                        <button type="submit">Delete</button>
+                        <button class="del" type="submit">Delete</button>
                         @csrf
                     </form>
 
@@ -108,7 +108,7 @@
                 <div class="delete">
                     <form action="{{route("delete_note")}}" method="post">
                         <input name="id" type="hidden" value="{{$item["id"]}}"/>
-                        <button type="submit">Delete</button>
+                        <button class="del" type="submit">Delete</button>
                         @csrf
                     </form>
 

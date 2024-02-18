@@ -50,7 +50,7 @@
             <div class="delete">
                 <form action="{{route("delete_categorie")}}" method="post">
                     <input name="id" type="hidden" value="{{$categorie->category_id}}"/>
-                    <button type="submit">Delete</button>
+                    <button class="del" type="submit">Delete</button>
                     @csrf
                 </form>
             </div>
@@ -72,7 +72,7 @@
                 <option value="{{ $categorie->category_id }}">{{ $categorie->category_name }}</option>
             @endforeach
         </select>
-        <button type="submit">Rechercher</button>
+        <button class="bluelight" type="submit">Rechercher</button>
     </form>
 </div>
 

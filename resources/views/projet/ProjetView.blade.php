@@ -67,7 +67,7 @@
 <div class="task-todo">
 
     @if($taskTODO->isEmpty())
-        <h4> > Il n'y a actuellement pas de tâche à faire</h4>
+        <h4>Il n'y a actuellement pas de tâche à faire ✅</h4>
     @endif
 
     @foreach($taskTODO as $taskT)
@@ -87,7 +87,7 @@
                 <form action="{{route("remove_task_from_project")}}" method="post">
                     <input name="task_id" type="hidden" value="{{$taskT->task_id}}"/>
                     <input name="project_id" type="hidden" value="{{$projet->id}}">
-                    <button type="submit">Supprimer la tâche du projet</button>
+                    <button class="del" type="submit">Supprimer la tâche du projet</button>
                     @csrf
                 </form>
             </div>
@@ -103,21 +103,21 @@
         </div>
     @endforeach
 </div>
+<button class="accordion">Tâches réalisées</button>
+<div class="panel">
 <h2>Tâches réalisées</h2>
 <div class="task-done">
 
 
     @if($taskFinish->isEmpty())
-        <h4> > Il n'y a actuellement pas de tâche réalisé</h4>
+        <h4>Il n'y a actuellement pas de tâche réalisé ✅</h4>
     @endif
 
     @foreach($taskFinish as $taskF)
         <div class="folder-card">
             <div class="info-task">
                 <a href="{{route("view_task",$taskF->task_id)}}"><h3>{{ $taskF->task_name}}</h3></a>
-                <span>Position de la tâche : {{$taskF->pos}}</span>
                 @if($taskF->due_date)
-                    <br>
                     <span>Date limite : {{$taskF->due_date}}</span>
                 @endif
             </div>
@@ -127,7 +127,7 @@
                 <form action="{{route("remove_task_from_project")}}" method="post">
                     <input name="task_id" type="hidden" value="{{$taskF->task_id}}"/>
                     <input name="project_id" type="hidden" value="{{$projet->id}}">
-                    <button type="submit">Supprimer la tâche du projet</button>
+                    <button class="del" type="submit">Supprimer la tâche du projet</button>
                     @csrf
                 </form>
             </div>
@@ -140,6 +140,7 @@
             </div>
         </div>
     @endforeach
+</div>
 </div>
 
 
@@ -157,6 +158,9 @@
     @endforeach
 </div>
 
+
+<button class="accordion">Liste des autorisations utilisateurs</button>
+<div class="panel">
 <h1>Liste des autorisations utilisateurs</h1>
 
 <table>
@@ -185,6 +189,7 @@
     @endforeach
     </tbody>
 </table>
+</div>
 
 
 @if($projet->owner_id == \Illuminate\Support\Facades\Auth::user()->id)

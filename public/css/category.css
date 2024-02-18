@@ -1,7 +1,15 @@
 .category {
     display: inline-block;
-    padding: 8px;
-    border-radius: 20px;
+    padding: 15px; /* Augmentez le padding pour plus d'espace à l'intérieur de la card */
+    border-radius: 15px; /* Arrondir les coins */
     color: #fff; /* Couleur du texte, ajustez selon vos besoins */
-    margin: 5px; /* Marge autour de chaque catégorie */
+    margin: 10px; /* Marge autour de chaque catégorie */
+    background-color: #4CAF50; /* Couleur de fond */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transition fluide */
+}
+
+.category:hover {
+    transform: translateY(-5px); /* Animation de léger déplacement vers le haut lors du survol */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Augmente légèrement l'ombre au survol */
 }

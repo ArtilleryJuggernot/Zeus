@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<h3>Résultat des recherches</h3>
+<h3>Résultat des recherches :</h3>
 
 
 @foreach($ressources as $r)
