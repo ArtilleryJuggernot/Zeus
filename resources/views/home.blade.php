@@ -14,6 +14,8 @@
     <h2>{{session("failure")}}</h2>
 @endif
 
+
+
 <h1>Hello {{\Illuminate\Support\Facades\Auth::user()->name}} ⚡</h1>
 
 

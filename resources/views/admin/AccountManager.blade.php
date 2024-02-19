@@ -9,6 +9,17 @@
     <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
 </head>
 <body>
+
+
+@if(session("failure"))
+    <h2>{{session("failure")}}</h2>
+@endif
+
+
+@if(session("success"))
+    <h2>{{session("successi")}}</h2>
+@endif
+
     <div class="container">
         <h1>Gestion des comptes utilisateurs</h1>
         <table class="table">
@@ -28,16 +39,14 @@
                     <td>{{ $user->name }}</td>
                     <td>{{$user->email}}</td>
                     <td>
-                        @if($user->is_banned)
+                        @if($user->is_ban)
                             <form action="{{ route('user.unban', $user->id) }}" method="POST" style="display: inline;">
                                 @csrf
-                                @method('PATCH')
                                 <button type="submit" class="btn btn-success">Unban</button>
                             </form>
                         @else
                             <form action="{{ route('user.ban', $user->id) }}" method="POST" style="display: inline;">
                                 @csrf
-                                @method('PATCH')
                                 <button type="submit" class="btn btn-danger">Ban</button>
                             </form>
                         @endif

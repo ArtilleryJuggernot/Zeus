@@ -20,28 +20,31 @@ Route::get('/', function () {
 });
 
 Route::get("/home",[\App\Http\Controllers\HomeController::class,'HomeView'])
-->middleware("auth")->name("home");
+->middleware(["is_notban","auth"])
+    ->name("home");
 
+Route::get("/banned",function (){
+    return view("bannis");
+})->name("banned");
 
 Route::get("/about",[\App\Http\Controllers\HomeController::class,"AboutView"])
+    ->middleware(["is_notban","auth","admin"])
     ->name("about");
 
 
 //<editor-fold desc="Folder GET">
 
 Route::get("/folder_overview",[\App\Http\Controllers\FolderController::class,"OverView"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("folder_overview");
 
 
-
-
 Route::post("/add_folder",[\App\Http\Controllers\FolderController::class,"Store"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("add_folder");
 
 Route::get("/view_folder/{id}",[\App\Http\Controllers\FolderController::class,"View"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("folder_view");
 
 //</editor-fold>
@@ -51,12 +54,12 @@ Route::get("/view_folder/{id}",[\App\Http\Controllers\FolderController::class,"V
 
 
 Route::post("/delete_folder",[\App\Http\Controllers\FolderController::class,"Delete"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("delete_folder");
 
 
 Route::post("/delete_note",[\App\Http\Controllers\NoteController::class,"Delete"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("delete_note");
 //</editor-fold>
 
@@ -65,190 +68,185 @@ Route::post("/delete_note",[\App\Http\Controllers\NoteController::class,"Delete"
 // Notes
 
 Route::get("/note_overview",[\App\Http\Controllers\NoteController::class,"OverView"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("notes_overview");
 
 Route::post("/add_note",[\App\Http\Controllers\NoteController::class,"Store"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("add_note");
 
 Route::get('/note_view/{id}', [\App\Http\Controllers\NoteController::class,"View"])
-    ->middleware('auth')
+    ->middleware('auth',"is_notban")
     ->name("note_view");
 
 Route::post('/save-note', [\App\Http\Controllers\NoteController::class, 'saveNote'])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name('save.note');
 
 
 // Task
 
 Route::get("/task_overview",[\App\Http\Controllers\TaskController::class,"OverView"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("task_overview");
 
 
 Route::get("/task_overview_project",[\App\Http\Controllers\TaskController::class,"OverviewTaskProject"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("task_overview_project");
 
 Route::get("/view_task/{id}",[\App\Http\Controllers\TaskController::class,"View"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("view_task");
 
 
 Route::post("/store_task",[\App\Http\Controllers\TaskController::class,"Store"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("store_task");
 
 Route::post("/save-task",[\App\Http\Controllers\TaskController::class,"Save"])
-    ->middleware("auth");
+    ->middleware(["is_notban","auth"]);
 
 Route::post("/delete_task",[\App\Http\Controllers\TaskController::class,"Delete"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("delete_task");
 // Search
 
 // HACK
 Route::post("/do_search",[\App\Http\Controllers\SearchController::class,"doSearch"])
-    ->middleware("auth");
+    ->middleware(["is_notban","auth"]);
 
 
 // Projet
 
 Route::get("/projet_overview",[\App\Http\Controllers\ProjetController::class,"Overview"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("projet_overview");
 
 Route::get("/projet_view/{id}",[\App\Http\Controllers\ProjetController::class,"View"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("projet_view");
 
 Route::post("/add_task_projet",[\App\Http\Controllers\ProjetController::class,"AddTask"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("add_task_projet");
 
 Route::post("/store_projet",[\App\Http\Controllers\ProjetController::class,"Store"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("store_projet");
 
 Route::post("/remove_task_from_project",[\App\Http\Controllers\ProjetController::class,"RemoveTaskFromProject"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("remove_task_from_project");
 
 
 Route::post("/check_task_project",[\App\Http\Controllers\ProjetController::class,"CheckTaskTODO"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("check_task_project");
 
 Route::post("/uncheck_task_project",[\App\Http\Controllers\ProjetController::class,"UncheckTaskDone"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("uncheck_task_project");
 
 
 Route::post("/delete_project/",[\App\Http\Controllers\ProjetController::class,"Delete"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("delete_project");
 
 
 Route::post("/archive_project/",[\App\Http\Controllers\ProjetController::class,"CheckToggleAsDone"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("archive_project");
 
 
 Route::post("/add_existing_to_project",[\App\Http\Controllers\ProjetController::class,"AddExistingTaskToProject"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("add_existing_to_project");
 
-// Share
 
-// Il faut
-/*
- * - Store Dossier
- * - Store Note
- * - Store Projet
- * - Store Tache
- *
- * Et pareil pour les removes (4)
- * */
 
 Route::post("/add_note_share/",[\App\Http\Controllers\ShareController::class,"NoteStore"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("add_note_share");
 
 
 Route::post("/add_folder_share/",[\App\Http\Controllers\ShareController::class,"FolderStore"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("add_folder_share");
 
 
 Route::post("/add_task_share/",[\App\Http\Controllers\ShareController::class,"TacheStore"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("add_task_share");
 
 
 Route::post("/add_projet_share/",[\App\Http\Controllers\ShareController::class,"ProjetStore"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("add_projet_share");
 
 Route::post("/delete_perm/{id}",[\App\Http\Controllers\ShareController::class,"DeletePermById"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("delete_perm");
 
 
 // Categorie
 
 Route::get("/categorie_overview/",[\App\Http\Controllers\CategorieController::class,"Overview"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("categorie_overview");
 
 Route::post("/delete_categorie/",[\App\Http\Controllers\CategorieController::class,"Delete"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("delete_categorie");
 
 Route::post("/store_categorie/",[\App\Http\Controllers\CategorieController::class,"Store"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("store_categorie");
 
 
 Route::post("/addCategory/",[\App\Http\Controllers\CategorieController::class,"AddCategorieToRessource"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("addCategory");
 
 
 Route::post("/removeCategory/",[\App\Http\Controllers\CategorieController::class,"RemoveCategorieToRessource"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("removeCategory");
 
 Route::post("/searchCategory/",[\App\Http\Controllers\CategorieController::class,"Search"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("searchCategory");
 
 
 // Profil
 
 Route::get("/profile/{id}",[\App\Http\Controllers\ProfilController::class,"View"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("profile");
 
 Route::post("/update_password",[\App\Http\Controllers\ProfilController::class,"ChangePassword"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("update_password");
 
 // Admin
 
 Route::get("/user_manage",[\App\Http\Controllers\AdminController::class,"AccountManager"])
-    ->middleware("auth")
+    ->middleware("auth","admin")
     ->name("user_manage");
 
 Route::get("/logs_manage",[\App\Http\Controllers\AdminController::class,"logs"])
-    ->middleware("auth")
+    ->middleware("auth","admin")
     ->name("logs_manage");
+
+
+Route::get("/filter_logs",[\App\Http\Controllers\AdminController::class,"logs"])
+    ->middleware("auth","admin")
+    ->name("filter_logs");
 
 // Priorité tâche
 
 Route::post("/update-priority",[\App\Http\Controllers\PriorityController::class,"PriorityChange"])
-    ->middleware("auth")
+    ->middleware(["is_notban","auth"])
     ->name("update-priority");
 
 
@@ -258,7 +256,7 @@ Route::post("/update-priority",[\App\Http\Controllers\PriorityController::class,
 // routes/web.php
 
 
-Route::patch('/user/ban/{user}', [\App\Http\Controllers\AdminController::class,"banUser"])->name('user.ban');
-Route::patch('/user/unban/{user}', [\App\Http\Controllers\AdminController::class,"unbanUser"])->name('user.unban');
+Route::post('/user/ban/{user}', [\App\Http\Controllers\AdminController::class,"banUser"])->name('user.ban');
+Route::post('/user/unban/{user}', [\App\Http\Controllers\AdminController::class,"unbanUser"])->name('user.unban');
 Route::patch('/user/reset-password/{user}', [\App\Http\Controllers\AdminController::class,"resetPassword"])->name('user.reset-password');
 

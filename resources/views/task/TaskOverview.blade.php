@@ -142,11 +142,11 @@
         <div class="folder-card">
             <a href="{{route("view_task",$task->task_id)}}"><h3>{{ $task->task_name}}</h3></a>
 
+            @if($task->due_date)
             <div class="task-due-date">
-                @if($task->due_date)
                     <p>Date limite : <span class="bold">{{$task->due_date}} </span></p>
-                @endif
             </div>
+            @endif
 
             <div class="task-is-finish">
                 @if($task->is_finish)

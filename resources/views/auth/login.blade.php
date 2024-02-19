@@ -14,6 +14,12 @@
 </head>
 <body>
 
+@if(session("failure"))
+    <span class="invalid-feedback" role="alert">
+        <strong>{{ session("failure") }}</strong>
+    </span>
+@endif
+
 @error('email')
 <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
