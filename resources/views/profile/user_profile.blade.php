@@ -26,7 +26,14 @@
 
 <p>Date de création du compte : {{$user->created_at}}</p>
 
+@php
+if ($stats['total_tasks'] != 0) $pourcent_tt = round($stats['completed_tasks_total']  /  $stats['total_tasks'] * 100,3) . "%";
 
+if ($stats['total_tasks_no_project'] != 0) $pourcent_thp = round($stats['completed_tasks_no_project']  /  $stats['total_tasks_no_project'] * 100,3) . "%";
+
+if ($stats['total_tasks_project'] != 0) $pourcent_tp = round($stats['completed_tasks_project']  /  $stats['total_tasks_project'] * 100,3) . "%";
+
+@endphp
 
 <div class="container">
     <h2>Statistiques</h2>
@@ -35,9 +42,31 @@
         <p><strong>➡️ Nombre total de notes :</strong> {{ $stats['total_notes'] }}</p>
         <p><strong>➡️ Nombre total de dossiers :</strong> {{ $stats['total_folders'] }}</p>
         <p><strong>➡️ Nombre total de projets :</strong> {{ $stats['total_projects'] }}</p>
-        <p><strong>➡️ Nombre de tâches réalisées (total) :</strong> {{ $stats['completed_tasks_total'] }} / {{ $stats['total_tasks'] }}</p>
-        <p><strong>➡️ Nombre de tâches réalisées (hors projet) :</strong> {{ $stats['completed_tasks_no_project'] }} / {{ $stats['total_tasks_no_project'] }}</p>
-        <p><strong>➡️ Nombre de tâches réalisées (projet) :</strong> {{ $stats['completed_tasks_project'] }} / {{ $stats['total_tasks_project'] }}</p>
+        <p><strong>➡️ Nombre de tâches réalisées (total) :</strong>
+            @if($stats['total_tasks'] != 0)
+                {{ $stats['completed_tasks_total'] }} / {{ $stats['total_tasks'] }} ({{$pourcent_tt}})
+            @else
+                Pas de tâches encore crées !
+            @endif
+        </p>
+
+        <p><strong>➡️ Nombre de tâches réalisées (hors projet) :</strong>
+        @if($stats['total_tasks_no_project'] != 0)
+            {{ $stats['completed_tasks_no_project'] }} / {{ $stats['total_tasks_no_project'] }} ({{$pourcent_thp}})
+        @else
+            Pas de tâches hors projet encore crées !
+        @endif
+        </p>
+
+        <p><strong>➡️ Nombre de tâches réalisées (projet) :</strong> 
+        @if($stats['total_tasks_project'] != 0)
+            {{ $stats['completed_tasks_project'] }} / {{ $stats['total_tasks_project'] }} ({{$pourcent_tp}})
+        @else
+            Pas de tâches dans les projets encore crées !
+        @endif
+        </p>
+
+
         <p><strong>➡️ Nombre total de catégories :</strong> {{ $stats['total_categories'] }}</p>
     </div>
 </div>
