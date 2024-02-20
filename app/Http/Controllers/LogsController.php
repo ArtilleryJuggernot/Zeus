@@ -15,24 +15,31 @@ class LogsController extends Controller
     // Tache
     public static function saveTask($user_id,$btn_finish,$action_status,$task_id)
     {
+        $lastSaveLog = logs::where('ressource_id', $task_id)
+            ->where("ressource_type","task")
+            ->where('action', "(" . $action_status . ") SAVE TASK") // Suppose que l'action de sauvegarde est enregistrée sous 'save'
+            ->where("user_id",$user_id)
+            ->latest() // Récupère le dernier log en premier
+            ->first();
 
-        $output = new \Symfony\Component\Console\Output\ConsoleOutput();
-        $output->writeln("<info>ENTREE DANS le LOGS SAVE TASK</info>");
+// Vérifier si un log de sauvegarde existe et s'il a été enregistré il y a moins d'une minute
+        $logs_5min = $lastSaveLog && Carbon::parse($lastSaveLog->created_at)->diffInMinutes(Carbon::now()) < 5;
+        if (!$logs_5min) {
 
-        $logs = new logs();
-        $logs->user_id = $user_id;
-        $logs->created_at = Carbon::now();
-        $logs->action = "(" . $action_status . ") SAVE TASK";
-        $logs->ressource_id = $task_id;
-        $logs->ressource_type = "task";
-        $logs->content  = "Contenu mis à jour pour la tâche n°" . $task_id
-            . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ").";
+            $logs = new logs();
+            $logs->user_id = $user_id;
+            $logs->created_at = Carbon::now();
+            $logs->action = "(" . $action_status . ") SAVE TASK";
+            $logs->ressource_id = $task_id;
+            $logs->ressource_type = "task";
+            $logs->content = "Contenu mis à jour pour la tâche n°" . $task_id
+                . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ").";
 
 
-
-        if ($btn_finish == "on") $logs->content .= " Mis à jour : Tâche finis";
-        else $logs->content .= " Mis à jour : Tâche non finis";
-         $logs->save();
+            if ($btn_finish == "on") $logs->content .= " Mis à jour : Tâche finis";
+            else $logs->content .= " Mis à jour : Tâche non finis";
+            $logs->save();
+        }
 
     }
     public static function createTask($user_id,$task_id,$task_name,$action_status)
@@ -156,20 +163,34 @@ class LogsController extends Controller
 
     public static function saveNote($user_id,$note_id,$note_name,$action_status)
     {
-        $logs = new logs();
-        $logs->user_id = $user_id;
-        $logs->created_at = Carbon::now();
-        $logs->action = "(" . $action_status . ") SAVE NOTE";
-        $logs->ressource_id = $note_id;
-        $logs->ressource_type = "note";
-        $logs->content =  ($action_status == "FAILURE") ? "Aucune " : "" .  "Sauvegarde de la note avec l'id n°" . $note_id
-            . " et le nom : " . $note_name . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ")";
+
+        $lastSaveLog = logs::where('ressource_id', $note_id)
+            ->where("ressource_type","note")
+            ->where('action', "(" . $action_status . ") SAVE NOTE") // Suppose que l'action de sauvegarde est enregistrée sous 'save'
+            ->where("user_id",$user_id)
+            ->latest() // Récupère le dernier log en premier
+            ->first();
+
+// Vérifier si un log de sauvegarde existe et s'il a été enregistré il y a moins d'une minute
+        $logs_5min = $lastSaveLog && Carbon::parse($lastSaveLog->created_at)->diffInMinutes(Carbon::now()) < 5;
+        if (!$logs_5min) {
 
 
-        if($action_status == "FAILURE")
-            $logs->content .= " (Autorisation insuffisante)";
+            $logs = new logs();
+            $logs->user_id = $user_id;
+            $logs->created_at = Carbon::now();
+            $logs->action = "(" . $action_status . ") SAVE NOTE";
+            $logs->ressource_id = $note_id;
+            $logs->ressource_type = "note";
+            $logs->content = ($action_status == "FAILURE") ? "Aucune " : "" . "Sauvegarde de la note avec l'id n°" . $note_id
+                . " et le nom : " . $note_name . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ")";
 
-        $logs->save();
+
+            if ($action_status == "FAILURE")
+                $logs->content .= " (Autorisation insuffisante)";
+
+            $logs->save();
+        }
     }
 
 

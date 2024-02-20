@@ -81,20 +81,7 @@
                 @endif
             </div>
 
-            <div class="list-category">
-                @foreach($task["categories"] as $cat)
 
-                    @php
-                        $category = \App\Models\Categorie::find($cat->categorie_id);
-                    @endphp
-                    <div class="category" style="background-color: {{ $category->color }};">
-                        {{ $category->category_name }}
-                    </div>
-
-                @endforeach
-
-
-            </div>
 
 
             <div class="delete">
@@ -130,6 +117,18 @@
                 </div>
             </form>
             @endif
+
+            <div class="list-category">
+                @foreach($task["categories"] as $cat)
+
+                    @php
+                        $category = \App\Models\Categorie::find($cat->categorie_id);
+                    @endphp
+                    <div class="category" style="background-color: {{ $category->color }};">
+                        {{ $category->category_name }}
+                    </div>
+                @endforeach
+            </div>
 
         </div>
     @endforeach
