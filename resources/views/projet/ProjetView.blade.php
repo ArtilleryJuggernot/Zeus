@@ -32,10 +32,10 @@
 @endif
 
 <div class="project-title">
-    <h3>Projet : {{$projet->name}}</h3>
+    <h3>🚧 Projet : {{$projet->name}}</h3>
 </div>
 
-<h2 class="progress-status">Progression : {{$progression}} %</h2>
+<h2 class="progress-status">📈 Progression : {{$progression}} %</h2>
 <div class="progress-bar">
     <div class="progress-bg"></div>
     <div class="progress green" id="progress" style="width: {{ $progression }}%;"></div>
