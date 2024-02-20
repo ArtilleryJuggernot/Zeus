@@ -17,7 +17,7 @@
 
 <body>
 
-<h1>Page de l'utilisateur {{$user->name}}</h1>
+<h1>Page de l'utilisateur {{$user->name}} ⚡</h1>
 
 
 <h2>Information</h2>
@@ -25,6 +25,24 @@
 <p>Nom d'utilisateur : {{$user->name}}</p>
 
 <p>Date de création du compte : {{$user->created_at}}</p>
+
+
+
+<div class="container">
+    <h2>Statistiques</h2>
+
+    <div class="stats">
+        <p><strong>➡️ Nombre total de notes :</strong> {{ $stats['total_notes'] }}</p>
+        <p><strong>➡️ Nombre total de dossiers :</strong> {{ $stats['total_folders'] }}</p>
+        <p><strong>➡️ Nombre total de projets :</strong> {{ $stats['total_projects'] }}</p>
+        <p><strong>➡️ Nombre de tâches réalisées (total) :</strong> {{ $stats['completed_tasks_total'] }} / {{ $stats['total_tasks'] }}</p>
+        <p><strong>➡️ Nombre de tâches réalisées (hors projet) :</strong> {{ $stats['completed_tasks_no_project'] }} / {{ $stats['total_tasks_no_project'] }}</p>
+        <p><strong>➡️ Nombre de tâches réalisées (projet) :</strong> {{ $stats['completed_tasks_project'] }} / {{ $stats['total_tasks_project'] }}</p>
+        <p><strong>➡️ Nombre total de catégories :</strong> {{ $stats['total_categories'] }}</p>
+    </div>
+</div>
+
+
 
 <h2>Modification du mot de passe</h2>
 
