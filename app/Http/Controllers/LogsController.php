@@ -11,6 +11,38 @@ use Illuminate\Support\Facades\DB;
 class LogsController extends Controller
 {
 
+    // login
+
+    public static function login_failed_non_existing_user($user_mail,$ip)
+    {
+        $logs = new logs();
+        $logs->user_id = 0;
+        $logs->created_at = Carbon::now();
+        $logs->action = "Login Failed NON-Existing User";
+        $logs->content = "Connexion refuseé à l'adresse mail : " . $user_mail . ". Adresse IP : "  . $ip;
+        $logs->save();
+    }
+
+    public static function login_failed_existing_user($user,$ip)
+    {
+        $logs = new logs();
+        $logs->user_id = 0;
+        $logs->created_at = Carbon::now();
+        $logs->action = "Login Failed Existing User";
+        $logs->content = "Connexion refuseé au compte " . $user->name . "( ID : " . $user->id . ") Adresse IP : "  . $ip;
+        $logs->save();
+    }
+
+    public static function login_success($user,$ip)
+    {
+        $logs = new logs();
+        $logs->user_id = $user->id;
+        $logs->created_at = Carbon::now();
+        $logs->action = "Login Success";
+        $logs->content = "Connexion avec succès au compte " . $user->name . "( ID : " . $user->id . ") Adresse IP : " . $ip;
+        $logs->save();
+    }
+
 
     // Tache
     public static function saveTask($user_id,$btn_finish,$action_status,$task_id)

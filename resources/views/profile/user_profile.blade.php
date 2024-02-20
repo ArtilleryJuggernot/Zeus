@@ -20,6 +20,12 @@
 <h1>Page de l'utilisateur {{$user->name}}</h1>
 
 
+<h2>Information</h2>
+
+<p>Nom d'utilisateur : {{$user->name}}</p>
+
+<p>Date de création du compte : {{$user->created_at}}</p>
+
 <h2>Modification du mot de passe</h2>
 
 <div class="form">

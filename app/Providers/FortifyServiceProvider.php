@@ -6,7 +6,9 @@ use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
+use App\Http\Controllers\LogsController;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -54,8 +56,20 @@ class FortifyServiceProvider extends ServiceProvider
 
             if ($user &&
                 Hash::check($request->password, $user->password)) {
+                $user->last_co = Carbon::now();
+                LogsController::login_success($user,$request->getClientIp());
                 return $user;
             }
+
+            // login failed
+
+            if($user){
+                LogsController::login_failed_existing_user($user,$request->getClientIp());
+            }
+            else{
+                LogsController::login_failed_non_existing_user($request->email,$request->getClientIp());
+            }
+
         });
 
         Fortify::registerView(function () {
