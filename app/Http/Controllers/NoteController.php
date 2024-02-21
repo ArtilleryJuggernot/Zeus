@@ -286,7 +286,7 @@ class NoteController extends Controller
         // Persistance + save
         Storage::put($newNote->path,"# " . $name);
         $newNote->save();
-        LogsController::createNote($user_id,$newNote->note_id,$name,"SUCCESS");
+        LogsController::createNote($user_id,$newNote->getKey(),$name,"SUCCESS");
         return redirect()->back()->with("success","La note a bien été créer !");
     }
 

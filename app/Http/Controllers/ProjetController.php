@@ -186,11 +186,13 @@ class ProjetController extends Controller
         $validateData = $request->validate([
             "projet_name" => ["required", "string", "max:250"]
         ]);
+        $user_id = Auth::user()->id;
         $name = $validateData["projet_name"];
         $projet = new Projet();
         $projet->name = $name;
-        $projet->owner_id = Auth::user()->id;
+        $projet->owner_id = $user_id;
         $projet->save();
+        LogsController::CreateProject($user_id,$projet->getKey(),$projet->name);
         return redirect()->back()->with(["success" => "Le projet à bien été créer"]);
     }
 
@@ -280,9 +282,8 @@ class ProjetController extends Controller
             ["ressource_id", $project_id],
             ["type_ressource", "project"]
         ])->delete();
-
+        LogsController::DeleteProject($user_id,$project_id,$projet->name);
         $projet->delete();
-
 
         return redirect()->back()->with("success", "Le projet " . $name . " a bien été supprimé.");
 
@@ -309,7 +310,11 @@ class ProjetController extends Controller
         if ($projet->is_finish) {
             $msg = " a bien été dé-archiver";
             $projet->is_finish = false;
-        } else $projet->is_finish = true;
+            LogsController::UncheckProject($user_id,$project_id,$projet->name);
+        } else {
+            $projet->is_finish = true;
+            LogsController::CheckProject($user_id,$project_id,$projet->name);
+        }
 
 
         $projet->save();

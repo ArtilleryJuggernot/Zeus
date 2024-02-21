@@ -56,6 +56,11 @@ class LogsController extends Controller
 
 // Vérifier si un log de sauvegarde existe et s'il a été enregistré il y a moins d'une minute
         $logs_5min = $lastSaveLog && Carbon::parse($lastSaveLog->created_at)->diffInMinutes(Carbon::now()) < 5;
+        
+
+        if ($btn_finish == "on") StatsController::CheckTask($user_id,$task_id);
+        else StatsController::UncheckTask($user_id,$task_id);
+
         if (!$logs_5min) {
 
             $logs = new logs();
@@ -68,8 +73,15 @@ class LogsController extends Controller
                 . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ").";
 
 
-            if ($btn_finish == "on") $logs->content .= " Mis à jour : Tâche finis";
-            else $logs->content .= " Mis à jour : Tâche non finis";
+
+
+            if ($btn_finish == "on"){
+                $logs->content .= " Mis à jour : Tâche finis";
+            }
+            else {
+                $logs->content .= " Mis à jour : Tâche non finis";
+
+            }
             $logs->save();
         }
 
@@ -86,6 +98,7 @@ class LogsController extends Controller
         . " et le nom : " . $task_name . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ").";
 
         $logs->save();
+        StatsController::CreateTask($user_id,$task_id);
 
     }
     public static function deleteTask($user_id,$task_id,$task_name,$action_status)
@@ -100,6 +113,7 @@ class LogsController extends Controller
             . " et le nom : " . $task_name . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ").";
 
         $logs->save();
+        StatsController::DeleteTask($user_id,$task_id);
     }
 
 
@@ -116,6 +130,7 @@ class LogsController extends Controller
             . " et le nom : " . $category_name . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ").";
 
         $logs->save();
+        StatsController::CreateCategory($user_id,$category_id);
     }
     public static function deleteCategory($user_id,$category_id,$category_name)
     {
@@ -129,6 +144,7 @@ class LogsController extends Controller
             . " et le nom : " . $category_name . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ").";
 
         $logs->save();
+        StatsController::DeleteCategory($user_id,$category_id);
     }
     public static function AddCategoryToRessources($user_id,$category_id,$category_name,$ressource_id,$type_ressource)
     {
@@ -173,6 +189,8 @@ class LogsController extends Controller
             . " et le nom : " . $note_name . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ")";
 
         $logs->save();
+
+        StatsController::CreateNote($user_id,$note_id);
     }
 
     public static function deleteNote($user_id,$note_id,$note_name,$action_status)
@@ -191,6 +209,7 @@ class LogsController extends Controller
             $logs->content .= " (Autorisation insuffisante)";
 
         $logs->save();
+        StatsController::DeleteNote($user_id,$note_id);
     }
 
     public static function saveNote($user_id,$note_id,$note_name,$action_status)
@@ -245,6 +264,7 @@ class LogsController extends Controller
             $logs->content .= " (Autorisation insuffisante)";
 
         $logs->save();
+        StatsController::CreateFolder($user_id,$folder_id);
     }
 
     public static function deleteFolder($user_id,$folder_id,$folder_name,$action_status)
@@ -263,8 +283,68 @@ class LogsController extends Controller
             $logs->content .= " (Autorisation insuffisante)";
 
         $logs->save();
+        StatsController::DeleteFolder($user_id,$folder_id);
     }
 
+    public static function CreateProject($user_id,$project_id,$project_name)
+    {
+        $logs = new logs();
+        $logs->user_id = $user_id;
+        $logs->created_at = Carbon::now();
+        $logs->action = "CREATE PROJECT";
+        $logs->ressource_id = $project_id;
+        $logs->ressource_type = "project";
+        $logs->content = "Création du projet avec l'id n°" . $project_id
+            . " et le nom : " . $project_name . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ")";
+
+        $logs->save();
+        StatsController::CreateProject($user_id,$project_id);
+    }
+
+    public static function DeleteProject($user_id,$project_id,$project_name)
+    {
+        $logs = new logs();
+        $logs->user_id = $user_id;
+        $logs->created_at = Carbon::now();
+        $logs->action = "DELETE PROJECT";
+        $logs->ressource_id = $project_id;
+        $logs->ressource_type = "project";
+        $logs->content = "Suppression du projet avec l'id n°" . $project_id
+            . " et le nom : " . $project_name . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ")";
+
+        $logs->save();
+        StatsController::DeleteProject($user_id,$project_id);
+    }
+
+    public static function CheckProject($user_id,$project_id,$project_name)
+    {
+        $logs = new logs();
+        $logs->user_id = $user_id;
+        $logs->created_at = Carbon::now();
+        $logs->action = "CHECK PROJECT";
+        $logs->ressource_id = $project_id;
+        $logs->ressource_type = "project";
+        $logs->content = "Projet avec l'id n°" . $project_id
+            . " et le nom : " . $project_name . " marqué comme terminé par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ")";
+
+        $logs->save();
+        StatsController::CheckProject($user_id,$project_id);
+    }
+
+    public static function UncheckProject($user_id,$project_id,$project_name)
+    {
+        $logs = new logs();
+        $logs->user_id = $user_id;
+        $logs->created_at = Carbon::now();
+        $logs->action = "CHECK PROJECT";
+        $logs->ressource_id = $project_id;
+        $logs->ressource_type = "project";
+        $logs->content = "Projet avec l'id n°" . $project_id
+            . " et le nom : " . $project_name . " marqué comme en cours par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ")";
+
+        $logs->save();
+        StatsController::UncheckProject($user_id,$project_id);
+    }
 
 
 

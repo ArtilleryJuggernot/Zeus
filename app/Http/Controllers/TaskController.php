@@ -260,7 +260,7 @@ class TaskController extends Controller
         }
         $task->description = "# " .  $name;
         $task->save();
-        LogsController::createTask(Auth::user()->id,$task->id,$name,"SUCCESS");
+        LogsController::createTask(Auth::user()->id,$task->getKey(),$name,"SUCCESS");
 
         return redirect()->back()->with(["success" => "La tâche à bien été créer"]);
     }
