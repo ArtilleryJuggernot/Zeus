@@ -34,9 +34,13 @@ class HomeController extends Controller
 
         // Tache en priorité
 
-        $task_priority = task_priorities::where("user_id",$user->id)->get();
+        $task_priorities = task_priorities::where('user_id', $user->id)
+            ->whereHas('task', function ($query) {
+                $query->where('is_finish', false);
+            })
+            ->get();
 
-        $task_priority = PriorityController::sortTasksByPriority($task_priority);
+        $task_priority = PriorityController::sortTasksByPriority($task_priorities);
 
 
         return view("home",[

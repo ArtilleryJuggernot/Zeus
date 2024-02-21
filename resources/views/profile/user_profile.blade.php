@@ -58,7 +58,7 @@ if ($stats['total_tasks_project'] != 0) $pourcent_tp = round($stats['completed_t
         @endif
         </p>
 
-        <p><strong>➡️ Nombre de tâches réalisées (projet) :</strong> 
+        <p><strong>➡️ Nombre de tâches réalisées (projet) :</strong>
         @if($stats['total_tasks_project'] != 0)
             {{ $stats['completed_tasks_project'] }} / {{ $stats['total_tasks_project'] }} ({{$pourcent_tp}})
         @else

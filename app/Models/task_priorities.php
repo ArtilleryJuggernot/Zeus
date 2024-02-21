@@ -11,6 +11,9 @@ class task_priorities extends Model
     protected $table = "task_priorities";
 
 
-
+    public function task()
+    {
+        return $this->belongsTo(Task::class, 'task_id');
+    }
 
 }

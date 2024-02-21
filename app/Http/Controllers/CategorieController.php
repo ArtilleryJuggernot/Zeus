@@ -71,7 +71,7 @@ class CategorieController extends Controller
 
         LogsController::createCategory($cat->owner_id,$cat->category_id,$cat->category_name);
 
-        return redirect()->back()->with(["success" => "La catégorie à bien été créer"]);
+        return redirect()->back()->with(["success" => "La catégorie à bien été crée"]);
     }
 
 

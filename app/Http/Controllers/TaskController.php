@@ -10,6 +10,7 @@ use App\Models\logs;
 use App\Models\possede_categorie;
 use App\Models\Projet;
 use App\Models\Task;
+use App\Models\task_priorities;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -215,7 +216,9 @@ class TaskController extends Controller
             $task->description = $content;
             if ($validateData["btn_is_finished"] == "on") {
                 $task->is_finish = 1;
-                $task->finished_at = Carbon::now();  //kansi uml
+                $task->finished_at = Carbon::now();
+                $prio = task_priorities::where("task_id",$task->task_id)->first();
+                if ($prio) $prio->delete();
             } else {
                 $task->is_finish = 0;
             }
