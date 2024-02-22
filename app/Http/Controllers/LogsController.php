@@ -56,10 +56,10 @@ class LogsController extends Controller
 
 // Vérifier si un log de sauvegarde existe et s'il a été enregistré il y a moins d'une minute
         $logs_5min = $lastSaveLog && Carbon::parse($lastSaveLog->created_at)->diffInMinutes(Carbon::now()) < 5;
-        
 
-        if ($btn_finish == "on") StatsController::CheckTask($user_id,$task_id);
-        else StatsController::UncheckTask($user_id,$task_id);
+
+        if ($btn_finish == "on") StatsLoggerController::CheckTask($user_id,$task_id);
+        else StatsLoggerController::UncheckTask($user_id,$task_id);
 
         if (!$logs_5min) {
 
@@ -98,7 +98,7 @@ class LogsController extends Controller
         . " et le nom : " . $task_name . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ").";
 
         $logs->save();
-        StatsController::CreateTask($user_id,$task_id);
+        StatsLoggerController::CreateTask($user_id,$task_id);
 
     }
     public static function deleteTask($user_id,$task_id,$task_name,$action_status)
@@ -113,7 +113,7 @@ class LogsController extends Controller
             . " et le nom : " . $task_name . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ").";
 
         $logs->save();
-        StatsController::DeleteTask($user_id,$task_id);
+        StatsLoggerController::DeleteTask($user_id,$task_id);
     }
 
 
@@ -130,7 +130,7 @@ class LogsController extends Controller
             . " et le nom : " . $category_name . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ").";
 
         $logs->save();
-        StatsController::CreateCategory($user_id,$category_id);
+        StatsLoggerController::CreateCategory($user_id,$category_id);
     }
     public static function deleteCategory($user_id,$category_id,$category_name)
     {
@@ -144,7 +144,7 @@ class LogsController extends Controller
             . " et le nom : " . $category_name . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ").";
 
         $logs->save();
-        StatsController::DeleteCategory($user_id,$category_id);
+        StatsLoggerController::DeleteCategory($user_id,$category_id);
     }
     public static function AddCategoryToRessources($user_id,$category_id,$category_name,$ressource_id,$type_ressource)
     {
@@ -190,7 +190,7 @@ class LogsController extends Controller
 
         $logs->save();
 
-        StatsController::CreateNote($user_id,$note_id);
+        StatsLoggerController::CreateNote($user_id,$note_id);
     }
 
     public static function deleteNote($user_id,$note_id,$note_name,$action_status)
@@ -209,7 +209,7 @@ class LogsController extends Controller
             $logs->content .= " (Autorisation insuffisante)";
 
         $logs->save();
-        StatsController::DeleteNote($user_id,$note_id);
+        StatsLoggerController::DeleteNote($user_id,$note_id);
     }
 
     public static function saveNote($user_id,$note_id,$note_name,$action_status)
@@ -264,7 +264,7 @@ class LogsController extends Controller
             $logs->content .= " (Autorisation insuffisante)";
 
         $logs->save();
-        StatsController::CreateFolder($user_id,$folder_id);
+        StatsLoggerController::CreateFolder($user_id,$folder_id);
     }
 
     public static function deleteFolder($user_id,$folder_id,$folder_name,$action_status)
@@ -283,7 +283,7 @@ class LogsController extends Controller
             $logs->content .= " (Autorisation insuffisante)";
 
         $logs->save();
-        StatsController::DeleteFolder($user_id,$folder_id);
+        StatsLoggerController::DeleteFolder($user_id,$folder_id);
     }
 
     public static function CreateProject($user_id,$project_id,$project_name)
@@ -298,7 +298,7 @@ class LogsController extends Controller
             . " et le nom : " . $project_name . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ")";
 
         $logs->save();
-        StatsController::CreateProject($user_id,$project_id);
+        StatsLoggerController::CreateProject($user_id,$project_id);
     }
 
     public static function DeleteProject($user_id,$project_id,$project_name)
@@ -313,7 +313,7 @@ class LogsController extends Controller
             . " et le nom : " . $project_name . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ")";
 
         $logs->save();
-        StatsController::DeleteProject($user_id,$project_id);
+        StatsLoggerController::DeleteProject($user_id,$project_id);
     }
 
     public static function CheckProject($user_id,$project_id,$project_name)
@@ -328,7 +328,7 @@ class LogsController extends Controller
             . " et le nom : " . $project_name . " marqué comme terminé par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ")";
 
         $logs->save();
-        StatsController::CheckProject($user_id,$project_id);
+        StatsLoggerController::CheckProject($user_id,$project_id);
     }
 
     public static function UncheckProject($user_id,$project_id,$project_name)
@@ -343,7 +343,7 @@ class LogsController extends Controller
             . " et le nom : " . $project_name . " marqué comme en cours par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ")";
 
         $logs->save();
-        StatsController::UncheckProject($user_id,$project_id);
+        StatsLoggerController::UncheckProject($user_id,$project_id);
     }
 
 

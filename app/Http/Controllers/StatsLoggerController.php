@@ -8,7 +8,7 @@ use App\Models\Task;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class StatsController extends Controller
+class StatsLoggerController extends Controller
 {
     public static function CheckTask($user_id,$task_id): void
     {

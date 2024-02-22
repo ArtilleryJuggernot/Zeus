@@ -251,7 +251,9 @@ Route::post("/update-priority",[\App\Http\Controllers\PriorityController::class,
 
 
 
-
+Route::get("/weekly_stats",[\App\Http\Controllers\StatsViewController::class,"ViewWeekly"])
+    ->middleware("is_notban","auth")
+    ->name("weekly_stats");
 
 // routes/web.php
 

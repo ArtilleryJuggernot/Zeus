@@ -87,9 +87,10 @@
             @endif
 
             @if(Auth::user())
-                <li><a href="{{route("profile",Auth::user()->id)}}">
-                        Mon profil
-                    </a>
+                <li><a href="{{route("profile",Auth::user()->id)}}">Mon profil</a>
+                    <ul class="submenu">
+                        <li><a href="{{route("weekly_stats")}}"> Statistiques de la semaine</a></li>
+                    </ul>
                 </li>
             @endif
 

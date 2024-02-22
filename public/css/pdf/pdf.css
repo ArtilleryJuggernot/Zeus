@@ -1,0 +1,100 @@
+table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 600px; /* Changer la largeur selon vos besoins */
+}
+
+th, td {
+    border: 1px solid black; /* Couleur des bordures */
+    padding: 8px;
+    text-align: left;
+    color: black; /* Couleur du texte */
+}
+
+td{
+    font-weight: bold;
+}
+
+.center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#zeus-logo{
+    max-width: 250px;
+    max-height: 200px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding-top: 50px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 200px;
+}
+
+.emoji {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.count {
+    font-size: 16px;
+    text-align: center;
+    color: #666;
+    font-weight: bolder;
+    color: black;
+}
+
+/* Couleurs associées à chaque type de ressource */
+.notes {
+    background-color: #ffe6e6; /* Rouge pour les notes */
+}
+
+.folders {
+    background-color: #e6f0ff; /* Bleu pour les dossiers */
+}
+
+.tasks {
+    background-color: #e6ffe6; /* Vert pour les tâches */
+}
+
+.projects {
+    background-color: #ffffcc; /* Jaune pour les projets */
+}
+
+.categories {
+    background-color: #c5aff6; /* Orange pour les catégories */
+}
+
+h2{
+    font-size: 30px;
+}
+
+

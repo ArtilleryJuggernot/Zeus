@@ -30,7 +30,7 @@ class ProfilController extends Controller
 
 
 
-    public function getUserStats($user_id) {
+    public static function getUserStats($user_id) {
         $stats = [];
 
         // Nombre de notes total
