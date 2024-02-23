@@ -37,7 +37,7 @@
 
         <br>
 
-        <input type="text" id="tache_name" name="tache_name" required>
+        <input minlength="1" maxlength="250" type="text" id="tache_name" name="tache_name" required>
 
         <br>
 
@@ -81,8 +81,13 @@
                 @endif
             </div>
 
-
-
+            <form action="{{route("UpdateTaskStatus")}}" method="POST" class="task-form">
+                @csrf
+                <input type="hidden" name="task_id" value="{{$task->task_id}}"> <!-- ID de la tâche -->
+                <label> @if($task->is_finish) Mettre la tâche en cours @else Finir la tâche @endif
+                    <input class="task-checkFinish" type="checkbox" @if($task->is_finish) checked @endif name="task_completed">
+                </label>
+            </form>
 
             <div class="delete">
                 <form action="{{route("delete_task")}}" method="post">
@@ -155,6 +160,14 @@
                 @endif
             </div>
 
+            <form action="{{route("UpdateTaskStatus")}}" method="POST" class="task-form">
+                @csrf
+                <input type="hidden" name="task_id" value="{{$task->task_id}}"> <!-- ID de la tâche -->
+                <label> @if($task->is_finish) Mettre la tâche en cours @else Finir la tâche @endif
+                    <input class="task-checkFinish" type="checkbox" @if($task->is_finish) checked @endif name="task_completed">
+                </label>
+            </form>
+
             <div class="delete">
                 <form action="{{route("delete_task")}}" method="post">
                     <input name="id" type="hidden" value="{{$task->task_id}}"/>
@@ -181,6 +194,22 @@
 
     document.getElementById("is_due").addEventListener("click" ,() => enableDate());
 
+</script>
+
+
+<script>
+    // Sélectionnez toutes les cases à cocher avec la classe "task-checkbox"
+    const checkboxes = document.querySelectorAll(".task-checkFinish");
+
+    // Pour chaque case à cocher, ajoutez un écouteur d'événements pour détecter les changements
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const form = checkbox.parentElement.parentElement // Sélectionnez le formulaire correspondant
+            console.log(form)
+            form.submit(); // Soumettez automatiquement le formulaire lorsque la case à cocher est cochée
+        });
+    });
 </script>
 
 <script src="{{asset("js/accordeon.js")}}"></script>

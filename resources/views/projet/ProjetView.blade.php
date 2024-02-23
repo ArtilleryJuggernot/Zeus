@@ -49,7 +49,7 @@
 
         <br>
 
-        <input type="text" id="tache_name" name="tache_name" required>
+        <input minlength="1" maxlength="250" type="text" id="tache_name" name="tache_name" required>
 
         <br>
 
@@ -82,6 +82,14 @@
                 @endif
             </div>
 
+
+            <form action="{{route("UpdateTaskStatus")}}" method="POST" class="task-form">
+                @csrf
+                <input type="hidden" name="task_id" value="{{$taskT->task_id}}"> <!-- ID de la tâche -->
+                <label> @if($taskT->is_finish) Mettre la tâche en cours @else Finir la tâche @endif
+                    <input class="task-checkFinish" type="checkbox" @if($taskT->is_finish) checked @endif name="task_completed">
+                </label>
+            </form>
 
             <div class="remove-from-project">
                 <form action="{{route("remove_task_from_project")}}" method="post">
@@ -121,6 +129,15 @@
                     <span>Date limite : {{$taskF->due_date}}</span>
                 @endif
             </div>
+
+
+            <form action="{{route("UpdateTaskStatus")}}" method="POST" class="task-form">
+                @csrf
+                <input type="hidden" name="task_id" value="{{$taskF->task_id}}"> <!-- ID de la tâche -->
+                <label> @if($taskF->is_finish) Mettre la tâche en cours @else Finir la tâche @endif
+                    <input class="task-checkFinish" type="checkbox" @if($taskF->is_finish) checked @endif name="task_completed">
+                </label>
+            </form>
 
 
             <div class="remove-from-project">
@@ -282,6 +299,22 @@
 
 </script>
 <script src="{{asset("js/accordeon.js")}}"></script>
+
+<script>
+    // Sélectionnez toutes les cases à cocher avec la classe "task-checkbox"
+    const checkboxes = document.querySelectorAll(".task-checkFinish");
+
+    // Pour chaque case à cocher, ajoutez un écouteur d'événements pour détecter les changements
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const form = checkbox.parentElement.parentElement // Sélectionnez le formulaire correspondant
+            console.log(form)
+            form.submit(); // Soumettez automatiquement le formulaire lorsque la case à cocher est cochée
+        });
+    });
+</script>
+
 </html>
 
 

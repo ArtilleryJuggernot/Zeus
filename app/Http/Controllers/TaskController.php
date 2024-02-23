@@ -301,4 +301,38 @@ class TaskController extends Controller
         return redirect()->back()->with(["success" => "Tâche supprimé avec succès"]);
     }
 
+
+    public function UpdateFinishStatus(Request $request)
+    {
+        //dd($request);
+
+
+
+        $validateData = $request->validate([
+            "task_id" => ["required", "integer"],
+        ]);
+
+        if ($request->has("task_completed")) $status_task = "on";
+        else $status_task = "off";
+
+        $task_id = $validateData["task_id"];
+
+        $task = Task::find($task_id);
+
+        if (!$task) return redirect()->route("home")->with("failure","La tâche modifié n'existe pas");
+
+        if ($task->owner_id != Auth::user()->id) return redirect()->route("home")->with("failure","Vous n'avez pas les permissions pour modifié cette tâche");
+
+
+        if ($status_task == "on") $task->is_finish = true;
+
+        else $task->is_finish = false;
+
+
+        $task->save();
+
+        return redirect()->back()->with("success","Tâche modifié avec succès");
+
+    }
+
 }

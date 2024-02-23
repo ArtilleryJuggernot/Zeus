@@ -110,9 +110,14 @@ Route::post("/save-task",[\App\Http\Controllers\TaskController::class,"Save"])
 Route::post("/delete_task",[\App\Http\Controllers\TaskController::class,"Delete"])
     ->middleware(["is_notban","auth"])
     ->name("delete_task");
+
+Route::post("/UpdateTaskStatus",[\App\Http\Controllers\TaskController::class,"UpdateFinishStatus"])
+    ->middleware(["is_notban","auth"])
+    ->name("UpdateTaskStatus");
+
 // Search
 
-// HACK
+
 Route::post("/do_search",[\App\Http\Controllers\SearchController::class,"doSearch"])
     ->middleware(["is_notban","auth"]);
 
