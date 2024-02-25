@@ -18,7 +18,7 @@ class StatsViewController extends Controller
         $stats = $this->getStatsBetweenTwoDate(
             $user_id,
             $monday->format('Y-m-d'),
-            $sunday->format('Y-m-d')
+            $sunday->addDay()->format('Y-m-d') // Avant dimanche 00h -> plutot lundi (prochain) 00h
         );
 
         $statsOverall = ProfilController::getUserStats($user_id);
