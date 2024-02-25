@@ -151,11 +151,12 @@ class ProjetController extends Controller
             ]);
         }
 
+        $user_id = Auth::user()->id;
 
         $name = $validateData["tache_name"];
         $task = new Task();
         $task->task_name = $name;
-        $task->owner_id = Auth::user()->id;
+        $task->owner_id = $user_id;
         $task->description = "# " . $name;
         if ($request->has("is_due") && $validateData["is_due"] == "on") {
             $task->due_date = $validateData["dt_input"]; // Date limite
@@ -175,7 +176,7 @@ class ProjetController extends Controller
             ->max('pos');
         $inside->pos = $max + 1;
         $inside->save();
-
+        LogsController::createTask($user_id,$task->getKey(),$name,"SUCCESS");
         return redirect()->back()->with(["success" => "La tâche à bien été créer"]);
 
     }
@@ -204,13 +205,17 @@ class ProjetController extends Controller
         ]);
         $Task_id = $validateData["task_id"];
         $Project_id = $validateData["project_id"];
+        $user_id = Auth::user()->id;
 
         $projet = Projet::find($Project_id);
 
         if (!$projet) return redirect()->route("home")->with("failure", "Le projet auxquel vous tentez d'accéder n'existe pas");
 
         $projet->tasks()->detach($Task_id);
-        Task::find($Task_id)->delete();
+
+        $task = Task::find($Task_id);
+        LogsController::deleteTask($user_id,$Task_id,$task->task_name,"SUCCESS");
+        $task->delete();
         return redirect()->back()->with(["success" => "Tâche supprimé du projet avec succès"]);
     }
 
@@ -227,6 +232,7 @@ class ProjetController extends Controller
 
         $task->is_finish = true;
         $task->save();
+        LogsController::saveTask();
         return redirect()->back()->with(["success" => "Tâche du projet validée avec succès"]);
     }
 
