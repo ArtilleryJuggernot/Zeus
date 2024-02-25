@@ -225,6 +225,9 @@ class ProjetController extends Controller
         $validateData = $request->validate([
             "task_id" => ["required", "integer"]
         ]);
+
+        $user_id = Auth::user()->id;
+
         $id = $validateData["task_id"];
         $task = Task::find($id);
 
@@ -232,7 +235,7 @@ class ProjetController extends Controller
 
         $task->is_finish = true;
         $task->save();
-        LogsController::saveTask();
+        LogsController::saveTask($user_id,"on","SUCCESS",$task->getKey());
         return redirect()->back()->with(["success" => "Tâche du projet validée avec succès"]);
     }
 
@@ -245,10 +248,13 @@ class ProjetController extends Controller
         $id = $validateData["task_id"];
         $task = Task::find($id);
 
+        $user_id = Auth::user()->id;
+
         if (!$task) return redirect()->route("home")->with("failure", "La tache que vous tentez de modifier n'existe pas");
 
         $task->is_finish = false;
         $task->save();
+        LogsController::saveTask($user_id,"off","SUCCESS",$task->getKey());
         return redirect()->back()->with(["success" => "Tâche remise dans le projet avec succès"]);
     }
 
