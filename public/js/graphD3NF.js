@@ -17,7 +17,7 @@ export function createGraph(data) {
     const links = [];
 
     // Ajout du nœud Root
-    nodes.push({ id: 'Root', name: 'Root' });
+    nodes.push({ id: 'Root', name: 'Root', color : 'green' });
 
     // Fonction pour récursivement parcourir les données et les transformer en nœuds et liens
     function parseData(data, parentId) {
@@ -31,7 +31,7 @@ export function createGraph(data) {
                     //console.log(value[0].file)
                     const fileId = value[0].id;
                     const fileName = value[0].file;
-                    nodes.push({ id: fileId, name: fileName });
+                    nodes.push({ id: fileId, name: fileName , color : "steelblue"});
                     links.push({ source: parentId, target: fileId });
                 } else {
                     // Si c'est un dossier, continuer à parcourir récursivement
@@ -42,13 +42,13 @@ export function createGraph(data) {
                 let nodeId = `${parentId}-${key}`;
 
                 // Fichier seul
-                if(value.hasOwnProperty("file") && value.hasOwnProperty("id")) nodes.push({ id: nodeId, name: value.file });
+                if(value.hasOwnProperty("file") && value.hasOwnProperty("id")) nodes.push({ id: nodeId, name: value.file, color : "steelblue" });
                 else {
                     console.log(key)
                     console.log(nodeId)
 
                     if(key === "content") nodeId = `${parentId}`;
-                    else nodes.push({ id: nodeId, name:  key });
+                    else nodes.push({ id: nodeId, name:  key , color : "orange"});
                 }
 
                 links.push({ source: parentId, target: nodeId });
@@ -81,8 +81,9 @@ export function createGraph(data) {
         .data(nodes)
         .enter().append("circle")
         .attr("r", 5)
-        .attr("fill", 'steelblue')
+        .attr("fill", d => d.color) // Utilisez la propriété color pour définir la couleur de remplissage
         .call(drag(simulation));
+
 
     // Ajouter les noms des nœuds
     const labels = svg.append("g")
@@ -134,6 +135,23 @@ export function createGraph(data) {
             .on("start", dragstarted)
             .on("drag", dragged)
             .on("end", dragended);
+    }
+
+    const zoom = d3.zoom()
+        .scaleExtent([0.1, 10]) // Définir les limites de zoom
+        .on("zoom", zoomed);
+
+    // Appliquer le zoom au conteneur SVG
+    svg.call(zoom)
+        .on("wheel", zoomed);
+
+// Fonction de zoom en fonction de l'événement de la souris
+    function zoomed(event) {
+        // Récupérer la transformation du zoom actuel
+        const transform = event.transform;
+
+        // Appliquer la transformation au conteneur SVG
+        svg.attr("transform", transform);
     }
 
     return svg.node();
