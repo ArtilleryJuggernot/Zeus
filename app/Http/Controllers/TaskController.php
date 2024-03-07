@@ -34,7 +34,7 @@ class TaskController extends Controller
         ]);
     }
 
-    protected function getTaskListWithCategories($user_id, $is_finish)
+    function getTaskListWithCategories($user_id, $is_finish)
     {
         $tasks = Task::where([
             ["owner_id", $user_id],

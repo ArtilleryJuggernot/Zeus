@@ -75,6 +75,18 @@ class ProjetController extends Controller
 
         else $progression =   round((count($taskFinish) / (count($taskTODO) + count($taskFinish))) * 100,3);
 
+
+
+        $tasksNotInProject = Task::where([
+            ["owner_id", $user_id],
+            ["is_finish", 0],
+        ])
+            ->whereDoesntHave('projects')
+            ->get();
+
+
+        //dd($tasksWithoutProjet);
+
         //dd($tasks);
 
 
