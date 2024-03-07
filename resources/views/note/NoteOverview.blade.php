@@ -63,6 +63,10 @@
     .center {
         text-align: center;
     }
+
+    .nodes-inst{
+        font-weight: bold;
+    }
 </style>
 </html>
 @include("includes.footer")
