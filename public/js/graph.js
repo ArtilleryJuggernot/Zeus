@@ -1,4 +1,4 @@
-function graphSet(canvasId,dataset) {
+export function graphSet(canvasId,dataset) {
     // Récupération des données provenant de Blade
 
     // Palette de couleurs par type de ressource

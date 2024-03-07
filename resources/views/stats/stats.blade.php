@@ -240,7 +240,10 @@ $datasetOverall = \App\Http\Controllers\GraphController::StatsToGraphDataset($st
 @endphp
 
 
-<script>
+<script type="module">
+
+    import {graphSet} from "../../../public/js/graph.js";
+    
     let datasetWeekly = {!! json_encode($datasetWeekly) !!};
     graphSet("ChartWeekly",datasetWeekly)
 
