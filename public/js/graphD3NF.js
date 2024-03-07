@@ -1,59 +1,8 @@
-function graphSet(canvasId,dataset) {
-    // Récupération des données provenant de Blade
-
-    // Palette de couleurs par type de ressource
-    const colorPalette = {
-        notes: '#FF5733',
-        folders: '#3498DB',
-        tasks: '#2ECC71',
-        projects: '#F1C40F',
-        categories: '#8E44AD'
-    };
-
-    // Extraction des dates et types de ressources
-    const dates = Object.keys(dataset);
-
-
-    const resourceTypes = ["notes","folders","tasks","projects","categories"];
-
-
-
-    // Création des datasets pour Chart.js
-    const datasets = resourceTypes.map(type => {
-        return {
-            label: type,
-            backgroundColor: 'transparent',
-            borderColor: colorPalette[type],
-            data: dates.map(date => dataset[date][type] || 0), // Si aucune donnée, mettre 0
-            fill: false
-        };
-    });
-
-    // Création du graphique avec Chart.js
-    var ctx = document.getElementById(canvasId).getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: dates,
-            datasets: datasets
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-}
-
-
 // Import de la bibliothèque D3.js
-import * as d3 from 'd3';
 
 // Fonction pour créer le graphique D3 Force
-function createGraph(data) {
-    const width = 928;
+export function createGraph(data) {
+    const width = 1600;
     const height = 680;
 
     // Création du conteneur SVG
@@ -67,30 +16,54 @@ function createGraph(data) {
     const nodes = [];
     const links = [];
 
-    // Fonction pour récursivement parcourir les données et les transformer en noeuds et liens
-    function parseData(data, parentId = null) {
+    // Ajout du nœud Root
+    nodes.push({ id: 'Root', name: 'Root' });
+
+    // Fonction pour récursivement parcourir les données et les transformer en nœuds et liens
+    function parseData(data, parentId) {
         for (const [key, value] of Object.entries(data)) {
-            const nodeId = parentId ? `${parentId}-${key}` : key;
-            nodes.push({ id: nodeId, name: key });
+
             if (Array.isArray(value)) {
-                value.forEach((file, index) => {
-                    const fileId = `${nodeId}-${index}`;
-                    nodes.push({ id: fileId, name: file.file, type: 'file' });
-                    links.push({ source: nodeId, target: fileId });
-                });
-            } else {
+                if (value.length === 1 && value[0].hasOwnProperty('file') && value[0].hasOwnProperty('id')) {
+                    // Si c'est une note, ajouter le lien vers le parent
+                    //console.log("OUIIIIII")
+                    //console.log(value[0].id)
+                    //console.log(value[0].file)
+                    const fileId = value[0].id;
+                    const fileName = value[0].file;
+                    nodes.push({ id: fileId, name: fileName });
+                    links.push({ source: parentId, target: fileId });
+                } else {
+                    // Si c'est un dossier, continuer à parcourir récursivement
+                    parseData(value, parentId);
+                }
+            } else if (typeof value === 'object' && value !== null) {
+                // Si c'est un sous-dossier, créer un nouveau nœud pour lui et parcourir récursivement
+                let nodeId = `${parentId}-${key}`;
+
+                // Fichier seul
+                if(value.hasOwnProperty("file") && value.hasOwnProperty("id")) nodes.push({ id: nodeId, name: value.file });
+                else {
+                    console.log(key)
+                    console.log(nodeId)
+
+                    if(key === "content") nodeId = `${parentId}`;
+                    else nodes.push({ id: nodeId, name:  key });
+                }
+
+                links.push({ source: parentId, target: nodeId });
                 parseData(value, nodeId);
             }
         }
     }
 
     // Appeler la fonction pour analyser les données
-    parseData(data);
+    parseData(data, 'Root');
 
     // Création du graphique D3 Force
     const simulation = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links).id(d => d.id).distance(100))
-        .force("charge", d3.forceManyBody().strength(-150))
+        .force("charge", d3.forceManyBody().strength(-50))
         .force("center", d3.forceCenter(0, 0));
 
     // Ajouter les liens
@@ -102,18 +75,23 @@ function createGraph(data) {
         .attr("stroke-opacity", 0.6)
         .attr("stroke-width", 1);
 
-    // Ajouter les noeuds
+    // Ajouter les nœuds
     const node = svg.append("g")
         .selectAll("circle")
         .data(nodes)
         .enter().append("circle")
-        .attr("r", d => d.type === 'file' ? 3 : 5)
-        .attr("fill", d => d.type === 'file' ? 'orange' : 'steelblue')
+        .attr("r", 5)
+        .attr("fill", 'steelblue')
         .call(drag(simulation));
 
-    // Ajouter les noms des noeuds
-    node.append("title")
-        .text(d => d.name);
+    // Ajouter les noms des nœuds
+    const labels = svg.append("g")
+        .selectAll("text")
+        .data(nodes)
+        .enter().append("text")
+        .text(d => d.name)
+        .attr("text-anchor", "middle")
+        .attr("dy", 15); // Ajuster la position verticale des étiquettes
 
     // Mettre à jour les positions des éléments à chaque tick de la simulation
     simulation.on("tick", () => {
@@ -126,9 +104,14 @@ function createGraph(data) {
         node
             .attr("cx", d => d.x)
             .attr("cy", d => d.y);
+
+        // Mettre à jour les positions des étiquettes
+        labels
+            .attr("x", d => d.x)
+            .attr("y", d => d.y);
     });
 
-    // Fonction pour permettre le déplacement des noeuds
+    // Fonction pour permettre le déplacement des nœuds
     function drag(simulation) {
         function dragstarted(event) {
             if (!event.active) simulation.alphaTarget(0.3).restart();

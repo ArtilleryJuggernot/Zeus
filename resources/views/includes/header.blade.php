@@ -71,6 +71,15 @@
                 </li>
             @endif
 
+            @if(Auth::user())
+                <li>
+                    <a>🚧 Mes modules</a>
+                    <ul class="submenu">
+                        <li><a href="{{ route('livre_overview') }}">📚 Mes livres</a></li>
+                    </ul>
+                </li>
+            @endif
+
 
             @if(Auth::user())
                 <li><a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

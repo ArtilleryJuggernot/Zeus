@@ -7,6 +7,7 @@ use App\Models\Folder;
 use App\Models\Note;
 use App\Models\Projet;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,13 +18,12 @@ class ProfilController extends Controller
     {
         $user_id = Auth::user()->id;
         $stats = $this->getUserStats($user_id);
-        if($id != $user_id){
-            return redirect()->route("home")->with("failure","Vous n'êtes pas autorisé à visiter un profil");
-        }
+        // Sauf si administrateur
+        if($id != $user_id && $user_id != 1) return redirect()->route("home")->with("failure","Vous n'êtes pas autorisé à visiter un profil autre que le votre");
 
         return view("profile.user_profile",
         [
-            "user" => Auth::user(),
+            "user" => User::find($id),
             "stats" => $stats,
         ]);
     }

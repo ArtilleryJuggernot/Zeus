@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Liste des projets</title>
+    <title>Liste des livres</title>
     <link rel="stylesheet" href="{{asset("css/folder/Overview.css")}}"> <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
     <link rel="stylesheet" href="{{asset("css/category.css")}}">
 
@@ -17,28 +17,45 @@
 
 
 <body>
-<div class="folders-header">
-    <button class="active">Mes Projets</button>
-    <button>Projets partagés</button>
-</div>
+
 
 <div class="add-projet">
-    <h2>Ajouter un projet : </h2>
-    <form action="{{ route('store_projet') }}" method="POST">
+    <h2>Ajouter un livre : </h2>
+    <form action="{{ route('store_livre') }}" method="POST">
         @csrf <!-- Ajout du jeton CSRF pour la sécurité -->
-        <label for="projet_name">Nom du projet :</label>
+        <label for="livre_name">Nom du livre :</label>
+        <input type="text" id="livre_name" name="livre_name" required>
         <br>
-        <input type="text" id="projet_name" name="projet_name" required>
+        <label for="startPage">A quelle page commence le livre ?</label>
+        <input type="number" min="0" value="0" id="startPage" name="startPage">
         <br>
-        <input type="submit" value="Créer le projet">
+        <label for="endPage">A quelle page fini le livre ?</label>
+        <input type="number" min="0" id="endPage" name="endPage">
+        <br>
+        <label for="delta">En combien de temps souhaitez vous finir le livre ?</label>
+        <input type="number" min="0" id="delta_num" name="dt_num">
+
+        <select name="delta_type" id="category">
+                <option value="jours">jours</option>
+                <option value="semaines">semaines</option>
+                <option value="mois">mois</option>
+        </select>
+
+
+        <label></label>
+
+
+
+
+        <input type="submit" value="Commencez le livre">
     </form>
 </div>
 
-<h3>Liste des projets en cours</h3>
+<h3>Liste des livres en cours</h3>
 
 <div class="folders">
     <!-- Boucle pour afficher les dossiers -->
-    @foreach($userProjectUnDone as $projet)
+    @foreach($userLivreUnDone as $projet)
         <div class="folder-card">
             <a href="{{route("projet_view",$projet->id)}}" ><h3>{{ $projet->name}}</h3></a>
             <form action="{{route("archive_project")}}" method="POST">
@@ -74,7 +91,7 @@
 
 <div class="folders">
     <!-- Boucle pour afficher les dossiers -->
-    @foreach($userProjetsDone as $projet)
+    @foreach($userLivreDone as $projet)
         <div class="folder-card">
             <a href="{{route("projet_view",$projet->id)}}" ><h3>{{ $projet->name}}</h3></a>
             <form action="{{route("archive_project")}}" method="POST">

@@ -10,6 +10,7 @@
     <title>Weekly Statistics</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{asset("js/graph.js")}}"></script>
+
     @if($render)
         <link rel="stylesheet" href="{{ base_path('public/css/pdf/pdf.css') }}">
     @else

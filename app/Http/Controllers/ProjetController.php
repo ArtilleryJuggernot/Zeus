@@ -30,6 +30,7 @@ class ProjetController extends Controller
         $projects = Projet::where([
             ["owner_id", "=", $user_id],
             ["is_finish", "=", $is_finish],
+            ["type" ,"=","none"]
         ])->get();
 
         foreach ($projects as $project) {

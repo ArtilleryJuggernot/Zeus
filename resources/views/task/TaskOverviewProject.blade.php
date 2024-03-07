@@ -162,30 +162,10 @@
 
 </html>
 
-<script>
-    function enableDate(){
-        let radio_is_due = document.getElementById("is_due").checked
-        let dt_input = document.getElementById("dt_input").disabled = !radio_is_due;
-    }
+<script src="{{asset("js/task_enable_date.js")}}"></script>
 
-    document.getElementById("is_due").addEventListener("click" ,() => enableDate());
+<script src="{{asset("js/task_update.js")}}"></script>
 
-</script>
-
-<script>
-    // Sélectionnez toutes les cases à cocher avec la classe "task-checkbox"
-    const checkboxes = document.querySelectorAll(".task-checkFinish");
-
-    // Pour chaque case à cocher, ajoutez un écouteur d'événements pour détecter les changements
-
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const form = checkbox.parentElement.parentElement // Sélectionnez le formulaire correspondant
-            console.log(form)
-            form.submit(); // Soumettez automatiquement le formulaire lorsque la case à cocher est cochée
-        });
-    });
-</script>
 
 <script src="{{asset("js/accordeon.js")}}"></script>
 
