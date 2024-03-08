@@ -138,7 +138,8 @@ class ProjetController extends Controller
                     "perm_user" => $perm_user,
                     "ressourceCategories" => $resourceCategories,
                     "ownedCategories" => $ownedCategories,
-                    "notOwnedCategories" => $notOwnedCategories
+                    "notOwnedCategories" => $notOwnedCategories,
+                    "tasksNotInProject" => $tasksNotInProject
                 ]);
         }
 
@@ -350,8 +351,55 @@ class ProjetController extends Controller
     }
 
 
+    public function AddExistingTaskToProject(Request $request)
+    {
+
+        $task_id = $request->get("task_id");
+        $project_id = $request->get("project_id");
+
+        $user_id = Auth::user()->id;
+        $task = Task::find($task_id);
+
+        if(!$task) return redirect()->route("home")->with("failure","La tâche que vous souhaitez ajouter n'existe pas");
+
+        if ($task->owner_id != $user_id) return redirect()->route("home")->with("failure","Vous n'avez pas les autorisations");
 
 
+
+        $inside = new insideprojet();
+        $inside->task_id = $task_id;
+        $inside->projet_id = $project_id;
+
+        // Get la nouvelle pos  = max + 1
+        $max = InsideProjet::where('projet_id', $project_id)
+            ->max('pos');
+        $inside->pos = $max + 1;
+        $inside->save();
+        return redirect()->back()->with(["success" => "La tâche a bien été ajouter à votre projet"]);
+
+    }
+
+
+    public function UnlinkTaskFromProject(Request $request)
+    {
+       $task_id  = $request->get("task_id");
+       $project_id = $request->get("project_id");
+       $user_id = Auth::user()->id;
+
+       $task = Task::find($task_id);
+
+        if(!$task) return redirect()->route("home")->with("failure","La tâche que vous souhaitez ajouter n'existe pas");
+
+        if ($task->owner_id != $user_id) return redirect()->route("home")->with("failure","Vous n'avez pas les autorisations");
+
+        $inside = insideprojet::where([
+            "task_id" => $task_id,
+            "projet_id" => $project_id
+        ])->delete();
+        
+        return  redirect()->back()->with("success","Tâche dissocié du projet avec succès");
+
+    }
 
 
 }

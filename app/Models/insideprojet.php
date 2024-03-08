@@ -12,5 +12,4 @@ class insideprojet extends Model
     public $timestamps = false;
 
 
-
 }

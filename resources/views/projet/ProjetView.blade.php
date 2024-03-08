@@ -19,7 +19,6 @@
     <h3>{{session("success")}}</h3>
 @endif
 
-
 @if ($errors->any())
     <div class="alert alert-danger">
         <h2>Il y a eu des erreurs</h2>
@@ -59,6 +58,23 @@
         <input required disabled id="dt_input" type="date" name="dt_input">
         <input hidden name="project_id" value="{{$projet->id}}">
         <input type="submit" value="Créer la tâche">
+    </form>
+</div>
+
+
+<div class="add-task-already-created">
+    <h2>Rajouter une tâche hors-projet dans ce projet</h2>
+    <form action="{{route("add_existing_to_project")}}" method="post">
+    <select name="task_id" id="task_id">
+        <option name="task_id" selected value="null">Sélectionnez une tâche</option>
+        @foreach($tasksNotInProject as $task)
+            <option name="task_id" value="{{ $task->task_id}}">{{ $task->task_name }}</option>
+        @endforeach
+        @csrf
+        <input type="hidden" name="project_id" value="{{$projet->id}}">
+        <button type="submit">Ajouter la tâche au projet</button>
+    </select>
+
     </form>
 </div>
 
@@ -103,6 +119,16 @@
                 <form action="{{route("check_task_project")}}" method="post">
                     <input name="task_id" type="hidden" value="{{$taskT->task_id}}"/>
                     <button type="submit">Marquer la tâche comme réalisée</button>
+                    @csrf
+                </form>
+            </div>
+
+
+            <div class="check-task">
+                <form action="{{route("unlink_task_from_project")}}" method="post">
+                    <input name="task_id" type="hidden" value="{{$taskT->task_id}}"/>
+                    <input name="project_id" type="hidden" value="{{$projet->id}}">
+                    <button class="del" type="submit">Dissocier la tâche du projet</button>
                     @csrf
                 </form>
             </div>
@@ -155,6 +181,10 @@
                     @csrf
                 </form>
             </div>
+
+
+
+
         </div>
     @endforeach
 </div>
@@ -296,6 +326,8 @@
 
 </html>
 
+
+{{dd($tasksNotInProject)}}
 
 
 

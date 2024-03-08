@@ -62,11 +62,23 @@
 <style>
     .center {
         text-align: center;
+        color: white;
     }
 
     .nodes-inst{
         font-weight: bold;
     }
+
+
+
+    body{
+        background: url({{asset("img/galaxy_background.png")}}) no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
+
 </style>
 </html>
 @include("includes.footer")

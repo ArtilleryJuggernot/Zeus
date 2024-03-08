@@ -43,6 +43,10 @@ Route::post("/archive_project/",[\App\Http\Controllers\ProjetController::class,"
     ->name("archive_project");
 
 
-Route::post("/add_existing_to_project",[\App\Http\Controllers\ProjetController::class,"AddExistingTaskToProject"]) // TODO
+Route::post("/add_existing_to_project",[\App\Http\Controllers\ProjetController::class,"AddExistingTaskToProject"])
 ->middleware(["is_notban","auth"])
     ->name("add_existing_to_project");
+
+Route::post("/unlink_task_from_project",[\App\Http\Controllers\ProjetController::class,"UnlinkTaskFromProject"])
+    ->middleware(["is_notban","auth"])
+    ->name("unlink_task_from_project");

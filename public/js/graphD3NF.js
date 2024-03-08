@@ -102,6 +102,7 @@ export function createGraph(data) {
         .data(nodes)
         .enter().append("text")
         .text(d => d.name)
+        .attr("fill","white")
         .attr("class", "nodes-inst")
         .attr("text-anchor", "middle")
         .attr("dy", 25); // Ajuster la position verticale des étiquettes
