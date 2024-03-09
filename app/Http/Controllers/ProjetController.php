@@ -291,6 +291,18 @@ class ProjetController extends Controller
 
         // Avant de supprimé le projet, on supprime les tâche qui lui sont associé
 
+        // insideprojet::where("projet_id", $project_id)->delete();
+        $inside = insideprojet::where("projet_id", $project_id)->get();
+
+        // Suppression des tâches lié aux projets
+        foreach ($inside as $i){
+            insideprojet::where([
+                "projet_id" => $project_id,
+                "task_id" => $i->task_id
+            ])->delete();
+            Task::find($i->task_id)->delete();
+        }
+
         insideprojet::where("projet_id", $project_id)->delete();
 
 
@@ -396,7 +408,7 @@ class ProjetController extends Controller
             "task_id" => $task_id,
             "projet_id" => $project_id
         ])->delete();
-        
+
         return  redirect()->back()->with("success","Tâche dissocié du projet avec succès");
 
     }
