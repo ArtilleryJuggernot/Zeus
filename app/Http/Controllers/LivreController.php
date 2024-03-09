@@ -60,6 +60,7 @@ class LivreController extends Controller
     public function Store(Request $request)
     {
 
+        $user_id = Auth::user()->id;
         $livreName = $request->get('livre_name');
         $startPage = intval($request->get('startPage'));
         $endPage = intval($request->get('endPage'));
@@ -112,6 +113,7 @@ class LivreController extends Controller
         $projet->type = 'livre'; // Type de projet livre
         $projet->owner_id = Auth::user()->id;
         $projet->save();
+        LogsController::CreateProject($user_id,$projet->getKey(),$projet->name);
 
         $user_id = Auth::user()->id;
 
@@ -134,6 +136,7 @@ class LivreController extends Controller
             // Calcul de la date limite en fonction de l'unité de temps spécifiée
             $task->due_date = $startDate->copy()->addDays($i); // Ajoute $i jours à la date de début
             $task->save();
+            LogsController::createTask($user_id,$task->getKey(),$task->task_name,"SUCCESS");
 
             $inside_project = new insideprojet();
             $inside_project->task_id = $task->getKey();
