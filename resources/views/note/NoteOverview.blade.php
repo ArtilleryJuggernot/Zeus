@@ -13,9 +13,18 @@
 
 <h1 class="center">Arbre de notes de {{\Illuminate\Support\Facades\Auth::user()->name}}</h1>
 
-<h2 class="center">Graphique vue d'ensemble</h2>
-<!-- Ajouter un conteneur pour le graphique -->
-<div id="graph-container"></div>
+
+@if(count($directoryContent) != 0)
+
+    <h2 class="center">Graphique vue d'ensemble</h2>
+    <!-- Ajouter un conteneur pour le graphique -->
+    <div id="graph-container"></div>
+
+@else
+    <h2 class="center">Vous n'avez pas encore crée de dossier / notes, commencez par en créer pour voir le graphique</h2>
+@endif
+
+
 
 
 @if(false)
@@ -40,8 +49,7 @@
     });
 </script>
 @endif
-
-
+@if(count($directoryContent) != 0)
 <script type="module">
     // Importer la fonction createGraph depuis le fichier graph.js
 
@@ -58,7 +66,7 @@
     // Ajouter le graphique au conteneur dans la page HTML
     document.getElementById('graph-container').appendChild(graph);
 </script>
-
+@endif
 
 
 </body>
