@@ -7,6 +7,7 @@ use App\Models\insideprojet;
 use App\Models\possede_categorie;
 use App\Models\Projet;
 use App\Models\Task;
+use App\Models\task_priorities;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,8 +41,6 @@ class LivreController extends Controller
     }
 
 
-
-
     protected function getLivreCategories($projectId, $user_id)
     {
         $resourceCategories = possede_categorie::where('ressource_id', $projectId)
@@ -57,11 +56,6 @@ class LivreController extends Controller
         return $ownedCategories;
     }
 
-
-    public function View()
-    {
-
-    }
 
     public function Store(Request $request)
     {
@@ -133,7 +127,7 @@ class LivreController extends Controller
             $taskEndPage = min($startPage + ($i + 1) * $pagesPerTask - 1, $endPage); // Limite supérieure est la dernière page
 
             // Définition du nom de la tâche
-            $task->task_name = "Lire les pages " . $taskStartPage . " à " . $taskEndPage;
+            $task->task_name = "(". $livreName . ") Lire les pages " . $taskStartPage . " à " . $taskEndPage;
 
             $task->description = "Lire les pages " . ($startPage + $i * $pagesPerTask) . " à " . ($startPage + ($i + 1) * $pagesPerTask - 1);
 
@@ -150,6 +144,44 @@ class LivreController extends Controller
 
         return redirect()->back()->with("success","Votre livre a bien été créé !");
     }
+
+
+    // Fonction lancé dès la connexion de l'utilisateur
+    // Met en priorité les tâches lié à la lecture à la date d'aujourd'hui pour qu'elle apparaisse sur le menu
+    public static function SetTodayBookReadInPriority()
+    {
+        $user_id = Auth::user()->id;
+        $ListbookProject = Projet::where([
+            "owner_id" => $user_id,
+            "type" => "livre"
+        ])->get();
+
+
+        foreach ($ListbookProject as $bookProject){
+            $insideProjectTask = insideprojet::where("projet_id","=",$bookProject->id)->get();
+            foreach ($insideProjectTask as $inside){
+                $task = Task::find($inside->task_id);
+                if($task->due_date == Carbon::today()->format("Y-m-d")){
+
+                    if (count(task_priorities::where(
+                        ["user_id" => $user_id,
+                         "task_id" => $task->task_id
+                        ]
+                    )->get()) > 0)
+                        break;
+
+                    $priority = new task_priorities();
+                    $priority->user_id = $user_id;
+                    $priority->task_id = $task->task_id;
+                    $priority->priority = "Prioritaire";
+                    $priority->save();
+                    break;
+                }
+            }
+
+        }
+    }
+
 
 
 }

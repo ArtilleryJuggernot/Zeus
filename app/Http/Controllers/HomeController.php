@@ -15,14 +15,23 @@ class HomeController extends Controller
     {
         $user = Auth::user();
 
-        // Tache
+
+        // Mettre en priorité les tâches à faire aujourd'hui (Livre)
+
+        LivreController::SetTodayBookReadInPriority();
+
 
         // Tache à faire avec date limite en cours
-        $tachesTimed = Task::where([
-            ["owner_id",$user->id],
-            ["due_date",">",Carbon::today()],
-            ["is_finish",0]
-        ])->get();
+        $tachesTimed  = Task::whereDoesntHave('projects', function($query) {
+        $query->where('type', 'livre');
+    })->where([
+        ["owner_id", $user->id],
+        ["due_date", ">", Carbon::today()],
+        ["is_finish", 0]
+    ])->get();
+
+
+
 
         // Tache à faire passé
         $tachesPasse = Task::where([
@@ -41,7 +50,6 @@ class HomeController extends Controller
             ->get();
 
         $task_priority = PriorityController::sortTasksByPriority($task_priorities);
-
 
         return view("home",[
             "user" => $user,
