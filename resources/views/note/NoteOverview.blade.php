@@ -18,10 +18,14 @@
 <div id="graph-container"></div>
 
 
-<h2 class="center">Arborescence</h2>
-<div class=" file-explorer">
-    @include('arbo.folder', ['contents' => $directoryContent])
-</div>
+@if(false)
+    <h2 class="center">Arborescence</h2>
+    <div class=" file-explorer">
+        @include('arbo.folder', ['contents' => $directoryContent])
+    </div>
+
+
+
 
 <script>
     let folders = document.querySelectorAll(".folder");
@@ -35,7 +39,7 @@
         });
     });
 </script>
-
+@endif
 
 
 <script type="module">

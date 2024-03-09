@@ -3,7 +3,7 @@
 // Fonction pour créer le graphique D3 Force
 export function createGraph(data) {
     const width = 1600;
-    const height = 680;
+    const height = 900;
 
     // Création du conteneur SVG
     const svg = d3.create("svg")
