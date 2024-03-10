@@ -17,9 +17,10 @@ class ProfilController extends Controller
     public function View(Request $request, int $id)
     {
         $user_id = Auth::user()->id;
-        $stats = $this->getUserStats($user_id);
+        $stats = $this->getUserStats($id);
         // Sauf si administrateur
-        if($id != $user_id && $user_id != 1) return redirect()->route("home")->with("failure","Vous n'êtes pas autorisé à visiter un profil autre que le votre");
+
+        if(($id != $user_id && $user_id != 1) || User::find($id) == null) return redirect()->route("home")->with("failure","Vous n'êtes pas autorisé à visiter un profil autre que le votre");
 
         return view("profile.user_profile",
         [

@@ -63,30 +63,35 @@ class StatsViewController extends Controller
         $notesCreated = stats::where('user_id', $userId)
             ->whereBetween('created_at', [$dt1, $dt2])
             ->where('action', '=', 'CREATE NOTE')
+            ->orderBy('created_at','asc')
             ->get();
 
         // Nombre de dossiers créés entre d1 et d2
         $foldersCreated = stats::where('user_id', $userId)
             ->whereBetween('created_at', [$dt1, $dt2])
             ->where('action', '=', 'CREATE FOLDER')
+            ->orderBy('created_at','asc')
             ->get();
 
         // Nombre de tâches créées entre d1 et d2
         $tasksCreated = stats::where('user_id', $userId)
             ->whereBetween('created_at', [$dt1, $dt2])
             ->where('action', '=', 'CREATE TASK')
+            ->orderBy('created_at','asc')
             ->get();
 
         // Nombre de projets créés entre d1 et d2
         $projectsCreated = stats::where('user_id', $userId)
             ->whereBetween('created_at', [$dt1, $dt2])
             ->where('action', '=', 'CREATE PROJECT')
+            ->orderBy('created_at','asc')
             ->get();
 
         // Nombre de catégories créées entre d1 et d2
         $categoriesCreated = stats::where('user_id', $userId)
             ->whereBetween('created_at', [$dt1, $dt2])
             ->where('action', '=', 'CREATE CATEGORY')
+            ->orderBy('created_at','asc')
             ->get();
 
 
