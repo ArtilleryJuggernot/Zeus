@@ -91,7 +91,7 @@ class StatsViewController extends Controller
         $categoriesCreated = stats::where('user_id', $userId)
             ->whereBetween('created_at', [$dt1, $dt2])
             ->where('action', '=', 'CREATE CATEGORY')
-            ->orderBy('created_at','asc')
+            ->orderBy('created_at','asc)')
             ->get();
 
 
