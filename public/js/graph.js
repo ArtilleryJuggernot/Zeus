@@ -11,8 +11,9 @@ export function graphSet(canvasId,dataset) {
     };
 
     // Extraction des dates et types de ressources
-    const dates = Object.keys(dataset);
+    let dates = Object.keys(dataset);
 
+    dates.sort();
 
     const resourceTypes = ["notes","folders","tasks","projects","categories"];
 
