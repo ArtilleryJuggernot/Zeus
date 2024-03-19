@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -80,7 +81,9 @@ class AdminController extends Controller
 
     public function resetPassword(User $user)
     {
-        $user->update(['password' => Hash::make('nouveau_mot_de_passe')]);
+        $newPassword = Str::password(15);
+        //$user->update(['password' => Hash::make('nouveau_mot_de_passe')]);
         // Ajoutez ici la redirection ou la réponse souhaitée
+
     }
 }

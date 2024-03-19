@@ -31,6 +31,16 @@ Route::get("/about",[\App\Http\Controllers\HomeController::class,"AboutView"])
     ->middleware(["is_notban","auth"])
     ->name("about");
 
+
+
+// Test mail
+
+
+Route::get("/mailtest",[\App\Http\Controllers\MailController::class,'sendMail'])
+    ->middleware("is_notban","auth","admin")
+    ->name("mailtest");
+
+
 // Notes
 require "subroutes/note_route.php";
 

@@ -24,8 +24,9 @@ class FolderController extends Controller
         return $this->View($root_folder_id);
     }
 
-    public function getFolderCategories($folderId) {
+    public  function getFolderCategories($folderId) {
         $user_id = Auth::user()->id;
+
 
         $resourceCategories = possede_categorie::where('ressource_id', $folderId)
             ->where('type_ressource', 'folder')
@@ -51,7 +52,7 @@ class FolderController extends Controller
         return $resourceCategories;
     }
 
-    public function getFolderIdFromPath($folderPath) {
+    public  function getFolderIdFromPath($folderPath) {
         $folderPath = "/" . $folderPath;
         $folder = Folder::where('path',"=",$folderPath)->first();
         if ($folder) {

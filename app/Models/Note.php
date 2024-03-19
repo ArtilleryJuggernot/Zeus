@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class Note extends Model
@@ -12,6 +13,8 @@ class Note extends Model
 
     protected $table = 'notes';
     protected $primaryKey = "note_id";
+
+    public $timestamps = true;
     public static function getNoteContentByPath($path)
     {
         // Vérifier si le fichier existe
@@ -22,6 +25,14 @@ class Note extends Model
             return null; // Retourner null si le fichier n'existe pas
         }
     }
-    public $timestamps = true;
+
+
+    public function categories()
+    {
+        return $this->belongsToMany(Categorie::class, 'possede_categorie', 'ressource_id', 'categorie_id')
+            ->where('possede_categorie.type_ressource', 'note') // Spécifiez la table pour 'type_ressource'
+            ->where('possede_categorie.owner_id', auth()->id()); // Spécifiez la table pour 'owner_id'
+    }
+
 
 }
