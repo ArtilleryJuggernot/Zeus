@@ -68,7 +68,7 @@
 <div class="delete">
     <form action="{{route("delete_task")}}" method="post">
         <input name="id" type="hidden" value="{{$task->task_id}}"/>
-        <button type="submit">Supprimer la tâche définitivement</button>
+        <button type="submit">❌</button>
         @csrf
     </form>
 </div>

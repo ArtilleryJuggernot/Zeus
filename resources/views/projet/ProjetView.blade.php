@@ -111,14 +111,14 @@
                 <form action="{{route("remove_task_from_project")}}" method="post">
                     <input name="task_id" type="hidden" value="{{$taskT->task_id}}"/>
                     <input name="project_id" type="hidden" value="{{$projet->id}}">
-                    <button class="del" type="submit">Supprimer la tâche du projet</button>
+                    <button title="Supprimer la tâche du projet" class="del" type="submit">❌</button>
                     @csrf
                 </form>
             </div>
             <div class="check-task">
                 <form action="{{route("check_task_project")}}" method="post">
                     <input name="task_id" type="hidden" value="{{$taskT->task_id}}"/>
-                    <button type="submit">Marquer la tâche comme réalisée</button>
+                    <button title="Marquer la tâche comme terminé" type="submit">✅</button>
                     @csrf
                 </form>
             </div>
@@ -327,7 +327,6 @@
 </html>
 
 
-{{dd($tasksNotInProject)}}
 
 
 

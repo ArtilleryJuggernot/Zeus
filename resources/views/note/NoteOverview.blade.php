@@ -29,7 +29,7 @@
 
 @if(false)
     <h2 class="center">Arborescence</h2>
-    <div class=" file-explorer">
+    <div class="file-explorer">
         @include('arbo.folder', ['contents' => $directoryContent])
     </div>
 
@@ -89,6 +89,10 @@
         -moz-background-size: cover;
         -o-background-size: cover;
         background-size: cover;
+    }
+
+    #graph-container{
+        z-index: -5;
     }
 
 </style>

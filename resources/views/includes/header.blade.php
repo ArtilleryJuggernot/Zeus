@@ -1,8 +1,10 @@
 <head>
     <link rel="stylesheet" href="{{asset("css/includes/header.css")}}">
     <link rel="stylesheet" href="{{asset("css/includes/all.css")}}">
-
+    <link rel="stylesheet" href="{{asset("css/background/bg_day.css")}}">
+    <link rel="stylesheet" href="{{asset("css/animation/particule.css")}}">
 </head>
+<body>
 <div class="header">
     <!-- Logo du jeu -->
     <div class="logo">
@@ -116,11 +118,16 @@
         </ul>
     </nav>
 </div>
+
 <!-- Formulaire caché pour effectuer la déconnexion via une requête POST -->
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
     @csrf <!-- Utilisation du jeton CSRF pour la sécurité -->
 </form>
 
+
+
+
+</body>
 @if(\Illuminate\Support\Facades\Auth::user())
     @include("includes.search.searchbar")
 @endif

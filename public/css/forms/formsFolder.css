@@ -1,0 +1,46 @@
+.add-btn {
+    position: relative;
+    display: inline-block;
+}
+
+.add-btn-trigger {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-btn-trigger:hover {
+    background-color: #0056b3;
+}
+
+.add-form {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 100;
+}
+
+.add-btn:hover .add-form {
+    display: block;
+}
+
+.add-section{
+    text-align: center;
+}
+
+.add-btn-trigger{
+    font-size: 20px;
+
+}
+

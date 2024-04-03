@@ -8,10 +8,11 @@
     <link rel="stylesheet" href="{{asset("css/folder/Overview.css")}}">
     <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
     <link rel="stylesheet" href="{{asset("css/category.css")}}">
+    <link rel="stylesheet" href="{{asset("css/forms/formsFolder.css")}}">
 </head>
 
 
-<body>
+<body class="background">
 
 @if(session("success"))
     {{session("success")}}
@@ -36,7 +37,7 @@
         <h3>Vous êtes à la racine</h3>
     @else
         <h3>Dossier parent : <a href="{{route("folder_view",$parent_content["id"])}}">
-                <h3>{{$parent_content["name"]}}</h3></a></h3>
+                {{$parent_content["name"]}}</a></h3>
         <h3>Vous êtes dans le dossier : {{$folder->name}}</h3>
     @endif
 </div>
@@ -45,22 +46,11 @@
 
 </div>
 
-<button class="accordion">Section Ajout de dossier ou notes</button>
-<div class="panel">
+
     <div class="add-section">
-        <div class="add-dossier">
-            <form action="{{route("add_folder")}}" method="post">
-                <label for="add-dossier">Entrez le nom du dossier que vous souhaitez ajouter :</label>
-                <input name="add-dossier" type="text"/>
-                <input type="hidden" name="path_current" value="{{$folder_path}}">
-                <input type="submit" value="Envoyer"/>
-
-                @csrf
-            </form>
-        </div>
-
-        <div class="add-note">
-            <form action="{{route("add_note")}}" method="post">
+        <div class="add-btn" id="add-note-btn">
+            <button class="add-btn-trigger">Ajouter une note 📝</button>
+            <form class="add-form" action="{{route("add_note")}}" method="post">
                 <label for="add-note">Entrez la note que vous souhaitez ajouter :</label>
                 <input name="add-note" type="text"/>
                 <input type="hidden" name="path_current" value="{{$folder_path}}">
@@ -69,8 +59,17 @@
             </form>
         </div>
 
+        <div class="add-btn" id="add-folder-btn">
+            <button class="add-btn-trigger">Ajouter un dossier 📁</button>
+            <form class="add-form" action="{{route("add_folder")}}" method="post">
+                <label for="add-dossier">Entrez le nom du dossier que vous souhaitez ajouter :</label>
+                <input name="add-dossier" type="text"/>
+                <input type="hidden" name="path_current" value="{{$folder_path}}">
+                <input type="submit" value="Envoyer"/>
+                @csrf
+            </form>
+        </div>
     </div>
-</div>
 
 <div class="folders">
     <!-- Boucle pour afficher les dossiers -->
@@ -86,7 +85,7 @@
                 <div class="delete">
                     <form action="{{route("delete_folder")}}" method="post">
                         <input name="id" type="hidden" value="{{$item["id"]}}"/>
-                        <button class="del" type="submit">Delete</button>
+                        <button title="Supprimer le dossier" class="del" type="submit">❌</button>
                         @csrf
                     </form>
 
@@ -108,7 +107,7 @@
                 <div class="delete">
                     <form action="{{route("delete_note")}}" method="post">
                         <input name="id" type="hidden" value="{{$item["id"]}}"/>
-                        <button class="del" type="submit">Delete</button>
+                        <button title="Supprimer la note" class="del" type="submit">❌</button>
                         @csrf
                     </form>
 
@@ -205,7 +204,8 @@
         </div>
 
     </div>
-
+    <button class="accordion">Listes des autorisations utilisateurs</button>
+    <div class="panel">
     <h3>Liste des autorisations utilisateurs</h3>
 
     <table>
@@ -234,6 +234,7 @@
         @endforeach
         </tbody>
     </table>
+    </div>
 @endif
 
 

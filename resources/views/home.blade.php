@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <title>Accueil - Zeus</title>
     <link rel="stylesheet" href="{{asset("css/folder/Overview.css")}}">
-
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" data-deferred="1"></script>
 </head>
 
 @include("includes.header")
 <body>
+
+<div id="particleCanvas">
+
+</div>
 
 @if(session("failure"))
     <h2>{{session("failure")}}</h2>
@@ -16,7 +20,7 @@
 
 
 
-<h1>Hello {{\Illuminate\Support\Facades\Auth::user()->name}} ⚡</h1>
+<h1>Hello {{\Illuminate\Support\Facades\Auth::user()->name}} ⚡ <img src="{{asset("img/thunder_anim.gif")}}"></h1>
 
 
 
@@ -152,9 +156,14 @@
     </div>
 </div>
 
+
+
+
+
 </body>
 </html>
 
 
+<script src="{{asset("js/particules.js")}}"></script>
 <script src="{{asset("js/task_update.js")}}"></script>
 @include("includes.footer")
