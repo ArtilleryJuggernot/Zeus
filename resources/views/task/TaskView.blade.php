@@ -127,8 +127,7 @@
 <div class="panel">
 @if($task->owner_id == \Illuminate\Support\Facades\Auth::user()->id)
 
-    <button class="accordion">Gestion des partages utilisateurs</button>
-    <div class="panel">
+
 
 
     <h1>Section partage utilisateur</h1>
@@ -155,6 +154,8 @@
     </div>
     </div>
 
+<button class="accordion">Liste des autorisations utilisateurs</button>
+<div class="panel">
     <h1>Liste des autorisations utilisateurs</h1>
 
     <table>
