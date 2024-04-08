@@ -29,7 +29,7 @@
 @endif
 
 
-<h1>Editeur de Tâche - {{$task->task_name}}</h1>
+<h1 class="center">Editeur de Tâche - {{$task->task_name}}</h1>
 
 @if($task->owner_id != \Illuminate\Support\Facades\Auth::user()->id)
 
@@ -48,7 +48,7 @@
 
 @endif
 
-<div>
+<div class="center">
     <label>La tâche est t'elle fini ?</label>
     <input id="is_finish" type="checkbox" @if($task->is_finish) checked @endif name="is_finish">
 </div>
@@ -62,17 +62,18 @@
     <div id="preview"></div>
 </div>
 
-
-<button onclick="saveTask()">Sauvegarder la tache</button>
+<div class="allign center ">
+    <button class="space_btn" onclick="saveTask()"><span class="emoji">💾 </span> Sauvegarder la tache</button>
 
 <div class="delete">
     <form action="{{route("delete_task")}}" method="post">
         <input name="id" type="hidden" value="{{$task->task_id}}"/>
-        <button type="submit">❌</button>
+        <button class="space_btn" type="submit"><span class="emoji">🗑</span>️ Supprimer la tâche</button>
         @csrf
     </form>
 </div>
-<span>Attention ! Supprimer une tâche implique qu'elle sera supprimé dans tout les projets</span>
+</div>
+<span class="center">Attention ! Supprimer une tâche implique qu'elle sera supprimé dans tout les projets</span>
 
 
 
@@ -122,8 +123,13 @@
 </div>
 
 
-
+<button class="accordion">Gestion des partages utilisateurs</button>
+<div class="panel">
 @if($task->owner_id == \Illuminate\Support\Facades\Auth::user()->id)
+
+    <button class="accordion">Gestion des partages utilisateurs</button>
+    <div class="panel">
+
 
     <h1>Section partage utilisateur</h1>
 
@@ -146,6 +152,7 @@
 
             @csrf
         </form>
+    </div>
     </div>
 
     <h1>Liste des autorisations utilisateurs</h1>
@@ -176,7 +183,7 @@
         </tbody>
     </table>
 @endif
-
+</div>
 
 
 

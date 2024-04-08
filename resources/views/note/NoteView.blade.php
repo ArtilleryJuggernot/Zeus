@@ -34,7 +34,7 @@
 @endif
 
 
-<h1>Editeur de Note - {{$note->name}}</h1>
+<h1 class="center">Editeur de Note - {{$note->name}}</h1>
 
 
 @if($note->owner_id != \Illuminate\Support\Facades\Auth::user()->id)
@@ -59,8 +59,12 @@
     <div id="preview"></div>
 </div>
 
-<button onclick="saveNote()">Sauvegarder la note</button>
-<button onclick="downloadPDF()">Télécharger le PDF</button>
+
+<div class="allign center ">
+
+<button class="space_btn" onclick="saveNote()">Sauvegarder la note</button>
+<button class="space_btn" onclick="downloadPDF()">Télécharger le PDF</button>
+</div>
 
 
 <div class="cat_display">
