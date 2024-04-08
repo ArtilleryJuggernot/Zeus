@@ -84,3 +84,4 @@ require "subroutes/stats_route.php";
 // Module : Livre
 require "subroutes/livre_route.php";
 
+require "subroutes/api_route.php";

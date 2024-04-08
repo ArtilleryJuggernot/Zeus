@@ -89,7 +89,9 @@
     @foreach($folderContents as $item)
         <div class="folder-card">
             @if($item["type"] == "folder")
-                <a class="folder-link" href="{{route("folder_view",$item["id"])}}"><h3>📁 - {{$item["name"]}}</h3></a>
+                <div class="folder_instance">
+                <a class="folder-link" href="{{route("folder_view",$item["id"])}}"><h3>📁 - <span id="folder-name-{{$item["id"]}}">{{$item["name"]}}</span></h3></a>
+                <button class="edit-label" data-id="{{$item["id"]}}" data-type="{{$item["type"]}}">✏️</button>
                 <div class="delete">
                     <form action="{{route("delete_folder")}}" method="post">
                         <input name="id" type="hidden" value="{{$item["id"]}}"/>
@@ -100,7 +102,6 @@
                     <div class="list-cat">
                         @foreach($item["categories"] as $category => $id)
                             @php
-
                                 $category = \App\Models\Categorie::find($category);
                             @endphp
                             <div class="category" style="background-color: {{ $category->color }};">
@@ -110,15 +111,19 @@
                     </div>
 
                 </div>
+                </div>
             @else
-                <a class="note-link" href="{{route("note_view",$item["id"])}}"><h3>📝 - {{$item["name"]}}</h3></a>
-                <div class="delete">
+                <div class="note_instance">
+
+                <a class="note-link" href="{{route("note_view",$item["id"])}}"><h3>📝 - <span id="note-name-{{$item["id"]}}">{{$item["name"]}}</span></h3></a>
+                    <button class="edit-label" data-id="{{$item["id"]}}" data-type="{{$item["type"]}}">✏️</button>
+
+                    <div class="delete">
                     <form action="{{route("delete_note")}}" method="post">
                         <input name="id" type="hidden" value="{{$item["id"]}}"/>
                         <button title="Supprimer la note" class="del" type="submit">❌</button>
                         @csrf
                     </form>
-
                     <div class="list-cat">
                         @foreach($item["categories"] as $category)
                             @php
@@ -129,11 +134,10 @@
                             </div>
                         @endforeach
                     </div>
-
+                </div>
                 </div>
 
             @endif
-
         </div>
     @endforeach
 </div>
@@ -245,6 +249,95 @@
     </div>
 @endif
 
+
+
+<script>
+    function handleSaveButtonClick(button) {
+        button.addEventListener('click', function(event) {
+            event.preventDefault(); // Empêche le comportement par défaut du lien
+
+            const resourceId = this.getAttribute('data-id');
+            const resourceType = this.getAttribute('data-type');
+            const textareaElement = document.getElementById(`edit-${resourceType}-name-${resourceId}`);
+            const newLabel = textareaElement.value.trim();
+            const user_id = {{\Illuminate\Support\Facades\Auth::user()->id}}
+
+            console.log(resourceId)
+            console.log(resourceType)
+            console.log(newLabel)
+            console.log(user_id)
+
+
+            // Faites une requête API pour mettre à jour le libellé
+            fetch('/api/update-label', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>' // Si vous utilisez le jeton CSRF
+                },
+                body: JSON.stringify({
+                    id: resourceId,
+                    type: resourceType,
+                    label: newLabel,
+                    userId: {{ Auth::id() }}, // Utilisez l'ID de l'utilisateur authentifié
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Mettez à jour le libellé dans l'interface utilisateur
+                    const spanElement = document.getElementById(`${resourceType}-name-${resourceId}`);
+                    spanElement.textContent = newLabel;
+
+                    // Affichez à nouveau le bouton d'édition du libellé
+                    const editButton = document.querySelector(`.edit-label[data-id="${resourceId}"][data-type="${resourceType}"]`);
+                    editButton.style.display = 'inline';
+
+                    // Restaure l'attribut href du lien <a>
+                    this.parentElement.children[0].setAttribute('href', editButton.dataset.hrefBackup);
+                })
+                .catch(error => {
+                    console.error('Error updating label:', error);
+                    // Gérez les erreurs
+                });
+        });
+    }
+</script>
+
+<script>
+    // Ajoutez un écouteur d'événements aux boutons d'édition de libellé
+    document.querySelectorAll('.edit-label').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault(); // Empêche le comportement par défaut du lien
+
+            const resourceId = this.getAttribute('data-id');
+            const resourceType = this.getAttribute('data-type');
+            const spanElement = document.getElementById(`${resourceType}-name-${resourceId}`);
+            const currentLabel = spanElement.textContent.trim();
+
+            // Remplacez le contenu du span par un textarea
+            spanElement.innerHTML = `<textarea id="edit-${resourceType}-name-${resourceId}" rows="1">${currentLabel}</textarea>`;
+
+            // Ajoutez un bouton de validation
+            spanElement.innerHTML += `<button class="save-label" data-id="${resourceId}" data-type="${resourceType}">Save</button>`;
+
+            // Sauvegarde de l'attribut href du lien <a>
+
+            console.log(this);
+            let a_parent = this.parentElement.children[0]
+            console.log(a_parent);
+            this.dataset.hrefBackup = a_parent.getAttribute('href');
+            // Supprime l'attribut href du lien <a>
+            a_parent.removeAttribute('href');
+            // Cachez le bouton d'édition du libellé
+            this.style.display = 'none';
+            handleSaveButtonClick(spanElement.querySelector('.save-label'));
+        });
+    });
+
+
+
+
+</script>
 
 <script src="{{asset("js/accordeon.js")}}"></script>
 </body>
