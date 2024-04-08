@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Liste des dossiers</title>
+    <title>Liste des dossiers - Zeus</title>
     <link rel="stylesheet" href="{{asset("css/folder/Overview.css")}}">
     <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
 </head>

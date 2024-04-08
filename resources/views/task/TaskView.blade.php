@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Editeur de Tache</title>
+    <title>Editeur de Tâche - {{$task->task_name}} - Zeus</title>
     <link rel="stylesheet" href="{{asset("css/category.css")}}">
     <link rel="stylesheet" href="{{asset("css/tableau.css")}}">
     <link rel="stylesheet" href="{{asset("css/accordion.css")}}">

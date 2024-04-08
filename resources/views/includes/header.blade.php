@@ -3,6 +3,7 @@
     <link rel="stylesheet" href="{{asset("css/includes/all.css")}}">
     <link rel="stylesheet" href="{{asset("css/background/bg_day.css")}}">
     <link rel="stylesheet" href="{{asset("css/animation/particule.css")}}">
+    <link rel="icon" href="{{url("img/favicon/favicon-32x32.png")}}">
 </head>
 <body>
 <div class="header">

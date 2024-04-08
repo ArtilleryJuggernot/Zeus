@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Liste des projets</title>
+    <title>Page de {{$user->name}} - Zeus</title>
     <link rel="stylesheet" href="{{asset("css/folder/Overview.css")}}">
 
     <style>

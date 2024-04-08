@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>File Explorer</title>
+    <title>Vue Global Note - Zeus</title>
     <link rel="stylesheet" href="{{asset("css/note/Overview.css")}}">
     <script src="https://d3js.org/d3.v7.min.js"></script>
 
