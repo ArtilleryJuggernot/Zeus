@@ -282,22 +282,32 @@
                     userId: {{ Auth::id() }}, // Utilisez l'ID de l'utilisateur authentifié
                 }),
             })
-                .then(response => response.json())
+                .then(
+                    response => {
+                        console.log(response.json())
+
+                        if(response.status === 200){
+                            // Mettez à jour le libellé dans l'interface utilisateur
+                            const spanElement = document.getElementById(`${resourceType}-name-${resourceId}`);
+                            spanElement.textContent = newLabel;
+
+                            // Affichez à nouveau le bouton d'édition du libellé
+                            const editButton = document.querySelector(`.edit-label[data-id="${resourceId}"][data-type="${resourceType}"]`);
+                            editButton.style.display = 'inline';
+
+                            // Restaure l'attribut href du lien <a>
+                            this.parentElement.children[0].setAttribute('href', editButton.dataset.hrefBackup);
+                        }
+                    }
+
+                )
                 .then(data => {
-                    // Mettez à jour le libellé dans l'interface utilisateur
-                    const spanElement = document.getElementById(`${resourceType}-name-${resourceId}`);
-                    spanElement.textContent = newLabel;
 
-                    // Affichez à nouveau le bouton d'édition du libellé
-                    const editButton = document.querySelector(`.edit-label[data-id="${resourceId}"][data-type="${resourceType}"]`);
-                    editButton.style.display = 'inline';
 
-                    // Restaure l'attribut href du lien <a>
-                    this.parentElement.children[0].setAttribute('href', editButton.dataset.hrefBackup);
+
                 })
                 .catch(error => {
                     console.error('Error updating label:', error);
-                    // Gérez les erreurs
                 });
         });
     }

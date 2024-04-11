@@ -135,6 +135,7 @@ class NoteController extends Controller
 
 
 
+        // Verification de la permission
         $usersPermissionsOnNote = Acces::getUsersPermissionsOnNote($id);
         $perm_user = 0;
         $autorisation_partage = false;
@@ -147,23 +148,27 @@ class NoteController extends Controller
         }
 
         $accesRecursif = false;
-        if($note->owner_id != $user_id) // Pas l'utilisateur propriétaire, on regarde si l'utilisateur courant à les droits sur au moins un dossier supérieur
-        {
-            // A partir de note_id -> folder_id
-            $path = $note->path;
-            $path_parent = "";
-            $arr_path = explode("/",$path);
-            for ($i = 0; $i < count($arr_path) - 1; $i++){
-                if($i == count($arr_path) - 2 ) $path_parent .=  $arr_path[$i];
-                else $path_parent .=  $arr_path[$i] . "/";
-            }
-            $folder_id = Folder::where("path",$path_parent)->first()->folder_id;
-            $accesRecursif = $this->checkHasPermissionView($folder_id); // NE PAS DONNER L'ID DE LA NOTE MAIS CELLE DU DOSSIER
-            //dd($accesRecursif);
+        if (!$autorisation_partage){
+            if($note->owner_id != $user_id) // Pas l'utilisateur propriétaire, on regarde si l'utilisateur courant à les droits sur au moins un dossier supérieur
+            {
+                // A partir de note_id -> folder_id
+                $path = $note->path;
+                $path_parent = "";
+                $arr_path = explode("/",$path);
+                for ($i = 0; $i < count($arr_path) - 1; $i++){
+                    if($i == count($arr_path) - 2 ) $path_parent .=  $arr_path[$i];
+                    else $path_parent .=  $arr_path[$i] . "/";
+                }
+                $folder_id = Folder::where("path",$path_parent)->first()->folder_id;
+                $accesRecursif = $this->checkHasPermissionView($folder_id); // NE PAS DONNER L'ID DE LA NOTE MAIS CELLE DU DOSSIER
+                //dd($accesRecursif);
 //            dd(!$accesRecursif);
+            }
         }
 
-        if($note->owner_id != $user_id && !$accesRecursif) // Système d'autorisation accès => 2 conditons à false
+
+
+        if($note->owner_id != $user_id && !$autorisation_partage && !$accesRecursif) // Système d'autorisation accès => 2 conditons à false
             return redirect()->route("home")->with("failure","Vous n'êtes pas autorisé à voir cette ressource");
 
         $path = storage_path('app/' . $note->path);
@@ -196,7 +201,7 @@ class NoteController extends Controller
             ['content' => $content,
             'note' => $note,
             "usersPermissionList" => $usersPermissionsOnNote,
-            "perm_user" => $accesRecursif,
+            "perm_user" => $perm_user,
                 "ressourceCategories" => $resourceCategories,
                 "ownedCategories" => $ownedCategories,
                 "notOwnedCategories" => $notOwnedCategories
