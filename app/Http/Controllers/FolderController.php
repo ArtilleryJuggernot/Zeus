@@ -140,16 +140,13 @@ class FolderController extends Controller
         }
 
         if($path_parent == "/files") // On a atteint la racine, il n'y a pas de droit
-        {
             return null;
-        }
+
         else
         {
-            //dd($path_parent);
             $parent_folder = Folder::where("path",$path_parent)->first();
             return $this->checkHasPermissionView($parent_folder->folder_id);
         }
-        //dd($path_parent);
     }
 
 
@@ -213,6 +210,10 @@ class FolderController extends Controller
             }
         $folderContents = $this->getFolderContents($id);
 
+        // Sort Alphabétique
+            $folderContents = SortController::SortAlphaFolders($folderContents);
+
+
 
         // Categories
 
@@ -228,8 +229,10 @@ class FolderController extends Controller
         $ownedCategoryIds = $resourceCategories->pluck('categorie_id')->toArray();
 
 // Séparez les catégories possédées et non possédées
-        $ownedCategories = $allCategories->whereIn('category_id', $ownedCategoryIds)->pluck('category_name', 'category_id')->toArray();
-        $notOwnedCategories = $allCategories->whereNotIn('category_id', $ownedCategoryIds)->pluck('category_name', 'category_id')->toArray();
+        $ownedCategories = $allCategories->whereIn('category_id', $ownedCategoryIds)->sortBy('category_name')->pluck('category_name', 'category_id')->toArray();
+        $notOwnedCategories = $allCategories->whereNotIn('category_id', $ownedCategoryIds)->sortBy('category_name')->pluck('category_name', 'category_id')->toArray();
+
+
 
 
         return view("folder.FolderView",
