@@ -9,15 +9,16 @@
     <link rel="stylesheet" href="{{asset("css/accordion.css")}}">
     <link rel="stylesheet" href="{{asset("css/category.css")}}">
     <link rel="stylesheet" href="{{asset("css/projet/View.css")}}">
+    <link rel="stylesheet" href="{{asset("css/notification/notification.css")}}">
 
     <style>
     </style>
 </head>
 <body>
 
-@if(session("success"))
-    <h3>{{session("success")}}</h3>
-@endif
+<div id="notification" class="notification">
+    <div class="progress"></div>
+</div>
 
 @if ($errors->any())
     <div class="alert alert-danger">
@@ -323,6 +324,17 @@
 <script src="{{asset("js/accordeon.js")}}"></script>
 <script src="{{asset("js/task_update.js")}}"></script>
 
+
+<script src="{{asset("js/notification.js")}}"></script>
+
+
+<script>
+    @if(session("success"))
+    showNotification("{{session("success")}}", 'success');
+    @elseif(session("failure"))
+    showNotification("{{session("success")}}", 'failure');
+    @endif
+</script>
 
 </html>
 

@@ -17,14 +17,18 @@
     <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
     <link rel="stylesheet" href="{{asset("css/category.css")}}">
     <link rel="stylesheet" href="{{asset("css/forms/formsFolder.css")}}">
+    <link rel="stylesheet" href="{{asset("css/notification/notification.css")}}">
 </head>
 
 
 <body class="background">
 
-@if(session("success"))
-    {{session("success")}}
-@endif
+
+
+<div id="notification" class="notification">
+    <div class="progress"></div>
+</div>
+
 
 
 @if ($errors->any())
@@ -352,6 +356,16 @@
 <script src="{{asset("js/accordeon.js")}}"></script>
 </body>
 
+<script src="{{asset("js/notification.js")}}"></script>
+
+
+<script>
+    @if(session("success"))
+    showNotification("{{session("success")}}", 'success');
+    @elseif(session("failure"))
+    showNotification("{{session("success")}}", 'failure');
+    @endif
+</script>
 
 </html>
 

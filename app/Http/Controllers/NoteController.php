@@ -326,7 +326,7 @@ class NoteController extends Controller
 
         $newNote->save();
         LogsController::createNote($user_id,$newNote->getKey(),$name,"SUCCESS");
-        return redirect()->back()->with("success","La note a bien été créer !");
+        return redirect()->back()->with("success","La note a bien été créée !");
     }
 
         public function Delete(Request $request)
@@ -341,14 +341,14 @@ class NoteController extends Controller
 
             if(!$note) {
                 LogsController::deleteNote($user_id,$id,"","FAILURE");
-                return redirect()->route("home")->with("failure","La note que vous souhaitez supprimé n'a pas été trouvé");
+                return redirect()->route("home")->with("failure","La note que vous souhaitez supprimer n'a pas été trouvée");
             }
 
 
 
             if($note->owner_id != $user_id){
                 LogsController::deleteNote($user_id,$id,$note->name,"FAILURE");
-                return redirect()->route("home")->with("failure","Vous n'êtes pas autoriser à modifier sur cette ressource");
+                return redirect()->route("home")->with("failure","Vous n'êtes pas autorisé à modifier cette ressource");
             }
 
             //dd(storage_path($folder->path));

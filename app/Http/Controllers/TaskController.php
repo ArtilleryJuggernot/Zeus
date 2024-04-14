@@ -320,18 +320,16 @@ class TaskController extends Controller
         $task = Task::find($task_id);
 
         if (!$task) return redirect()->route("home")->with("failure","La tâche modifié n'existe pas");
-
         if ($task->owner_id != Auth::user()->id) return redirect()->route("home")->with("failure","Vous n'avez pas les permissions pour modifié cette tâche");
 
 
         if ($status_task == "on") $task->is_finish = true;
-
         else $task->is_finish = false;
 
-
         $task->save();
-
-        return redirect()->back()->with("success","Tâche modifié avec succès");
+        $message = "Tâche marquée comme terminée avec succès";
+        if(!$task->is_finish)  $message = "Tâche marquée comme en cours avec succès";
+        return redirect()->back()->with("success",$message);
 
     }
 

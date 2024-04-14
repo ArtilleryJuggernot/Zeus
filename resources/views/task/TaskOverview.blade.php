@@ -7,13 +7,15 @@
     <title>Liste des tâches - Zeus</title>
     <link rel="stylesheet" href="{{asset("css/folder/Overview.css")}}"> <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
     <link rel="stylesheet" href="{{asset("css/category.css")}}">
+    <link rel="stylesheet" href="{{asset("css/notification/notification.css")}}">
 
 </head>
 <body>
 
-@if(session("success"))
-    <h3>{{session("success")}}</h3>
-@endif
+<div id="notification" class="notification">
+    <div class="progress"></div>
+</div>
+
 
 
 @if ($errors->any())
@@ -213,5 +215,16 @@
 </script>
 
 <script src="{{asset("js/accordeon.js")}}"></script>
+
+<script src="{{asset("js/notification.js")}}"></script>
+
+
+<script>
+    @if(session("success"))
+    showNotification("{{session("success")}}", 'success');
+    @elseif(session("failure"))
+    showNotification("{{session("success")}}", 'failure');
+    @endif
+</script>
 
 @include("includes.footer")

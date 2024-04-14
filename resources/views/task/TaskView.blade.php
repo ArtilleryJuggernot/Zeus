@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{asset("css/accordion.css")}}">
     <link rel="stylesheet" href="{{asset("css/note/editor.css")}}">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="{{asset("css/notification/notification.css")}}">
 </head>
 <body>
 
@@ -24,9 +25,9 @@
     </div>
 @endif
 
-@if(session("success"))
-    <h3>{{session("success")}}</h3>
-@endif
+<div id="notification" class="notification">
+    <div class="progress"></div>
+</div>
 
 
 <h1 class="center">Editeur de Tâche - {{$task->task_name}}</h1>
@@ -279,7 +280,16 @@
 
 <!-- Ajoutez ce code dans votre vue HTML -->
 
+<script src="{{asset("js/notification.js")}}"></script>
 
+
+<script>
+    @if(session("success"))
+    showNotification("{{session("success")}}", 'success');
+    @elseif(session("failure"))
+    showNotification("{{session("success")}}", 'failure');
+    @endif
+</script>
 
 </body>
 </html>

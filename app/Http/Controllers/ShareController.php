@@ -36,6 +36,8 @@ class ShareController extends Controller
         if(!$user_to_share) return redirect()->route("home")->with("failure","L'utilisateur a qui vous souhaitez partagez cette ressource n'existe pas");
 
 
+        // TODO : Ne pas share à sois même
+
         // Verification si il n'y a pas déjà un droit accordé à la personne sur la ressource
 
         $previousAccess = Acces::where([

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{asset("css/tableau.css")}}">
     <link rel="stylesheet" href="{{asset("css/accordion.css")}}">
     <link rel="stylesheet" href="{{asset("css/note/editor.css")}}">
+    <link rel="stylesheet" href="{{asset("css/notification/notification.css")}}">
     <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
     <style>
         /* Ajoutez vos styles CSS pour l'éditeur de note ici */
@@ -29,9 +30,9 @@
     </div>
 @endif
 
-@if(session("success"))
-    <h3>{{session("success")}}</h3>
-@endif
+<div id="notification" class="notification">
+    <div class="progress"></div>
+</div>
 
 
 <h1 class="center">Editeur de Note - {{$note->name}}</h1>
@@ -242,7 +243,6 @@
 
 <script>
     function previewMarkdown() {
-        console.log("sinj");
         // Fonction JavaScript pour prévisualiser le contenu Markdown
         let noteContent = document.getElementById('note-content').value;
 
@@ -257,7 +257,16 @@
     previewMarkdown();
 </script>
 
-<!-- Ajoutez ce code dans votre vue HTML -->
+<script src="{{asset("js/notification.js")}}"></script>
+
+
+<script>
+    @if(session("success"))
+    showNotification("{{session("success")}}", 'success');
+    @elseif(session("failure"))
+    showNotification("{{session("success")}}", 'failure');
+    @endif
+</script>
 
 
 </body>
