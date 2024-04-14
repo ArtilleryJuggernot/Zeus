@@ -9,8 +9,10 @@ use App\Models\Note;
 use App\Models\possede_categorie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 class NoteController extends Controller
@@ -176,12 +178,20 @@ class NoteController extends Controller
         // Lire le contenu du fichier
         $content = File::get($path);
 
+// Extraire l'IV des premiers octets
+        $ivSize = openssl_cipher_iv_length('aes-256-cbc');
+        $iv = substr($content, 0, $ivSize);
+        $encryptedData = substr($content, $ivSize);
+
+// Déchiffrement
+        $decryptedData = openssl_decrypt($encryptedData, "aes-256-cbc", $note->note_key, 0, $iv);
+
+        $content = $decryptedData;
+
 
         $resourceCategories = possede_categorie::where('ressource_id', $id)
             ->where('type_ressource', "note")
             ->where('owner_id', $user_id)->get();
-
-        //dd($resourceCategories);
 
 
 // Obtenez toutes les catégories en utilisant le modèle Categorie
@@ -247,7 +257,20 @@ class NoteController extends Controller
             $note = Note::where("note_id","=",$note_id)->first();
 
             if($note->owner_id == Auth::user()->id || $autorisation || $perm_rec){
-                $check = Storage::put($note->path,$content);
+
+                // Chiffrement des données
+
+
+
+
+                $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc')); // Générer un IV aléatoire
+                $encryptedData = openssl_encrypt($content, "aes-256-cbc", $note->note_key, 0, $iv);
+                $finalDataEncryptedAES = $iv . $encryptedData; // Concaténer l'IV avec les données chiffrées
+
+
+
+
+                $check = Storage::put($note->path,$finalDataEncryptedAES);
                 LogsController::saveNote($user_id,$note_id,$note->name,"SUCCESS");
                 return response()->json(['success' => true]);
             }
@@ -287,9 +310,20 @@ class NoteController extends Controller
         $newNote->owner_id = $user_id;
         $newNote->name = $name;
         $newNote->path = $path_final;
+        $newNote->note_key = Str::random(32);
+
+
 
         // Persistance + save
-        Storage::put($newNote->path,"# " . $name);
+
+
+        $content = "# " . $name;
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc')); // Générer un IV aléatoire
+        $encryptedData = openssl_encrypt($content, "aes-256-cbc", $newNote->note_key, 0, $iv);
+        $finalDataEncryptedAES = $iv . $encryptedData; // Concaténer l'IV avec les données chiffrées
+
+        Storage::put($newNote->path, $finalDataEncryptedAES);
+
         $newNote->save();
         LogsController::createNote($user_id,$newNote->getKey(),$name,"SUCCESS");
         return redirect()->back()->with("success","La note a bien été créer !");
