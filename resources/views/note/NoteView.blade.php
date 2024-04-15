@@ -10,14 +10,11 @@
     <link rel="stylesheet" href="{{asset("css/note/editor.css")}}">
     <link rel="stylesheet" href="{{asset("css/notification/notification.css")}}">
     <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
-    <style>
-        /* Ajoutez vos styles CSS pour l'éditeur de note ici */
+    <script type="module" src="{{asset("js/stack_edit/stack_edit_note.js")}}"></script>
 
-
-    </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
-<body>
+<body onload="moveDivOnLoadStackEdit()">
 
 @if ($errors->any())
     <div class="alert alert-danger">
@@ -33,6 +30,19 @@
 <div id="notification" class="notification">
     <div class="progress"></div>
 </div>
+
+<script>
+    var content = {!! json_encode($content) !!};
+    @if(\Illuminate\Support\Facades\Auth::user()->id == $note->owner_id)
+        const perm = "F"; // L'utilisateur propriétaire à tout les droits
+    @else
+        const perm = "{{$perm_user->perm }}";
+    @endif
+
+    const csrf = '{{csrf_token()}}';
+    const note_id =  '{{ $note->note_id}}';
+    const user_id = '{{\Illuminate\Support\Facades\Auth::user()->id}}';
+</script>
 
 
 <h1 class="center">Editeur de Note - {{$note->name}}</h1>
@@ -52,6 +62,11 @@
         @endif</h3>
 @endif
 
+<div id="editor_md">
+
+</div>
+
+<!--
 <div class="note-editor">
 
     <textarea id="note-content" rows="10" cols="50">{{$content}}</textarea>
@@ -59,7 +74,7 @@
 
     <div id="preview"></div>
 </div>
-
+!-->
 
 <div class="allign center ">
 
@@ -177,85 +192,11 @@
 @endif
 
 
-<script>
-    function downloadPDF() {
-        const element = document.getElementById('preview');
-        html2pdf().from(element).save();
-    }
-</script>
 
 
-<script>
-    function saveNote() {
-
-        console.log("Dans save note");
-
-        let content = document.getElementById('note-content').value;
-        let perm = "";
-        // Autorisation
-        @if(\Illuminate\Support\Facades\Auth::user()->id == $note->owner_id)
-            perm = "F"; // L'utilisateur propriétaire à tout les droits
-        @else
-            perm = "{{$perm_user->perm }}";
-        @endif
-
-
-        console.log(perm);
-
-        fetch('/save-note', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Si vous utilisez le jeton CSRF
-            },
-            body: JSON.stringify({
-                content: content,
-                note_id: {{ $note->note_id}},
-                user_id: {{\Illuminate\Support\Facades\Auth::user()->id}},
-                perm: perm
-            })
-
-        })
-            .then(response => {
-                if (response.ok) {
-                    // Afficher un message de succès ou exécuter d'autres actions si nécessaire
-                    console.log('Contenu sauvegardé avec succès!');
-                } else {
-                    console.error('Erreur lors de la sauvegarde du contenu.');
-                }
-            })
-            .catch(error => {
-                console.error('Erreur de connexion:', error);
-            });
-    }
-
-    document.addEventListener('keydown', e => {
-        if (e.ctrlKey && e.key === 's') {
-            // Prevent the Save dialog to open
-            e.preventDefault();
-            // Place your code here
-            saveNote();
-        }
-    });
-
-</script>
 <script src="{{asset("js/accordeon.js")}}"></script>
 
-<script>
-    function previewMarkdown() {
-        // Fonction JavaScript pour prévisualiser le contenu Markdown
-        let noteContent = document.getElementById('note-content').value;
 
-        // Utilisation de la bibliothèque Marked.js pour convertir le Markdown en HTML
-        let html = marked.marked(noteContent);
-        document.getElementById('preview').innerHTML = html;
-        saveNote()
-    }
-
-    // Appliquer le Markdown automatiquement lors de la saisie dans le textarea
-    document.getElementById('note-content').addEventListener('input', () => previewMarkdown());
-    previewMarkdown();
-</script>
 
 <script src="{{asset("js/notification.js")}}"></script>
 
@@ -270,6 +211,15 @@
 
 <script src="{{asset("js/shortcut_editor.js")}}"></script>
 
+
+<script>
+    function moveDivOnLoadStackEdit(){
+        let stack = document.getElementsByClassName("stackedit-container")[0]
+        document.getElementById("editor_md").innerHTML += stack.innerHTML;
+        stack.remove();
+    }
+
+</script>
 
 </body>
 </html>

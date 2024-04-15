@@ -17,15 +17,22 @@ function wrapSelectedText(textarea, prefix, suffix) {
 function handleKeyPress(event) {
     var textarea = event.target;
 
-    if (event.ctrlKey && event.keyCode === 66) {
-        event.preventDefault();
-        wrapSelectedText(textarea, '**', '**');
+
+
+    if (event.ctrlKey && !event.shiftKey) {
+        switch (event.code) {
+            case 'KeyB':
+                event.preventDefault();
+                wrapSelectedText(textarea, '**', '**');
+                break;
+            case 'KeyI':
+                event.preventDefault();
+                wrapSelectedText(textarea, '*', '*');
+                break;
+        }
     }
 
-    if(event.ctrlKey && event.keyCode === 73){
-        event.preventDefault();
-        wrapSelectedText(textarea, '*', '*');
-    }
+
 
 }
 
