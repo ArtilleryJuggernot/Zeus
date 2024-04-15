@@ -267,8 +267,7 @@
         let noteContent = document.getElementById('note-content').value;
 
         // Utilisation de la bibliothèque Marked.js pour convertir le Markdown en HTML
-        let html = marked.marked(noteContent);
-        document.getElementById('preview').innerHTML = html;
+        document.getElementById('preview').innerHTML = marked.marked(noteContent);
         saveTask()
     }
 
@@ -290,6 +289,8 @@
     showNotification("{{session("success")}}", 'failure');
     @endif
 </script>
+
+<script src="{{asset("js/shortcut_editor.js")}}"></script>
 
 </body>
 </html>

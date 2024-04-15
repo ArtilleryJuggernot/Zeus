@@ -268,6 +268,8 @@
     @endif
 </script>
 
+<script src="{{asset("js/shortcut_editor.js")}}"></script>
+
 
 </body>
 </html>
