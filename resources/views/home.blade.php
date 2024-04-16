@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Accueil - Zeus</title>
     <link rel="stylesheet" href="{{asset("css/folder/Overview.css")}}">
+    <link rel="stylesheet" href="{{asset("css/notification/notification.css")}}">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" data-deferred="1"></script>
 </head>
 
@@ -11,13 +12,11 @@
 <body>
 
 <div id="particleCanvas">
-
 </div>
 
-@if(session("failure"))
-    <h2>{{session("failure")}}</h2>
-@endif
-
+<div id="notification" class="notification">
+    <div class="progress"></div>
+</div>
 
 
 <h1>Hello {{\Illuminate\Support\Facades\Auth::user()->name}} ⚡ <img src="{{asset("img/thunder_anim.gif")}}"></h1>
@@ -166,4 +165,15 @@
 
 <script src="{{asset("js/particules.js")}}"></script>
 <script src="{{asset("js/task_update.js")}}"></script>
+<script src="{{asset("js/notification.js")}}"></script>
+
+
+<script>
+    @if(session("success"))
+    showNotification("{{session("success")}}", 'success');
+    @elseif(session("failure"))
+    showNotification("{{session("success")}}", 'failure');
+    @endif
+</script>
+
 @include("includes.footer")

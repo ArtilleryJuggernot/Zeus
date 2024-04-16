@@ -308,9 +308,6 @@ class TaskController extends Controller
 
     public function UpdateFinishStatus(Request $request)
     {
-        //dd($request);
-
-
 
         $validateData = $request->validate([
             "task_id" => ["required", "integer"],

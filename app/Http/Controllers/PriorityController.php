@@ -51,7 +51,7 @@ class PriorityController extends Controller
             $priority->save();
         }
 
-        return redirect()->back()->with("success","La priorité à bien était changer");
+        return redirect()->back()->with("success","La priorité à bien était mis à jour");
     }
 
 
