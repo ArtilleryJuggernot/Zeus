@@ -125,7 +125,7 @@ class Stackedit {
             ? 'stackedit-hidden-container'
             : 'stackedit-container';
         this.$containerEl.innerHTML = containerHtml;
-        document.body.appendChild(this.$containerEl);
+        document.getElementById("editor_md").appendChild(this.$containerEl);
 
         // Load StackEdit in the iframe
         const iframeEl = this.$containerEl.querySelector('iframe');

@@ -14,7 +14,7 @@
     <script type="module" src="{{asset("js/stack_edit/stack_edit_task.js")}}"></script>
 
 </head>
-<body onload="moveDivOnLoadStackEdit()">
+<body>
 
 
 <script>
@@ -233,14 +233,7 @@
 
 
 
-<script>
-    function moveDivOnLoadStackEdit(){
-        let stack = document.getElementsByClassName("stackedit-container")[0]
-        document.getElementById("editor_md").innerHTML += stack.innerHTML;
-        stack.remove();
-    }
 
-</script>
 
 </body>
 </html>

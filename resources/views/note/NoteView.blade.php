@@ -14,7 +14,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
-<body onload="moveDivOnLoadStackEdit()">
+<body>
 
 @if ($errors->any())
     <div class="alert alert-danger">
@@ -212,14 +212,6 @@
 <script src="{{asset("js/shortcut_editor.js")}}"></script>
 
 
-<script>
-    function moveDivOnLoadStackEdit(){
-        let stack = document.getElementsByClassName("stackedit-container")[0]
-        document.getElementById("editor_md").innerHTML += stack.innerHTML;
-        stack.remove();
-    }
-
-</script>
 
 </body>
 </html>
