@@ -19,6 +19,31 @@ class ProjetController extends Controller
         $userProjetsDone = $this->getProjectsListWithCategories($user_id, 1);
         $userProjetsUnDone = $this->getProjectsListWithCategories($user_id, 0);
 
+
+
+        // Assignation des catégories du projet qui héritent pour les tâches
+        $fusion = $userProjetsDone->merge($userProjetsUnDone);
+        foreach ($fusion as $projet){
+            $tasks = $projet->tasks;
+            $categories = possede_categorie::where([
+                ["ressource_id",$projet->id],
+                ["type_ressource","project"]
+            ])->get();
+            foreach ($tasks as $task){
+                foreach ($categories as $category){
+
+                    $category = Categorie::find($category->categorie_id);
+                    $newCategoryAssign = new possede_categorie();
+                    $newCategoryAssign->ressource_id = $task->task_id;
+                    $newCategoryAssign->type_ressource = "task";
+                    $newCategoryAssign->categorie_id = $category->category_id;
+                    $newCategoryAssign->owner_id = $projet->owner_id;
+                    $newCategoryAssign->save();
+                }
+            }
+        }
+
+
         return view("projet.ProjetOverview", [
             "userProjetsDone" => $userProjetsDone,
             "userProjectUnDone" => $userProjetsUnDone,

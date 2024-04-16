@@ -35,7 +35,7 @@
     <h3>🚧 Projet : {{$projet->name}}</h3>
 </div>
 
-<h2 class="progress-status">📈 Progression : {{$progression}} %</h2>
+<h2 class="progress-status">📈 Progression : {{$progression}} % ({{count($taskFinish)}} / {{count($taskFinish) + count($taskTODO)}})</h2>
 <div class="progress-bar">
     <div class="progress-bg"></div>
     <div class="progress green" id="progress" style="width: {{ $progression }}%;"></div>
@@ -80,7 +80,7 @@
 </div>
 
 
-<h2>Tâches à faire</h2>
+<h2>Tâches à faire - ({{count($taskTODO)}})</h2>
 <div class="task-todo">
 
     @if($taskTODO->isEmpty())
@@ -138,9 +138,9 @@
         </div>
     @endforeach
 </div>
-<button class="accordion">Tâches réalisées</button>
+<button class="accordion">Tâches réalisées - ({{count($taskFinish)}})</button>
 <div class="panel">
-<h2>Tâches réalisées</h2>
+<h2>Tâches réalisées - ({{count($taskFinish)}})</h2>
 <div class="task-done">
 
 
