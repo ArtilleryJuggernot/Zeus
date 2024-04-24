@@ -124,3 +124,29 @@ td {
 .todo{
     color: red;
 }
+
+.arborescence {
+    margin-top: 20px;
+}
+
+.folder_arbo {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s;
+    border: 1px solid #007bff; /* Bordure de couleur bleu ciel */
+    border-radius: 5px; /* Coins arrondis */
+    padding: 10px; /* Espace intérieur */
+    background-color: #e6f7ff; /* Fond de couleur bleu ciel */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre légère */
+}
+
+.folder_arbo:hover {
+    color: #007bff; /* Change la couleur au survol */
+}
+
+.folder_separator_arbo {
+    margin: 0 5px; /* Espace autour du séparateur */
+    color: #666; /* Couleur du séparateur */
+}
+

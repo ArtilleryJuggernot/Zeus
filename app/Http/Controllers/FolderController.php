@@ -259,6 +259,35 @@ class FolderController extends Controller
     // POST
 
 
+    //         $folderPath = Folder::find($folderId)->path;
+    public static function generateFolderTree($folderId)
+    {
+        $folderPath = Folder::find($folderId)->path;
+        $segments = explode('/', $folderPath);
+
+        $base_path = "/files/" . $segments[2]; // /files/user_X/
+
+
+        $folder_root = Folder::where('path',$base_path)->first();
+        $folderTree[] = [
+            'id' => $folder_root->folder_id,
+            'name' => $folder_root->name
+        ];
+        $currentPath = '';
+        // Parcours
+        for ($i = 3; $i < count($segments); $i++){
+            $base_path .= "/" . $segments[$i];
+            $folder_root = Folder::where('path',$base_path)->first();
+            $folderTree[] = [
+                'id' => $folder_root->folder_id,
+                'name' => $folder_root->name
+            ];
+        }
+        return $folderTree;
+    }
+
+
+
     public  function Store(Request $request)
     {
         $validatedData = $request->validate([

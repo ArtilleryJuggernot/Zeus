@@ -40,23 +40,22 @@
             </div>
         @endif
 
-        <div class="previous-folder">
-            @if ($parent_content["id"] == "Racine")
-                <h3>Vous êtes à la racine</h3>
-            @else
-                <h3>
-                    Dossier parent :
-                    <a
-                        href="{{ route("folder_view", $parent_content["id"]) }}"
-                    >
-                        {{ $parent_content["name"] }}
-                    </a>
-                </h3>
-                <h3>Vous êtes dans le dossier : {{ $folder->name }}</h3>
-            @endif
+        <div class="arborescence">
+            <h2>Arborescence - {{$folder->name}}</h2>
+            <br>
+            @php
+            $folder_tree = \App\Http\Controllers\FolderController::generateFolderTree($folder->folder_id);
+            @endphp
+            @foreach ($folder_tree as $index => $folder_arbo)
+            <a class="folder_arbo" href="{{ route("folder_view", $folder_arbo["id"]) }}">
+                @if($index == 0) 🏠 @else 📁 @endif
+                {{ $folder_arbo["name"] }}
+            </a>
+            @if($index  < count($folder_tree) - 1)
+                <span class="folder_separator_arbo"> > </span>
+                @endif
+            @endforeach
         </div>
-
-        <div></div>
 
         <div class="add-section">
             <div class="add-btn" id="add-note-btn">
