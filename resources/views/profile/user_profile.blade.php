@@ -6,7 +6,11 @@
         <meta charset="UTF-8" />
         <title>Page de {{ $user->name }} - Zeus</title>
         <link rel="stylesheet" href="{{ asset("css/folder/Overview.css") }}" />
-
+        <link rel="stylesheet" href="{{asset("css/profil/profil.css")}}" />
+        <link
+            rel="stylesheet"
+            href="{{ asset("css/notification/notification.css") }}"
+        />
         <style>
             .form {
                 display: flex;
@@ -18,11 +22,53 @@
     <body>
         <h1>Page de l'utilisateur {{ $user->name }} ⚡</h1>
 
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <h2>Il y a eu des erreurs</h2>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+<div style="display: flex">
+    <div style="padding-right: 30px">
+        @if($user->pfp_path != '')
+            @if(\Illuminate\Support\Facades\Storage::has('app/profile_picture/') . $user->id . ".png")
+                <img class="pfp_profil_page" src="{{asset("storage/" . $user->id . ".png")}}" />
+            @endif
+
+        @else
+            <img class="pfp_profil_page" src="{{asset("storage/default.png")}}" />
+        @endif
+    </div>
+
+
+    <div>
         <h2>Information</h2>
 
         <p>Nom d'utilisateur : {{ $user->name }}</p>
 
         <p>Date de création du compte : {{ $user->created_at }}</p>
+    </div>
+
+
+</div>
+
+
+
+
+        <form id="profileForm" action="/upload-profile-picture" method="post" enctype="multipart/form-data">
+            <input type="file" name="profilePicture" id="profilePicture">
+            <button type="submit">Upload</button>
+            @csrf
+        </form>
+
+
+
+
 
         @php
             if ($stats["total_tasks"] != 0) {
@@ -119,15 +165,10 @@
                     required
                     placeholder="Nouveau mot de passe"
                 />
-                <br />
+                <br/>
                 <label>Confirmation :</label>
                 <br />
-                <input
-                    name="confirmation"
-                    type="password"
-                    required
-                    placeholder="Confirmation"
-                />
+                <input name="confirmation" type="password" required placeholder="Confirmation"/>
                 <br />
                 <button type="submit">Changer mon mot de passe</button>
                 @csrf
@@ -136,4 +177,23 @@
     </body>
 
     @include("includes.footer")
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const profilePictureInput = document.getElementById('profilePicture');
+
+        profilePictureInput.addEventListener('change', function() {
+            document.getElementById('profileForm').submit(); // Soumet automatiquement le formulaire lorsque l'utilisateur choisit une image
+        });
+    });
+</script>
+
+    <script>
+        @if(session("success"))
+        showNotification("{{ session("success") }}", 'success');
+        @elseif(session("failure"))
+        showNotification("{{ session("success") }}", 'failure');
+        @endif
+    </script>
+
 </html>

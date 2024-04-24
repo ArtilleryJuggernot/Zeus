@@ -11,6 +11,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use League\Flysystem\DirectoryListing;
+use Psy\Util\Str;
 
 class ProfilController extends Controller
 {
@@ -99,4 +103,56 @@ class ProfilController extends Controller
         }
         return redirect()->route("home")->with("failure","Erreur");
     }
+
+
+    public function UpdateProfilePicture(Request $request)
+    {
+        $output = new \Symfony\Component\Console\Output\ConsoleOutput();
+
+
+        // Validation des données entrantes
+        $validator = Validator::make($request->all(), [
+            'profilePicture' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // Accepte les GIF animés jusqu'à 5 Mo
+        ]);
+
+
+
+
+        // Si la validation échoue, renvoyer les erreurs
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $output->writeln("<info>ALOOOOOOOO</info>");
+
+        $user_id = (string) Auth::user()->id;
+
+        //dd(storage_path('app'));
+
+
+        // Traitement du fichier téléchargé
+        if ($request->hasFile('profilePicture')) {
+
+
+
+            $file = $request->file('profilePicture');
+            $default_path = "/files/public/";
+
+
+
+            $filename = $user_id  . ".png";
+            if(Storage::has($default_path. $filename))
+                Storage::delete($default_path . $filename);
+
+
+            $rez = $file->storeAs("",$filename,"upload_pfp");
+
+            Auth::user()->pfp_path = $default_path . $user_id . ".png";
+            Auth::user()->save();
+        }
+
+        // Redirection avec un message de succès ou autre logique métier
+        return redirect()->back()->with('success', 'Profile picture uploaded successfully!');
+    }
+
 }

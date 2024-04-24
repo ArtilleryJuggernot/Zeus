@@ -36,6 +36,12 @@ return [
             'throw' => false,
         ],
 
+        'upload_pfp' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public'),
+            'throw' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
