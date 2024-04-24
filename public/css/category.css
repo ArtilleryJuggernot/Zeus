@@ -7,6 +7,7 @@
     background-color: #4CAF50; /* Couleur de fond */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre subtile */
     transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transition fluide */
+
 }
 
 .category:hover {

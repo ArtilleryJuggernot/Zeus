@@ -4,6 +4,7 @@ body {
 }
 
 footer {
+    margin-top: 50px;
     position: relative;
     bottom: 0;
     background-color: #000;

@@ -1,134 +1,160 @@
 <head>
-    <link rel="stylesheet" href="{{asset("css/includes/header.css")}}">
-    <link rel="stylesheet" href="{{asset("css/includes/all.css")}}">
-    <link rel="stylesheet" href="{{asset("css/background/bg_day.css")}}">
-    <link rel="stylesheet" href="{{asset("css/animation/particule.css")}}">
-    <link rel="icon" href="{{url("img/favicon/favicon-32x32.png")}}">
+    <link rel="stylesheet" href="{{ asset("css/includes/header.css") }}" />
+    <link rel="stylesheet" href="{{ asset("css/includes/all.css") }}" />
+    <link rel="stylesheet" href="{{ asset("css/background/bg_day.css") }}" />
+    <link rel="stylesheet" href="{{ asset("css/animation/particule.css") }}" />
+    <link rel="icon" href="{{ url("img/favicon/favicon-32x32.png") }}" />
 </head>
 <body>
-<div class="header">
-    <!-- Logo du jeu -->
-    <div class="logo">
-        <!-- Insérer le logo du jeu -->
-        <a href="{{route('home')}}"> <img src="{{asset("img/logo-zeus.jpeg")}}" alt="Zeus Logo"> </a>
-    </div>
+    <div class="header">
+        <!-- Logo du jeu -->
+        <div class="logo">
+            <!-- Insérer le logo du jeu -->
+            <a href="{{ route("home") }}">
+                <img src="{{ asset("img/logo-zeus.jpeg") }}" alt="Zeus Logo" />
+            </a>
+        </div>
 
-    <!-- Informations de l'utilisateur -->
-    <div class="user-info">
-        Zeus Project -
-        @if(Auth::user())
-            {{Auth::user()->name}}
-        @else
-            Visiteur
-        @endif
+        <!-- Informations de l'utilisateur -->
+        <div class="user-info">
+            Zeus Project -
+            @if (Auth::user())
+                {{ Auth::user()->name }}
+            @else
+                    Visiteur
+            @endif
+        </div>
 
-
-    </div>
-
-    <!-- Barre de navigation -->
-    <nav class="navbar">
-        <ul>
-            <li>
-                <a href="{{ route('home') }}">🏠 Accueil</a>
-                <ul class="submenu">
-                    <li><a href="{{ route('about') }}">🔥 A propos du projet Zeus</a></li>
-                </ul>
-            </li>
-
-            @if(Auth::user())
+        <!-- Barre de navigation -->
+        <nav class="navbar">
+            <ul>
                 <li>
-                    <a href="{{ route("folder_overview") }}">📁 Mes dossiers</a>
+                    <a href="{{ route("home") }}">🏠 Accueil</a>
                     <ul class="submenu">
+                        <li>
+                            <a href="{{ route("about") }}">
+                                🔥 A propos du projet Zeus
+                            </a>
+                        </li>
                     </ul>
                 </li>
-            @endif
 
-            @if(Auth::user())
-                <li>
-                    <a href="{{ route("notes_overview") }}">📝 Mes notes</a>
-                    <ul class="submenu">
-                    </ul>
-                </li>
-            @endif
+                @if (Auth::user())
+                        <li>
+                            <a href="{{ route("folder_overview") }}">
+                                📁 Mes dossiers
+                            </a>
+                            <ul class="submenu"></ul>
+                        </li>
+                @endif
 
-            @if(Auth::user())
-                <li>
-                    <a href="{{ route("task_overview") }}">📚 Mes tâches</a>
-                    <ul class="submenu">
-                    </ul>
-                </li>
-            @endif
+                @if (Auth::user())
+                        <li>
+                            <a href="{{ route("notes_overview") }}">
+                                📝 Mes notes
+                            </a>
+                            <ul class="submenu"></ul>
+                        </li>
+                @endif
 
+                @if (Auth::user())
+                        <li>
+                            <a href="{{ route("task_overview") }}">
+                                📚 Mes tâches
+                            </a>
+                            <ul class="submenu"></ul>
+                        </li>
+                @endif
 
-            @if(Auth::user())
-                <li>
-                    <a href="{{ route("projet_overview") }}">🚧 Mes Projets</a>
-                    <ul class="submenu">
-                    </ul>
-                </li>
-            @endif
+                @if (Auth::user())
+                        <li>
+                            <a href="{{ route("projet_overview") }}">
+                                🚧 Mes Projets
+                            </a>
+                            <ul class="submenu"></ul>
+                        </li>
+                @endif
 
-            @if(\Illuminate\Support\Facades\Auth::user())
-                <li>
-                    <a href="{{route("categorie_overview")}}">📌 Mes categories</a>
-                </li>
-            @endif
+                @if (\Illuminate\Support\Facades\Auth::user())
+                        <li>
+                            <a href="{{ route("categorie_overview") }}">
+                                📌 Mes categories
+                            </a>
+                        </li>
+                @endif
 
-            @if(Auth::user())
-                <li>
-                    <a>🚧 Mes modules</a>
-                    <ul class="submenu">
-                        <li><a href="{{ route('livre_overview') }}">📚 Mes livres</a></li>
-                    </ul>
-                </li>
-            @endif
+                @if (Auth::user())
+                        <li>
+                            <a>🚧 Mes modules</a>
+                            <ul class="submenu">
+                                <li>
+                                    <a href="{{ route("livre_overview") }}">
+                                        📚 Mes livres
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                @endif
 
-
-            @if(Auth::user())
-                <li><a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                @if (Auth::user())
+                    <li><a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         Se déconnecter
                     </a></li>
-            @else
-                <li><a href="{{route("login")}}">
-                        Se connecter
-                    </a></li>
-                <li><a href="{{route("register")}}">
-                        S'enregister !
-                    </a></li>
+                @else
+                    <li><a href="{{ route("login") }}">Se connecter</a></li>
+                    <li>
+                        <a href="{{ route("register") }}">S'enregister !</a>
+                    </li>
+                @endif
 
-            @endif
+                @if (Auth::user())
+                    <li>
+                        <a href="{{ route("profile", Auth::user()->id) }}">
+                            Mon profil
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route("weekly_stats") }}">
+                                    Statistiques de la semaine
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
 
-            @if(Auth::user())
-                <li><a href="{{route("profile",Auth::user()->id)}}">Mon profil</a>
-                    <ul class="submenu">
-                        <li><a href="{{route("weekly_stats")}}"> Statistiques de la semaine</a></li>
-                    </ul>
-                </li>
-            @endif
+                @if (\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->id == 1)
+                    <li>
+                        <a>👑 Administration</a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route("user_manage") }}">
+                                    👑 Gestion des utilisateurs
+                                </a>
+                            </li>
 
-            @if(\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->id == 1)
-                <li>
-                    <a>👑 Administration</a>
-                    <ul class="submenu">
-                        <li><a href="{{ route("user_manage") }}">👑 Gestion des utilisateurs</a></li>
+                            <li>
+                                <a href="{{ route("logs_manage") }}">
+                                    👑 Gestion des logs
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
+            </ul>
+        </nav>
+    </div>
 
-                        <li><a href="{{ route("logs_manage") }}">👑 Gestion des logs</a></li>
-                    </ul>
-                </li>
-            @endif
-        </ul>
-    </nav>
-</div>
-
-<!-- Formulaire caché pour effectuer la déconnexion via une requête POST -->
-<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-    @csrf <!-- Utilisation du jeton CSRF pour la sécurité -->
-</form>
-
-
-
-
+    <!-- Formulaire caché pour effectuer la déconnexion via une requête POST -->
+    <form
+        id="logout-form"
+        action="{{ route("logout") }}"
+        method="POST"
+        style="display: none"
+    >
+        @csrf
+        <!-- Utilisation du jeton CSRF pour la sécurité -->
+    </form>
 </body>
-@if(\Illuminate\Support\Facades\Auth::user())
+@if (\Illuminate\Support\Facades\Auth::user())
     @include("includes.search.searchbar")
 @endif

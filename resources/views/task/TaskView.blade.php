@@ -59,8 +59,9 @@
             @elseif($perm_user->perm == "RW") Lecture et Ecriture
             @elseif($perm_user->perm == "F" ) Total
             sur cette note
-            @endif</h3>
+            @endif
     @endif
+    </h3>
 
 
 @endif
@@ -148,9 +149,9 @@
 </div>
 
 
+@if($task->owner_id == \Illuminate\Support\Facades\Auth::user()->id)
 <button class="accordion">Gestion des partages utilisateurs</button>
 <div class="panel">
-@if($task->owner_id == \Illuminate\Support\Facades\Auth::user()->id)
 
 
 
