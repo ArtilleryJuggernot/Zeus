@@ -34,19 +34,23 @@
         @endif
 
 <div style="display: flex">
-    <div style="padding-right: 30px">
+    <div style="padding-right: 200px; position: relative">
+
+
+        <img style="position:absolute; padding-left: 10px; z-index: 2" class="overlay_pfp" src="{{asset("overlay/overlay_steam_vampire.png")}}" >
+
         @if($user->pfp_path != '')
             @if(\Illuminate\Support\Facades\Storage::has('app/profile_picture/') . $user->id . ".png")
-                <img class="pfp_profil_page" src="{{asset("storage/" . $user->id . ".png")}}" />
+                <img style="position: absolute; padding-left: 10px" class="pfp_profil_page" src="{{asset("storage/" . $user->id . ".png")}}" />
             @endif
 
         @else
-            <img class="pfp_profil_page" src="{{asset("storage/default.png")}}" />
+            <img style="" class="pfp_profil_page" src="{{asset("storage/default.png")}}" />
         @endif
     </div>
 
 
-    <div>
+    <div style="position:relative;">
         <h2>Information</h2>
 
         <p>Nom d'utilisateur : {{ $user->name }}</p>
@@ -58,6 +62,8 @@
 </div>
 
 
+        <br>
+        <br>
 
 
         <form id="profileForm" action="/upload-profile-picture" method="post" enctype="multipart/form-data">

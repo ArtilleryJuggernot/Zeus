@@ -13,8 +13,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Imagick;
 use League\Flysystem\DirectoryListing;
 use Psy\Util\Str;
+
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+
+
 
 class ProfilController extends Controller
 {
@@ -105,6 +111,9 @@ class ProfilController extends Controller
     }
 
 
+    /**
+     * @throws \ImagickException
+     */
     public function UpdateProfilePicture(Request $request)
     {
         $output = new \Symfony\Component\Console\Output\ConsoleOutput();
@@ -115,37 +124,50 @@ class ProfilController extends Controller
             'profilePicture' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // Accepte les GIF animés jusqu'à 5 Mo
         ]);
 
-
-
-
         // Si la validation échoue, renvoyer les erreurs
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
-        $output->writeln("<info>ALOOOOOOOO</info>");
-
         $user_id = (string) Auth::user()->id;
-
-        //dd(storage_path('app'));
 
 
         // Traitement du fichier téléchargé
         if ($request->hasFile('profilePicture')) {
 
 
-
             $file = $request->file('profilePicture');
             $default_path = "/files/public/";
-
 
 
             $filename = $user_id  . ".png";
             if(Storage::has($default_path. $filename))
                 Storage::delete($default_path . $filename);
 
+            $file->storeAs("",$filename,"upload_pfp");
 
-            $rez = $file->storeAs("",$filename,"upload_pfp");
+
+            if($file->extension() == "gif"){
+            $image = new Imagick('storage/' . $filename);
+            $image = $image->coalesceImages();
+
+            foreach ($image as $frame) {
+                // Redimensionner chaque image
+                $frame->resizeImage(150, 150, Imagick::FILTER_CATROM, 0);
+                // Appliquer d'autres manipulations si nécessaire
+
+                // Rétablir la transparence
+                $frame->setImageAlphaChannel(Imagick::ALPHACHANNEL_OPAQUE);
+
+                // Passer à l'image suivante
+                $image->nextImage();
+            }
+
+            $image = $image->deconstructImages();
+            $image->writeImages('storage/' . $filename, true);
+
+            $image->clear();
+            $image->destroy();
+            }
 
             Auth::user()->pfp_path = $default_path . $user_id . ".png";
             Auth::user()->save();
