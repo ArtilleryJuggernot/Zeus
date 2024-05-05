@@ -118,7 +118,7 @@
 
 
 
-                        
+                        <a href="{{ route('google.redirect') }}" class="btn btn-primary"> Login with Google </a>
 
 
                         <div class="p-t-136 text-center">

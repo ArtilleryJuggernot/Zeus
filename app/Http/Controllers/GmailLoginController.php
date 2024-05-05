@@ -24,6 +24,7 @@ class GmailLoginController extends Controller
         $output->writeln($user->getEmail());
         $output->writeln($user->getId());
         $output->writeln($user->getNickname());
+        dd($user);
 
 
         // Your authentication logic here
