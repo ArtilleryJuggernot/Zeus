@@ -16,14 +16,12 @@ class GmailLoginController extends Controller
         $output->writeln("<info>REDIRECT</info>");
         return Socialite::driver('google')->redirect();
     }
-    public function handleGmailCallback()
+    public function handleGmailCallback(Request $request)
     {
-        $user = Socialite::driver('google')->user();
-        $output = new \Symfony\Component\Console\Output\ConsoleOutput();
-        $output->writeln($user->getAvatar());
-        $output->writeln($user->getEmail());
-        $output->writeln($user->getId());
-        $output->writeln($user->getNickname());
+        //dd($request);
+
+        //$user = Socialite::driver('google')->user();
+        $user = Socialite::driver('google')->stateless()->user();
         dd($user);
 
 
