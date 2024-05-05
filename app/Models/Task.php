@@ -11,7 +11,6 @@ class Task extends Model
 
     public $primaryKey = "id";
     public $table = "tasks";
-    public mixed $id;
 
     public function getPositionForProject($projectId)
     {
