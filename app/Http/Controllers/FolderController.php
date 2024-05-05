@@ -18,7 +18,7 @@ class FolderController extends Controller
     {
         $user_id = Auth::user()->id;
         if($user_id == null){
-            return view("home")->with("failure","La page des dossiers n'a pas pu être affiché");
+            return redirect()->route("home")->with("failure","La page des dossiers n'a pas pu être affiché");
         }
         $rootFolderID = Folder::where("path","=","/files/user_" . $user_id)->first()->id;
         return $this->View($rootFolderID);
@@ -58,7 +58,7 @@ class FolderController extends Controller
         if ($folder) {
             return $folder->id;
         }
-        return view("home")->with("failure","Une erreur s'est produite lors de l'obtention des dossiers");
+        return redirect()->route("home")->with("failure","Une erreur s'est produite lors de l'obtention des dossiers");
     }
 
     public function getNoteIdFromPath($notePath) {
@@ -67,8 +67,9 @@ class FolderController extends Controller
 
         if ($note) {
             return $note->id;
+            return $note->id;
         }
-        return view("home")->with("failure","Une erreur s'est produite lors de l'obtention des notes");
+        return redirect()->route("home")->with("failure","Une erreur s'est produite lors de l'obtention des notes");
     }
 
     public function getFolderContents($folderId) {
@@ -321,7 +322,9 @@ class FolderController extends Controller
         $newFolder->save();
         LogsController::createFolder($user_id,$newFolder->getKey(),$name,"SUCCESS");
 
-        return redirect()->back()->with("success","Le dossier a bien été créer !");
+
+
+        return redirect()->route("folder_view")->with("success","Le dossier a bien été créer !");
     }
 
     public function Delete(Request $request)

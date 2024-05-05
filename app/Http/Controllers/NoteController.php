@@ -369,6 +369,9 @@ class NoteController extends Controller
                 ["type_ressource","note"]
             ])->delete();
 
+
+
+
             Storage::delete($note->path);
             $note->delete();
             LogsController::deleteNote($user_id,$id,$note->name,"SUCCESS");
