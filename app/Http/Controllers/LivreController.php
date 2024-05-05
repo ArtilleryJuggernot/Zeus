@@ -163,7 +163,7 @@ class LivreController extends Controller
         foreach ($ListbookProject as $bookProject){
             $insideProjectTask = insideprojet::where("projet_id","=",$bookProject->id)->get();
             foreach ($insideProjectTask as $inside){
-                $task = Task::find($inside->task_id);
+                $task = Task::find($inside->id);
                 if($task->due_date == Carbon::today()->format("Y-m-d")){
 
                     if (count(task_priorities::where(
