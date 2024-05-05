@@ -51,7 +51,7 @@
                 @foreach ($task_priority as $task)
                     @php
                         $priority = $task->priority;
-                        $task = \App\Models\Task::find($task->id);
+                        $task = \App\Models\Task::find($task->task_id);
                     @endphp
 
                     <div class="folder-card">
