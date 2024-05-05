@@ -85,3 +85,10 @@ require "subroutes/stats_route.php";
 require "subroutes/livre_route.php";
 
 require "subroutes/api_route.php";
+
+// Gmail Login
+
+require  "subroutes/gmail_route.php";
+
+
+// 

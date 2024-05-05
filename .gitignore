@@ -1,3 +1,4 @@
+restart.sh
 /.phpunit.cache
 /node_modules
 /public/build

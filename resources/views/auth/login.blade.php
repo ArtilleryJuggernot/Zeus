@@ -116,6 +116,11 @@
                             <button class="login100-form-btn">Login</button>
                         </div>
 
+
+
+                        
+
+
                         <div class="p-t-136 text-center">
                             <a
                                 href="{{ route("register") }}"

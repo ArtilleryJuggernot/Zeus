@@ -169,6 +169,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\FortifyServiceProvider::class,
+        Collective\Html\HtmlServiceProvider::class,
 
     ])->toArray(),
 
@@ -184,6 +185,8 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
+        'Form' => 'Collective\Html\FormFacade',
+        'Html' => 'Collective\Html\HtmlFacade',
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 

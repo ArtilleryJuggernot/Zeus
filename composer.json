@@ -14,7 +14,9 @@
         "laravel/fortify": "^1.19",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
+        "laravel/socialite": "^5.13",
         "laravel/tinker": "^2.8",
+        "laravelcollective/html": "^6.4",
         "orbitale/imagemagick-php": "^3.3",
         "thiagoprz/eloquent-composite-key": "^1.0"
     },
