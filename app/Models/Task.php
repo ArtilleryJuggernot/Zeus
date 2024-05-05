@@ -9,7 +9,7 @@ class Task extends Model
 {
     use HasFactory;
 
-    public $primaryKey = "task_id";
+    public $primaryKey = "id";
     public $table = "tasks";
     public mixed $id;
 
