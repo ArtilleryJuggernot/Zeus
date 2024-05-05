@@ -72,7 +72,6 @@ class GmailLoginController extends Controller
 
         // Store avatar
 
-        dd("curl !");
 
         $curlCh = curl_init();
         curl_setopt($curlCh, CURLOPT_URL, $userProvider->avatar);
