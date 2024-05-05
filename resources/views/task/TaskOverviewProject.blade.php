@@ -79,7 +79,7 @@
             <!-- Boucle pour afficher les dossiers -->
             @foreach ($task_list_unfinish as $task)
                 <div class="folder-card">
-                    <a href="{{ route("view_task", $task->task_id) }}">
+                    <a href="{{ route("view_task", $task->id) }}">
                         <h3>{{ $task->task_name }}</h3>
                     </a>
 
@@ -118,7 +118,7 @@
                         <input
                             type="hidden"
                             name="task_id"
-                            value="{{ $task->task_id }}"
+                            value="{{ $task->id }}"
                         />
                         <!-- ID de la tâche -->
                         <label>
@@ -144,7 +144,7 @@
                             <input
                                 name="id"
                                 type="hidden"
-                                value="{{ $task->task_id }}"
+                                value="{{ $task->id }}"
                             />
                             <button type="submit">Delete</button>
                             @csrf
@@ -161,7 +161,7 @@
             <!-- Boucle pour afficher les dossiers -->
             @foreach ($task_list_finish as $task)
                 <div class="folder-card">
-                    <a href="{{ route("view_task", $task->task_id) }}">
+                    <a href="{{ route("view_task", $task->id) }}">
                         <h3>{{ $task->task_name }}</h3>
                     </a>
 
@@ -200,7 +200,7 @@
                         <input
                             type="hidden"
                             name="task_id"
-                            value="{{ $task->task_id }}"
+                            value="{{ $task->id }}"
                         />
                         <!-- ID de la tâche -->
                         <label>
@@ -226,7 +226,7 @@
                             <input
                                 name="id"
                                 type="hidden"
-                                value="{{ $task->task_id }}"
+                                value="{{ $task->id }}"
                             />
                             <button type="submit">Delete</button>
                             @csrf

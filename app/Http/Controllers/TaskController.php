@@ -44,7 +44,7 @@ class TaskController extends Controller
             ->get();
 
         foreach ($tasks as $task) {
-            $task->categories = $this->getTaskCategories($task->task_id, $user_id);
+            $task->categories = $this->getTaskCategories($task->id, $user_id);
         }
 
         return $tasks;
@@ -221,7 +221,7 @@ class TaskController extends Controller
             if ($validateData["btn_is_finished"] == "on") {
                 $task->is_finish = 1;
                 $task->finished_at = Carbon::now();
-                $prio = task_priorities::where("task_id",$task->task_id)->first();
+                $prio = task_priorities::where("task_id",$task->id)->first();
                 if ($prio) $prio->delete();
             } else {
                 $task->is_finish = 0;

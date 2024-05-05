@@ -39,7 +39,7 @@ class NoteController extends Controller
                 if ($folder) {
                     // Ajouter l'ID à la liste des dossiers
                     $result[basename($file)] = [
-                        'id' => $folder->folder_id,
+                        'id' => $folder->id,
                         'content' => $this->listFilesAndDirectoriesRecursively($file, $subDirectoryPath)
                     ];
                 } else {
@@ -62,7 +62,7 @@ class NoteController extends Controller
                     // Ajouter l'ID à la liste des fichiers
                     $result[] = [
                         'file' => basename($file),
-                        'id' => $note->note_id
+                        'id' => $note->id
                     ];
                 } else {
                     $result[] = basename($file);
@@ -123,7 +123,7 @@ class NoteController extends Controller
         else
         {
             $parent_folder = Folder::where("path",$path_parent)->first();
-            return $this->checkHasPermissionView($parent_folder->folder_id);
+            return $this->checkHasPermissionView($parent_folder->id);
         }
         //dd($path_parent);
     }
@@ -153,7 +153,7 @@ class NoteController extends Controller
         if (!$autorisation_partage){
             if($note->owner_id != $user_id) // Pas l'utilisateur propriétaire, on regarde si l'utilisateur courant à les droits sur au moins un dossier supérieur
             {
-                // A partir de note_id -> folder_id
+                // A partir de note_id -> id
                 $path = $note->path;
                 $path_parent = "";
                 $arr_path = explode("/",$path);
@@ -161,8 +161,8 @@ class NoteController extends Controller
                     if($i == count($arr_path) - 2 ) $path_parent .=  $arr_path[$i];
                     else $path_parent .=  $arr_path[$i] . "/";
                 }
-                $folder_id = Folder::where("path",$path_parent)->first()->folder_id;
-                $accesRecursif = $this->checkHasPermissionView($folder_id); // NE PAS DONNER L'ID DE LA NOTE MAIS CELLE DU DOSSIER
+                $folderID = Folder::where("path",$path_parent)->first()->id;
+                $accesRecursif = $this->checkHasPermissionView($folderID); // NE PAS DONNER L'ID DE LA NOTE MAIS CELLE DU DOSSIER
                 //dd($accesRecursif);
 //            dd(!$accesRecursif);
             }

@@ -248,15 +248,15 @@ class LogsController extends Controller
     // Folder
 
 
-    public static function createFolder($user_id,$folder_id,$folder_name,$action_status)
+    public static function createFolder($user_id,$folderID,$folder_name,$action_status)
     {
         $logs = new logs();
         $logs->user_id = $user_id;
         $logs->created_at = Carbon::now();
         $logs->action = "(" . $action_status . ") CREATE FOLDER";
-        $logs->ressource_id = $folder_id;
+        $logs->ressource_id = $folderID;
         $logs->ressource_type = "folder";
-        $logs->content = ($action_status == "FAILURE") ? "Aucune " : "" .  "Création du dossier avec l'id n°" . $folder_id
+        $logs->content = ($action_status == "FAILURE") ? "Aucune " : "" .  "Création du dossier avec l'id n°" . $folderID
             . " et le nom : " . $folder_name . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ")";
 
 
@@ -264,18 +264,18 @@ class LogsController extends Controller
             $logs->content .= " (Autorisation insuffisante)";
 
         $logs->save();
-        StatsLoggerController::CreateFolder($user_id,$folder_id);
+        StatsLoggerController::CreateFolder($user_id,$folderID);
     }
 
-    public static function deleteFolder($user_id,$folder_id,$folder_name,$action_status)
+    public static function deleteFolder($user_id,$folderID,$folder_name,$action_status)
     {
         $logs = new logs();
         $logs->user_id = $user_id;
         $logs->created_at = Carbon::now();
         $logs->action = "(" . $action_status . ") DELETE FOLDER";
-        $logs->ressource_id = $folder_id;
+        $logs->ressource_id = $folderID;
         $logs->ressource_type = "folder";
-        $logs->content = ($action_status == "FAILURE") ? "Aucune " : "" .  "Suppression du dossier avec l'id n°" . $folder_id
+        $logs->content = ($action_status == "FAILURE") ? "Aucune " : "" .  "Suppression du dossier avec l'id n°" . $folderID
             . " et le nom : " . $folder_name . " par l'utilisateur " . User::find($user_id)->name . "(" . $user_id . ")";
 
 
@@ -283,7 +283,7 @@ class LogsController extends Controller
             $logs->content .= " (Autorisation insuffisante)";
 
         $logs->save();
-        StatsLoggerController::DeleteFolder($user_id,$folder_id);
+        StatsLoggerController::DeleteFolder($user_id,$folderID);
     }
 
     public static function CreateProject($user_id,$project_id,$project_name)

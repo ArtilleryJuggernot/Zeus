@@ -34,7 +34,7 @@ class ProjetController extends Controller
 
                     $category = Categorie::find($category->categorie_id);
                     $newCategoryAssign = new possede_categorie();
-                    $newCategoryAssign->ressource_id = $task->task_id;
+                    $newCategoryAssign->ressource_id = $task->id;
                     $newCategoryAssign->type_ressource = "task";
                     $newCategoryAssign->categorie_id = $category->category_id;
                     $newCategoryAssign->owner_id = $projet->owner_id;
@@ -207,7 +207,7 @@ class ProjetController extends Controller
         $projet_id = $validateData["project_id"];
 
         $inside = new insideprojet();
-        $inside->task_id = $task->task_id;
+        $inside->task_id = $task->id;
         $inside->projet_id = $projet_id;
 
         // Get la nouvelle pos  = max + 1
@@ -323,9 +323,9 @@ class ProjetController extends Controller
         foreach ($inside as $i){
             insideprojet::where([
                 "projet_id" => $project_id,
-                "task_id" => $i->task_id
+                "task_id" => $i->id
             ])->delete();
-            Task::find($i->task_id)->delete();
+            Task::find($i->id)->delete();
         }
 
         insideprojet::where("projet_id", $project_id)->delete();

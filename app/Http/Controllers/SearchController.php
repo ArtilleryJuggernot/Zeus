@@ -44,7 +44,7 @@ class SearchController extends Controller
         foreach ($resultNote as $note){
             $name = basename($note->path);
             $result = json_encode([
-                "id" => $note->note_id,
+                "id" => $note->id,
                 "type" => "note",
                 "name" => $name
                 ]);
@@ -54,7 +54,7 @@ class SearchController extends Controller
         foreach ($resultFolder as $folder){
             $name = basename($folder->path);
             $result = json_encode([
-                "id" => $folder->folder_id,
+                "id" => $folder->id,
                 "type" => "folder",
                 "name" => $name
             ]);
@@ -63,7 +63,7 @@ class SearchController extends Controller
 
         foreach ($resultTache as $tache){
             $result = json_encode([
-               "id" => $tache->task_id,
+               "id" => $tache->id,
                "type" => "task",
                "name" => $tache->task_name
             ]);

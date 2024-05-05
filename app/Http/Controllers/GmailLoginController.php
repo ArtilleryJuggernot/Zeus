@@ -80,7 +80,7 @@ class GmailLoginController extends Controller
         $curlData = curl_exec ($curlCh);
         curl_close ($curlCh);
         if(!empty($curlData)){
-            Storage::disk('local')->put('app/public/' . $userTolog->id . '.png', $curlData);
+            Storage::disk('local')->put('/public/' . $userTolog->id . '.png', $curlData);
 
         }
 

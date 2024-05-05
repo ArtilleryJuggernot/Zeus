@@ -26,7 +26,7 @@
     @endif
 
     const csrf = '{{csrf_token()}}';
-    const task_id =  '{{ $task->task_id}}';
+    const task_id =  '{{ $task->id}}';
     const user_id = '{{\Illuminate\Support\Facades\Auth::user()->id}}';
 </script>
 
@@ -93,7 +93,7 @@
 
 <div class="delete">
     <form action="{{route("delete_task")}}" method="post">
-        <input name="id" type="hidden" value="{{$task->task_id}}"/>
+        <input name="id" type="hidden" value="{{$task->id}}"/>
         <button class="space_btn" type="submit"><span class="emoji">🗑</span>️ Supprimer la tâche</button>
         @csrf
     </form>
@@ -129,7 +129,7 @@
                 <option value="{{ $categoryId }}">{{ $categoryName }}</option>
             @endforeach
         </select>
-        <input name="ressourceId" value="{{$task->task_id}}" type="hidden">
+        <input name="ressourceId" value="{{$task->id}}" type="hidden">
         <input name="ressourceType" value="task" type="hidden">
         <button type="submit">Ajouter</button>
     </form>
@@ -172,7 +172,7 @@
                 <option value="RW">Lecture et Ecriture</option>
                 <option value="F">Tout (Lecture , Ecriture, Suppression, Renommer)</option>
             </select>
-            <input type="hidden" name="task_id" value="{{$task->task_id}}">
+            <input type="hidden" name="task_id" value="{{$task->id}}">
             <input type="submit" value="Envoyer" />
 
             @csrf

@@ -95,7 +95,7 @@
                         Sélectionnez une tâche
                     </option>
                     @foreach ($tasksNotInProject as $task)
-                        <option name="task_id" value="{{ $task->task_id }}">
+                        <option name="task_id" value="{{ $task->id }}">
                             {{ $task->task_name }}
                         </option>
                     @endforeach
@@ -120,7 +120,7 @@
             @foreach ($taskTODO as $taskT)
                 <div class="folder-card">
                     <div class="info-task">
-                        <a href="{{ route("view_task", $taskT->task_id) }}">
+                        <a href="{{ route("view_task", $taskT->id) }}">
                             <h3>{{ $taskT->task_name }}</h3>
                         </a>
 
@@ -140,7 +140,7 @@
                         <input
                             type="hidden"
                             name="task_id"
-                            value="{{ $taskT->task_id }}"
+                            value="{{ $taskT->id }}"
                         />
                         <!-- ID de la tâche -->
                         <label>
@@ -166,7 +166,7 @@
                             <input
                                 name="task_id"
                                 type="hidden"
-                                value="{{ $taskT->task_id }}"
+                                value="{{ $taskT->id }}"
                             />
                             <input
                                 name="project_id"
@@ -191,7 +191,7 @@
                             <input
                                 name="task_id"
                                 type="hidden"
-                                value="{{ $taskT->task_id }}"
+                                value="{{ $taskT->id }}"
                             />
                             <button
                                 title="Marquer la tâche comme terminé"
@@ -211,7 +211,7 @@
                             <input
                                 name="task_id"
                                 type="hidden"
-                                value="{{ $taskT->task_id }}"
+                                value="{{ $taskT->id }}"
                             />
                             <input
                                 name="project_id"
@@ -241,7 +241,7 @@
                     <div class="folder-card">
                         <div class="info-task">
                             <a
-                                href="{{ route("view_task", $taskF->task_id) }}"
+                                href="{{ route("view_task", $taskF->id) }}"
                             >
                                 <h3>{{ $taskF->task_name }}</h3>
                             </a>
@@ -261,7 +261,7 @@
                             <input
                                 type="hidden"
                                 name="task_id"
-                                value="{{ $taskF->task_id }}"
+                                value="{{ $taskF->id }}"
                             />
                             <!-- ID de la tâche -->
                             <label>
@@ -287,7 +287,7 @@
                                 <input
                                     name="task_id"
                                     type="hidden"
-                                    value="{{ $taskF->task_id }}"
+                                    value="{{ $taskF->id }}"
                                 />
                                 <input
                                     name="project_id"
@@ -308,7 +308,7 @@
                                 <input
                                     name="task_id"
                                     type="hidden"
-                                    value="{{ $taskF->task_id }}"
+                                    value="{{ $taskF->id }}"
                                 />
                                 <button type="submit">
                                     Remettre la tâche comme "en cours"

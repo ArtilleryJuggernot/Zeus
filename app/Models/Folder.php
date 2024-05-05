@@ -10,7 +10,7 @@ class Folder extends Model
 {
     use HasFactory;
     public $table = "folders";
-    public $primaryKey = "folder_id";
+    public $primaryKey = "id";
     public $timestamps = false;
 
     public static function getParentFolderIdFromPath($folderPath)
@@ -33,7 +33,7 @@ class Folder extends Model
 
 
         // Retournez l'ID du dossier parent s'il existe, sinon null
-        return $parentFolder ? $parentFolder->folder_id : null;
+        return $parentFolder ? $parentFolder->id : null;
     }
 
 
@@ -53,11 +53,11 @@ class Folder extends Model
     }
 
 
-    public static function getFolderCategories($folder_id)
+    public static function getFolderCategories($id)
     {
         $user_id = Auth::user()->id;
 
-        $resourceCategories = possede_categorie::where('ressource_id', $folder_id)
+        $resourceCategories = possede_categorie::where('ressource_id', $id)
             ->where('type_ressource', 'folder')
             ->where('owner_id', $user_id)
             ->get();

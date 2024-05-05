@@ -168,14 +168,14 @@ class LivreController extends Controller
 
                     if (count(task_priorities::where(
                         ["user_id" => $user_id,
-                         "task_id" => $task->task_id
+                         "task_id" => $task->id
                         ]
                     )->get()) > 0)
                         break;
 
                     $priority = new task_priorities();
                     $priority->user_id = $user_id;
-                    $priority->task_id = $task->task_id;
+                    $priority->task_id = $task->id;
                     $priority->priority = "Prioritaire";
                     $priority->save();
                     break;

@@ -51,11 +51,11 @@
                 @foreach ($task_priority as $task)
                     @php
                         $priority = $task->priority;
-                        $task = \App\Models\Task::find($task->task_id);
+                        $task = \App\Models\Task::find($task->id);
                     @endphp
 
                     <div class="folder-card">
-                        <a href="{{ route("view_task", $task->task_id) }}">
+                        <a href="{{ route("view_task", $task->id) }}">
                             <h3>{{ $task->task_name }}</h3>
                         </a>
                         <p style="color: red">{{ $priority }}</p>
@@ -72,7 +72,7 @@
                             <input
                                 type="hidden"
                                 name="task_id"
-                                value="{{ $task->task_id }}"
+                                value="{{ $task->id }}"
                             />
                             <!-- ID de la tâche -->
                             <label>
@@ -98,7 +98,7 @@
                                 <input
                                     name="id"
                                     type="hidden"
-                                    value="{{ $task->task_id }}"
+                                    value="{{ $task->id }}"
                                 />
                                 <button class="del" type="submit">
                                     Delete
@@ -122,7 +122,7 @@
 
                 @foreach ($tachesTimed as $task)
                     <div class="folder-card">
-                        <a href="{{ route("view_task", $task->task_id) }}">
+                        <a href="{{ route("view_task", $task->id) }}">
                             <h3>{{ $task->task_name }}</h3>
                         </a>
                         @if ($task->due_date)
@@ -138,7 +138,7 @@
                             <input
                                 type="hidden"
                                 name="task_id"
-                                value="{{ $task->task_id }}"
+                                value="{{ $task->id }}"
                             />
                             <!-- ID de la tâche -->
                             <label>
@@ -164,7 +164,7 @@
                                 <input
                                     name="id"
                                     type="hidden"
-                                    value="{{ $task->task_id }}"
+                                    value="{{ $task->id }}"
                                 />
                                 <button class="del" type="submit">
                                     Delete
@@ -190,7 +190,7 @@
 
                 @foreach ($tachePasse as $task)
                     <div class="folder-card">
-                        <a href="{{ route("view_task", $task->task_id) }}">
+                        <a href="{{ route("view_task", $task->id) }}">
                             <h3>{{ $task->task_name }}</h3>
                         </a>
                         @if ($task->due_date)
@@ -206,7 +206,7 @@
                             <input
                                 type="hidden"
                                 name="task_id"
-                                value="{{ $task->task_id }}"
+                                value="{{ $task->id }}"
                             />
                             <!-- ID de la tâche -->
                             <label>
@@ -232,7 +232,7 @@
                                 <input
                                     name="id"
                                     type="hidden"
-                                    value="{{ $task->task_id }}"
+                                    value="{{ $task->id }}"
                                 />
                                 <button class="del" type="submit">
                                     Delete

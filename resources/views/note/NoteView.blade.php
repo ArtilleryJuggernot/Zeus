@@ -45,7 +45,7 @@
                 @endif
 
                 const csrf = '{{ csrf_token() }}';
-                const note_id =  '{{ $note->note_id }}';
+                const note_id =  '{{ $note->id }}';
                 const user_id = '{{ \Illuminate\Support\Facades\Auth::user()->id }}';
         </script>
 
@@ -122,7 +122,7 @@
                 </select>
                 <input
                     name="ressourceId"
-                    value="{{ $note->note_id }}"
+                    value="{{ $note->id }}"
                     type="hidden"
                 />
                 <input name="ressourceType" value="note" type="hidden" />
@@ -174,7 +174,7 @@
                         <input
                             type="hidden"
                             name="note_id"
-                            value="{{ $note->note_id }}"
+                            value="{{ $note->id }}"
                         />
                         <input type="submit" value="Envoyer" />
 

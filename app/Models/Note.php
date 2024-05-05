@@ -12,7 +12,7 @@ class Note extends Model
     use HasFactory;
 
     protected $table = 'notes';
-    protected $primaryKey = "note_id";
+    protected $primaryKey = "id";
 
     public $timestamps = true;
     public static function getNoteContentByPath($path)

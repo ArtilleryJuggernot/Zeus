@@ -44,7 +44,7 @@
             <h2>Arborescence - {{$folder->name}}</h2>
             <br>
             @php
-            $folder_tree = \App\Http\Controllers\FolderController::generateFolderTree($folder->folder_id);
+            $folder_tree = \App\Http\Controllers\FolderController::generateFolderTree($folder->id);
             @endphp
             @foreach ($folder_tree as $index => $folder_arbo)
             <a class="folder_arbo" href="{{ route("folder_view", $folder_arbo["id"]) }}">
@@ -262,7 +262,7 @@
                 </select>
                 <input
                     name="ressourceId"
-                    value="{{ $folder->folder_id }}"
+                    value="{{ $folder->id }}"
                     type="hidden"
                 />
                 <input name="ressourceType" value="folder" type="hidden" />
@@ -320,7 +320,7 @@
                         <input
                             type="hidden"
                             name="folder_id"
-                            value="{{ $folder->folder_id }}"
+                            value="{{ $folder->id }}"
                         />
                         <input type="submit" value="Envoyer" />
                         @csrf

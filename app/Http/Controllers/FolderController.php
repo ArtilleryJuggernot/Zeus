@@ -20,8 +20,8 @@ class FolderController extends Controller
         if($user_id == null){
             return view("home")->with("failure","La page des dossiers n'a pas pu être affiché");
         }
-        $root_folder_id = Folder::where("path","=","/files/user_" . $user_id)->first()->folder_id;
-        return $this->View($root_folder_id);
+        $rootFolderID = Folder::where("path","=","/files/user_" . $user_id)->first()->id;
+        return $this->View($rootFolderID);
     }
 
     public  function getFolderCategories($folderId) {
@@ -56,7 +56,7 @@ class FolderController extends Controller
         $folderPath = "/" . $folderPath;
         $folder = Folder::where('path',"=",$folderPath)->first();
         if ($folder) {
-            return $folder->folder_id;
+            return $folder->id;
         }
         return view("home")->with("failure","Une erreur s'est produite lors de l'obtention des dossiers");
     }
@@ -66,7 +66,7 @@ class FolderController extends Controller
         $note = Note::where('path',"=",$notePath)->first();
 
         if ($note) {
-            return $note->note_id;
+            return $note->id;
         }
         return view("home")->with("failure","Une erreur s'est produite lors de l'obtention des notes");
     }
@@ -145,7 +145,7 @@ class FolderController extends Controller
         else
         {
             $parent_folder = Folder::where("path",$path_parent)->first();
-            return $this->checkHasPermissionView($parent_folder->folder_id);
+            return $this->checkHasPermissionView($parent_folder->id);
         }
     }
 
@@ -154,7 +154,7 @@ class FolderController extends Controller
     {
 
         $user_id = Auth::user()->id;
-        $folder = Folder::where("folder_id","=",$id)->first();
+        $folder = Folder::where("id","=",$id)->first();
 
         if(!$folder){
              return redirect()->route("home")->with("failure","Le dossier demandé n'est pas disponible");
@@ -203,7 +203,7 @@ class FolderController extends Controller
             }
             else{
                 $parent_content = [
-                    "id" => $folder_parent->folder_id,
+                    "id" => $folder_parent->id,
                     "path" => $folder_parent_path,
                     "name" => basename($folder_parent_path)
                 ];
@@ -270,7 +270,7 @@ class FolderController extends Controller
 
         $folder_root = Folder::where('path',$base_path)->first();
         $folderTree[] = [
-            'id' => $folder_root->folder_id,
+            'id' => $folder_root->id,
             'name' => $folder_root->name
         ];
         $currentPath = '';
@@ -279,7 +279,7 @@ class FolderController extends Controller
             $base_path .= "/" . $segments[$i];
             $folder_root = Folder::where('path',$base_path)->first();
             $folderTree[] = [
-                'id' => $folder_root->folder_id,
+                'id' => $folder_root->id,
                 'name' => $folder_root->name
             ];
         }
@@ -356,7 +356,7 @@ class FolderController extends Controller
         ])->delete();
 
         Storage::deleteDirectory($folder->path);
-        LogsController::deleteFolder($user_id,$folder->folder_id,$folder->name,"SUCCESS");
+        LogsController::deleteFolder($user_id,$folder->id,$folder->name,"SUCCESS");
         $folder->delete();
         return redirect()->back()->with(["success" => "Dossier supprimé avec succès"]);
     }

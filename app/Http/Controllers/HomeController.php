@@ -95,7 +95,7 @@ class HomeController extends Controller
 
             // Si la ressource est un dossier, ajoutez ses propres catégories également
             if ($ressource instanceof Folder) {
-                $ressourceCategories = Folder::getFolderCategories($ressource->folder_id);
+                $ressourceCategories = Folder::getFolderCategories($ressource->id);
                 $parentCategories = $parentCategories->merge($ressourceCategories);
             }
 
@@ -104,7 +104,7 @@ class HomeController extends Controller
                 // Vérifier si la catégorie est déjà associée à la ressource
                 if (!$ressource->categories->contains($categorie)) {
                     $ps = new possede_categorie();
-                    $ps->ressource_id = $ressource instanceof Note ? $ressource->note_id : $ressource->folder_id;
+                    $ps->ressource_id =  $ressource->id;
                     $ps->type_ressource = $ressource instanceof Note ? "note" : "folder";
                     $ps->categorie_id = $categorie->category_id;
                     $ps->owner_id = Auth::user()->id;

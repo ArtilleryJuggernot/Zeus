@@ -151,12 +151,12 @@ class StatsLoggerController extends Controller
         if($alreadyCreatedNote) $alreadyCreatedNote->delete();
     }
 
-    public static function CreateFolder($user_id,$folder_id)
+    public static function CreateFolder($user_id,$folderID)
     {
 
         $alreadyStat = stats::where([
             "user_id" => $user_id,
-            "ressource_id" => $folder_id,
+            "ressource_id" => $folderID,
             "ressource_type" => "folder",
             "action" => "CREATE FOLDER"
         ])->first();
@@ -164,7 +164,7 @@ class StatsLoggerController extends Controller
         if (!$alreadyStat){
             $stat = new stats();
             $stat->user_id = $user_id;
-            $stat->ressource_id = $folder_id;
+            $stat->ressource_id = $folderID;
             $stat->ressource_type = "folder";
             $stat->action = "CREATE FOLDER";
             $stat->created_at = Carbon::now();
@@ -172,11 +172,11 @@ class StatsLoggerController extends Controller
         }
     }
 
-    public static function DeleteFolder($user_id,$folder_id)
+    public static function DeleteFolder($user_id,$folderID)
     {
         $alreadyCreatedFolder = stats::where([
             "user_id" => $user_id,
-            "ressource_id" => $folder_id,
+            "ressource_id" => $folderID,
             "ressource_type" => "folder",
             "action" => "CREATE FOLDER"
         ])->first();
