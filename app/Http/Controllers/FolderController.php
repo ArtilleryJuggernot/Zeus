@@ -52,7 +52,7 @@ class FolderController extends Controller
         return $resourceCategories;
     }
 
-    public  function getFolderIdFromPath($folderPath) {
+    public function getFolderIdFromPath($folderPath) {
         $folderPath = "/" . $folderPath;
         $folder = Folder::where('path',"=",$folderPath)->first();
         if ($folder) {
@@ -66,7 +66,6 @@ class FolderController extends Controller
         $note = Note::where('path',"=",$notePath)->first();
 
         if ($note) {
-            return $note->id;
             return $note->id;
         }
         return redirect()->route("home")->with("failure","Une erreur s'est produite lors de l'obtention des notes");
@@ -324,7 +323,7 @@ class FolderController extends Controller
 
 
 
-        return redirect()->route("folder_view")->with("success","Le dossier a bien été créer !");
+        return redirect()->back()->with("success","Le dossier a bien été créer !");
     }
 
     public function Delete(Request $request)
