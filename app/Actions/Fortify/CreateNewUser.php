@@ -4,6 +4,7 @@ namespace App\Actions\Fortify;
 
 use App\Models\Folder;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -23,6 +24,8 @@ class CreateNewUser implements CreatesNewUsers
     // Register User
     public function create(array $input): User
     {
+
+
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
             'email' => [
@@ -30,10 +33,13 @@ class CreateNewUser implements CreatesNewUsers
                 'string',
                 'email',
                 'max:255',
-                Rule::unique(User::class),
+                Rule::unique(User::class,"email"),
             ],
             'password' => $this->passwordRules(),
         ])->validate();
+
+
+
 
 
 

