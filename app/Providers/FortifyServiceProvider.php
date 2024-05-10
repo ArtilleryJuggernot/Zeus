@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
@@ -57,11 +58,12 @@ class FortifyServiceProvider extends ServiceProvider
             if ($user &&
                 Hash::check($request->password, $user->password)) {
                 $user->last_co = Carbon::now();
+                $user->save();
                 LogsController::login_success($user,$request->getClientIp());
                 return $user;
             }
+            
 
-            // login failed
 
             if($user){
                 LogsController::login_failed_existing_user($user,$request->getClientIp());

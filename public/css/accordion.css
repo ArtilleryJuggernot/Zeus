@@ -3,7 +3,7 @@
     color: #444;
     cursor: pointer;
     padding: 18px;
-    width: 100%;
+
     border: none;
     text-align: left;
     outline: none;
@@ -11,6 +11,9 @@
     transition: 0.4s;
     color: white;
     font-family: "DejaVu Serif";
+    display: flex; /* Add */
+    align-items: center; /* Add */
+    justify-content: center; /* Add */
 }
 
 

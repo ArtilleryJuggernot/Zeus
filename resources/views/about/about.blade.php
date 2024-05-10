@@ -1,9 +1,9 @@
 @include("includes.header")
 
-<h1>Zeus Project</h1>
+<h1 class="text-center font-bold text-xl">Zeus Project</h1>
 <p>
     Github :
-    <a href="github.com/ArtilleryJuggernot/Zeus/">
+    <a href="https://github.com/ArtilleryJuggernot/Zeus/">
         github.com/ArtilleryJuggernot/Zeus/
     </a>
 </p>

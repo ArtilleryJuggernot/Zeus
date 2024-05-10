@@ -199,9 +199,9 @@ export function initStackEdit(){
             },
             body: JSON.stringify({
                 content: file.content.text,
-                note_id: note_id,
-        user_id: user_id,
-        perm: perm
+                note_id: parseInt(note_id),
+                user_id: parseInt(user_id),
+                perm: perm
     })
 
     })

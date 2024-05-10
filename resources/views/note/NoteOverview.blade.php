@@ -8,17 +8,17 @@
         <script src="https://d3js.org/d3.v7.min.js"></script>
     </head>
     <body>
-        <h1 class="center">
+        <h1 class=" pt-2 center text-white mb-4 text-2xl font-bold text-center leading-none tracking-tight md:text-5xl lg:text-3xl dark:text-white">
             Arbre de notes de
             {{ \Illuminate\Support\Facades\Auth::user()->name }}
         </h1>
 
         @if (count($directoryContent) != 0)
-            <h2 class="center">Graphique vue d'ensemble</h2>
+            <h2 class="pt-2 center text-white mb-4 text-1xl font-bold text-center leading-none tracking-tight md:text-5xl lg:text-2xl dark:text-white">Graphique vue d'ensemble</h2>
             <!-- Ajouter un conteneur pour le graphique -->
             <div id="graph-container"></div>
         @else
-            <h2 class="center">
+            <h2 class="pt-2 center text-white mb-4 text-2xl font-bold text-center leading-none tracking-tight md:text-5xl lg:text-3xl dark:text-white">
                 Vous n'avez pas encore crée de dossier / notes, commencez par en
                 créer pour voir le graphique
             </h2>

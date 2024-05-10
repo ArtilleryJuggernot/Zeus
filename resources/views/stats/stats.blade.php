@@ -21,7 +21,7 @@
         @endif
     </head>
     <body>
-        <h1 style="text-align: center">
+        <h1 class="text-3xl font-bold pt-5 pb-5" style="text-align: center">
             Rapport statistiques du
             {{ $monday->locale("fr")->translatedFormat("l d F Y") }} au
             {{ $sunday->locale("fr")->translatedFormat("l d F Y") }}
@@ -76,10 +76,10 @@
         <br />
         <hr />
 
-        <h2 style="text-align: center">Entre cette période :</h2>
+        <h2 class="text-2xl font-bold pt-5 pb-5" style="text-align: center">Entre cette période :</h2>
 
-        <div class="container">
-            <div class="card notes">
+        <div class="  flex justify-center">
+            <div class="mr-5 ml-5 card notes">
                 <div class="emoji">
                     {{ $stats["notesCreated"]->count() > 0 ? "📈" : "⏸️" }}
                 </div>
@@ -91,7 +91,7 @@
                 </div>
             </div>
 
-            <div class="card folders">
+            <div class="mr-5 ml-5 card folders">
                 <div class="emoji">
                     {{ $stats["foldersCreated"]->count() > 0 ? "📈" : "⏸️" }}
                 </div>
@@ -103,7 +103,7 @@
                 </div>
             </div>
 
-            <div class="card tasks">
+            <div class="mr-5 ml-5 card tasks">
                 <div class="emoji">
                     {{ $stats["tasksCreated"]->count() > 0 ? "📈" : "⏸️" }}
                 </div>
@@ -115,7 +115,7 @@
                 </div>
             </div>
 
-            <div class="card projects">
+            <div class="mr-5 ml-5 card projects">
                 <div class="emoji">
                     {{ $stats["projectsCreated"]->count() > 0 ? "📈" : "⏸️" }}
                 </div>
@@ -127,7 +127,7 @@
                 </div>
             </div>
 
-            <div class="card categories">
+            <div class="mr-5 ml-5 card categories">
                 <div class="emoji">
                     {{ $stats["categoriesCreated"]->count() > 0 ? "📈" : "⏸️" }}
                 </div>
@@ -143,13 +143,13 @@
         <br />
         <hr />
 
-        <h2 style="text-align: center">Graphique de la semaine</h2>
+        <h2 class="text-2xl font-bold pt-5 pb-5" style="text-align: center">Graphique de la semaine :</h2>
 
         <canvas id="ChartWeekly"></canvas>
         <br />
         <hr />
 
-        <h2 style="text-align: center">Statistiques générales</h2>
+        <h2 class="text-2xl font-bold pt-5 pb-5" style="text-align: center">Statistiques générales</h2>
 
         @php
             if ($statsOverall["total_tasks"] != 0) {
@@ -165,8 +165,8 @@
             }
         @endphp
 
-        <div class="container">
-            <div class="card notes">
+        <div class="flex justify-center pb-10">
+            <div class=" mr-5 ml-5 card notes">
                 <div class="emoji">👑</div>
                 <div class="info">
                     <div class="title">Nombre total de notes 📝</div>
@@ -174,7 +174,7 @@
                 </div>
             </div>
 
-            <div class="card folders">
+            <div class=" mr-5 ml-5 card folders">
                 <div class="emoji">👑</div>
                 <div class="info">
                     <div class="title">Nombre total de dossiers 📁</div>
@@ -184,7 +184,7 @@
                 </div>
             </div>
 
-            <div class="card projects">
+            <div class=" mr-5 ml-5 card projects">
                 <div class="emoji">👑</div>
                 <div class="info">
                     <div class="title">Nombre total de projets 🚧</div>
@@ -194,7 +194,7 @@
                 </div>
             </div>
 
-            <div class="card tasks">
+            <div class="mr-5 ml-5  card tasks">
                 <div class="emoji">👑</div>
                 <div class="info">
                     <div class="title">
@@ -212,7 +212,7 @@
                 </div>
             </div>
 
-            <div class="card tasks">
+            <div class="mr-5 ml-5  card tasks">
                 <div class="emoji">👑</div>
                 <div class="info">
                     <div class="title">
@@ -230,7 +230,10 @@
                 </div>
             </div>
 
-            <div class="card tasks">
+        </div>
+
+        <div class="flex justify-center">
+            <div class=" mr-5 ml-5  card tasks">
                 <div class="emoji">👑</div>
                 <div class="info">
                     <div class="title">
@@ -248,7 +251,7 @@
                 </div>
             </div>
 
-            <div class="card categories">
+            <div class=" mr-5 ml-5  card categories">
                 <div class="emoji">👑</div>
                 <div class="info">
                     <div class="title">Nombre total de catégories 📌</div>
@@ -259,16 +262,17 @@
             </div>
         </div>
 
+
         <br />
         <hr />
 
-        <h2 style="text-align: center">Graphique global (depuis le début)</h2>
+        <h2 class="text-3xl font-bold pt-5 pb-5" style="text-align: center">Graphique global (depuis le début)</h2>
 
 
 
         <canvas id="ChartOverall"></canvas>
 
-        <h2 style="text-align: center">Diagramme Catégories</h2>
+        <h2 class="text-3xl font-bold pt-5 pb-5" style="text-align: center">Diagramme Catégories</h2>
         <div style="width: 600px; height: 400px;">
             <h3 class="center-canvas" style="padding-left: 80px">Toute ressources confondu</h3>
             <canvas id="camembertChart"></canvas>

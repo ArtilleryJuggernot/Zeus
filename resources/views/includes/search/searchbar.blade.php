@@ -1,47 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <link
-            rel="stylesheet"
-            href="{{ asset("css/search/searchbar.css") }}"
-        />
-        <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
-    </head>
-    <body></body>
-</html>
-
-<base
-    href="
-@php
-echo url("/");
-
-
-@endphp
-"
-/>
-<div class="overlay" id="container">
-    <h2 id="searchtitle">Que voulez-vous chercher ?</h2>
-    <textarea id="search" placeholder="Recherche..."></textarea>
-    <div id="resultblock"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset("css/search/searchbar.css") }}">
+    <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
+</head>
+<body class="bg-gray-100">
+<div class="overlay fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-50 hidden" id="container">
+    <h2 id="searchtitle" class="text-white text-center text-3xl font-bold mt-16">Que voulez-vous chercher ?</h2>
+    <textarea id="search" class="w-full h-80vh mx-auto block border border-gray-500 rounded-md p-2 mt-10"
+              placeholder="Recherche..."></textarea>
+    <div id="resultblock" class="flex flex-wrap justify-center"></div>
 </div>
 
 <script>
-    document
-        .getElementById('search')
-        .addEventListener('input', () => doSearch());
+    document.getElementById('search').addEventListener('input', () => doSearch());
 
     function doSearch() {
         document.getElementById('resultblock').innerHTML = '';
-        // Récupération de la query
         var query = document.getElementById('search').value;
 
-        // Envoie de la query
         fetch('/do_search', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}', // Si vous utilisez le jeton CSRF
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
             },
             body: JSON.stringify({
                 query: query,
@@ -55,6 +40,7 @@ echo url("/");
                 elem = JSON.parse(elem);
                 var child = document.createElement('a');
                 child.classList.add('search');
+                child.classList.add("font-bold");
                 if (elem['type'] == 'folder') {
                     child.href = '/view_folder/' + elem['id'];
                     child.innerHTML = '<h3>' + '📁 ' + elem['name'] + '</h3>';
@@ -80,10 +66,9 @@ echo url("/");
         });
     }
 
-    let status = 0; // Pas visible
+    let status = 0;
     document.addEventListener('keydown', (e) => {
         if (e.ctrlKey && e.key === 'p') {
-            // Prevent the Save dialog to open
             e.preventDefault();
             if (status) hideOverlay();
             else showOverlay();
@@ -97,9 +82,10 @@ echo url("/");
         document.getElementById('search').click();
     }
 
-    // Pour masquer l'overlay
     function hideOverlay() {
         document.getElementById('container').style.display = 'none';
         status = 0;
     }
 </script>
+</body>
+</html>

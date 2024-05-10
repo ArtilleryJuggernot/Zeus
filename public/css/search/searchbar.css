@@ -39,23 +39,26 @@
     display: flex;
     flex-wrap: wrap;
 }
+/* Ajoutez vos styles personnalisés ici */
+
 #resultblock > a {
     margin: 10px;
-    flex: 1 0 21%; /* explanation below */
+    padding: 15px;
+    font-size: 20px;
 }
 
-#resultblock > .folder{
-    background-color:rgba(55, 55, 246, 0.5);
+#resultblock > .folder {
+    background-color: rgba(55, 55, 246, 0.5);
 }
 
-#resultblock > .note{
-    background-color:rgba(227, 55, 55, 0.5)
+#resultblock > .note {
+    background-color: rgba(227, 55, 55, 0.5);
 }
 
-#resultblock > .task{
-    background-color: rgba(6, 255, 0, 0.5)
+#resultblock > .task {
+    background-color: rgba(6, 255, 0, 0.5);
 }
 
-#resultblock > .project{
-    background-color: rgba(255, 232, 0, 0.5)
+#resultblock > .project {
+    background-color: rgba(255, 232, 0, 0.5);
 }

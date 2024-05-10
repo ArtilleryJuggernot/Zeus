@@ -225,12 +225,16 @@ class NoteController extends Controller
     {
         // Récupérer le contenu du textarea
 
+
         $validateData = $request->validate([
            "content" => ["required","string"],
            "user_id" => ["required","integer"],
             "note_id" => ["required","integer"],
             "perm" => ["required","in:RO,RW,F"]
         ]);
+
+
+
 
         $content = $validateData["content"];
         $user_id = $validateData["user_id"];
@@ -247,14 +251,17 @@ class NoteController extends Controller
 
         if($access && ($access->perm == "RW" || $access->perm == "F")) { // Verifié si il existe un accès pour l'utilisateur + auto
             $autorisation = true;
-            }
+        }
 
         // Permission par arbo recurif dossier
 
         $perm_rec = $perm == "RW" || $perm == "F";
 
+
+
         if($user_id == Auth::user()->id || $autorisation || $perm_rec){
-            $note = Note::where("note_id","=",$note_id)->first();
+            $note = Note::find($note_id)->first();
+
 
             if($note->owner_id == Auth::user()->id || $autorisation || $perm_rec){
 
@@ -272,8 +279,10 @@ class NoteController extends Controller
 
                 $check = Storage::put($note->path,$finalDataEncryptedAES);
                 LogsController::saveNote($user_id,$note_id,$note->name,"SUCCESS");
+
                 return response()->json(['success' => true]);
             }
+
             LogsController::saveNote($user_id,$note_id,$note->name,"FAILURE");
 
 

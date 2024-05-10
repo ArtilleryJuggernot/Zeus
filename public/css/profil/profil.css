@@ -1,6 +1,9 @@
 .pfp_profil_page{
-    max-height: 150px;
-    max-width: 150px;
+    padding-top: 32px;
+    padding-left : 29px;
+    width: 200px;
+    height : 200px;
+
 }
 
 .overlay_pfp{
