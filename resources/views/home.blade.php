@@ -30,11 +30,11 @@
         </p>
 
         <!-- Listes des tâches à faire -->
-        <div class="w-[130%]  mx-auto sm:mx-0">
+        <div class="  mx-auto sm:mx-0">
             <!-- Tâches prioritaires -->
-            <div class="w-[130%] mb-8">
+            <div class=" mb-8">
                 <h2 class="text-xl font-semibold mb-4">Liste des tâches à faire en priorité</h2>
-                <div class="w-[130%] flex flex-wrap">
+                <div class=" flex flex-wrap">
                     @forelse ($task_priority as $task)
                         @php
                             $priority = $task->priority;
@@ -80,9 +80,9 @@
             </div>
 
             <!-- Tâches actuelles -->
-            <div class="w-[130%] mb-8">
+            <div class=" mb-8">
                 <h2 class="text-xl font-semibold mb-4">Liste des tâches actuelles à faire (avec date limite)</h2>
-                <div class="w-[130%] flex flex-wrap">
+                <div class=" flex flex-wrap">
                     @forelse ($tachesTimed as $task)
                         <div class="task-card basis-1/5 margin-right bg-white rounded-lg shadow-md">
                             <a href="{{ route("view_task", $task->id) }}" class="text-blue-500 font-bold hover:underline"><h3>{{ $task->task_name }}</h3></a>
@@ -124,9 +124,9 @@
 
             </div>
             <!-- Tâches non réalisées -->
-            <div class="w-[130%] mb-8">
+            <div class=" mb-8">
                 <h2 class="text-xl font-semibold mb-4">Liste des tâches actuelles qui n'ont pas été réalisées</h2>
-                <div class="w-[130%] flex flex-wrap">
+                <div class=" flex flex-wrap">
                 @forelse ($tachePasse as $task)
                         <div class="task-card basis-1/5 margin-right bg-white rounded-lg shadow-md">
                             <a href="{{ route("view_task", $task->id) }}" class="text-blue-500 font-bold hover:underline"><h3>{{ $task->task_name }}</h3></a>
