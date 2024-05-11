@@ -234,7 +234,8 @@ class NoteController extends Controller
         ]);
 
 
-
+        $output = new ConsoleOutput();
+        $output->writeln("After validation OK");
 
         $content = $validateData["content"];
         $user_id = $validateData["user_id"];
@@ -258,17 +259,18 @@ class NoteController extends Controller
         $perm_rec = $perm == "RW" || $perm == "F";
 
 
+        $output->writeln($note_id);
 
         if($user_id == Auth::user()->id || $autorisation || $perm_rec){
-            $note = Note::find($note_id)->first();
-
+            $note = Note::find($note_id);
+            $output->writeln("Autorisation OK : ". $note->name);
 
             if($note->owner_id == Auth::user()->id || $autorisation || $perm_rec){
 
                 // Chiffrement des données
 
 
-
+                $output->writeln("Starting chiffrement");
 
                 $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc')); // Générer un IV aléatoire
                 $encryptedData = openssl_encrypt($content, "aes-256-cbc", $note->note_key, 0, $iv);
@@ -279,7 +281,7 @@ class NoteController extends Controller
 
                 $check = Storage::put($note->path,$finalDataEncryptedAES);
                 LogsController::saveNote($user_id,$note_id,$note->name,"SUCCESS");
-
+                $output->writeln("Check is : " . $check);
                 return response()->json(['success' => true]);
             }
 
