@@ -16,12 +16,13 @@
 </div>
 
 <!-- Contenu de la page d'accueil -->
-<div class="flex flex-col items-start">
-    <div class="max-w-3xl mx-auto sm:mx-4">
+
+    <div class="max-w-3xl mx-auto sm:mx-0">
         <h1 class="text-3xl font-bold mb-4">
             Hello {{ \Illuminate\Support\Facades\Auth::user()->name }} ⚡
             <img src="{{ asset("img/thunder_anim.gif") }}" class="inline-block w-10 h-10">
         </h1>
+    </div>
 
         <p class="text-left mb-8">
             Bienvenue sur l'accueil, appuyez sur <span class="font-bold">CTRL + P</span> pour accéder au menu rapide des <span class="font-bold">ressources</span>.<br>
@@ -159,15 +160,14 @@
                                     @csrf
                                 </form>
                             </div>
+                        </div>
                     @empty
                         <p class="text-gray-500">Vous n'avez pas de tâche non-réalisée ✅</p>
+
                     @endforelse
                 </div>
             </div>
         </div>
-    </div>
-</div>
-</div>
 </body>
 
 <script src="{{ asset("js/particules.js") }}"></script>
