@@ -167,6 +167,8 @@
         </div>
     </div>
 </div>
+</div>
+</body>
 
 <script src="{{ asset("js/particules.js") }}"></script>
 <script src="{{ asset("js/task_update.js") }}"></script>
@@ -180,5 +182,4 @@
     @endif
 </script>
 @include("includes.footer")
-</body>
 </html>
