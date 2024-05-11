@@ -52,20 +52,21 @@
 
 .task-card {
     margin: 10px;
-    padding: 10px;
+    padding: 10px !important;
     box-sizing: border-box;
     border: 4px solid;
     border-image: linear-gradient(124deg, rgba(255,26,0,0.65), rgba(232,29,29,0.65), rgba(232,183,29,0.65), rgba(227,232,29,0.65), rgba(29,232, 64,0.65), rgba(29,221,232,0.65), rgba(43,29,232,0.65), rgba(221,0,243,0.65), rgba(221,0,243,0.65)) 1 !important;
     border-image-slice: 1 !important;
-
     transition: border-image 0.8s;
     background-color: white;
+    min-width: 250px;
 }
 
 
-.margin-right{
-    margin-right: -100px;
+.margin-right {
+
 }
+
 
 
 .task-card:hover {

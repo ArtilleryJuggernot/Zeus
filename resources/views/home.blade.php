@@ -29,17 +29,17 @@
         </p>
 
         <!-- Listes des tâches à faire -->
-        <div class="w-full max-w-3xl mx-auto sm:mx-0">
+        <div class="w-[130%]  mx-auto sm:mx-0">
             <!-- Tâches prioritaires -->
-            <div class="mb-8">
+            <div class="w-[130%] mb-8">
                 <h2 class="text-xl font-semibold mb-4">Liste des tâches à faire en priorité</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="w-[130%] flex flex-wrap">
                     @forelse ($task_priority as $task)
                         @php
                             $priority = $task->priority;
                             $task = \App\Models\Task::find($task->task_id);
                         @endphp
-                        <div class="task-card margin-right border-gray-500 pr-16 bg-white rounded-lg shadow-md">
+                        <div class="basis-1/5 task-card margin-right border-gray-500 bg-white rounded-lg shadow-md">
                             <a href="{{ route("view_task", $task->id) }}" class="text-blue-500 font-bold hover:underline"><h3>{{ $task->task_name }}</h3></a>
                             <p class="text-red-500">{{ $priority }}</p>
                             @if ($task->due_date)
@@ -79,11 +79,11 @@
             </div>
 
             <!-- Tâches actuelles -->
-            <div class="mb-8">
+            <div class="w-[130%] mb-8">
                 <h2 class="text-xl font-semibold mb-4">Liste des tâches actuelles à faire (avec date limite)</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="w-[130%] flex flex-wrap">
                     @forelse ($tachesTimed as $task)
-                        <div class="task-card margin-right bg-white rounded-lg shadow-md">
+                        <div class="task-card basis-1/5 margin-right bg-white rounded-lg shadow-md">
                             <a href="{{ route("view_task", $task->id) }}" class="text-blue-500 font-bold hover:underline"><h3>{{ $task->task_name }}</h3></a>
                             @if ($task->due_date)
                                 <div class="task-due-date">
@@ -123,11 +123,11 @@
 
             </div>
             <!-- Tâches non réalisées -->
-            <div>
+            <div class="w-[130%] mb-8">
                 <h2 class="text-xl font-semibold mb-4">Liste des tâches actuelles qui n'ont pas été réalisées</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    @forelse ($tachePasse as $task)
-                        <div class="task-card margin-right bg-white rounded-lg shadow-md">
+                <div class="w-[130%] flex flex-wrap">
+                @forelse ($tachePasse as $task)
+                        <div class="task-card basis-1/5 margin-right bg-white rounded-lg shadow-md">
                             <a href="{{ route("view_task", $task->id) }}" class="text-blue-500 font-bold hover:underline"><h3>{{ $task->task_name }}</h3></a>
                             @if ($task->due_date)
                                 <div class="task-due-date">
