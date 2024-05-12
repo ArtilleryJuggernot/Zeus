@@ -19,7 +19,8 @@
         "laravelcollective/html": "^6.4",
         "orbitale/imagemagick-php": "^3.3",
         "thiagoprz/eloquent-composite-key": "^1.0",
-        "ext-curl": "*"
+        "ext-curl": "*",
+	"ext-zip":"*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

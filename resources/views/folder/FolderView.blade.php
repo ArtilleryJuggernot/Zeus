@@ -92,15 +92,30 @@
                             <span id="folder-name-{{ $item["id"] }}" class="font-bold">{{ $item["name"] }}</span>
                         </h3>
                     </a>
-                    <button class=" edit-label px-5 py-2 bg-green-600" data-id="{{ $item["id"] }}" data-type="{{ $item["type"] }}">✏️</button>
+
+                    <div class="action flex mt-5">
+
+
+                    <div class="edit-name">
+                        <button class=" edit-label px-5 py-2 bg-green-600" data-id="{{ $item["id"] }}" data-type="{{ $item["type"] }}">✏️</button>
+                    </div>
                     <div class="delete ">
                         <form action="{{ route("delete_folder") }}" method="post">
                             <input name="id" type="hidden" value="{{ $item["id"] }}" />
                             <button title="Supprimer le dossier" class="del px-5 py-2" type="submit">❌</button>
                             @csrf
                         </form>
+                    </div>
 
-                        <div class="list-cat">
+                        <div class="download">
+                            <form action="{{ route('downloadFolder', ['id' => $item["id"] ]) }}" method="post">
+                              <button type="submit"  class=" bg-blue-600 hover:bg-blue-800 px-5 py-2" title="Télécharger le dossier">⬇️</button>
+                                @csrf
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="list-cat">
                             @foreach ($item["categories"] as $category => $id)
                                 @php
                                     $category = \App\Models\Categorie::find($category);
@@ -109,7 +124,7 @@
                                 <div class="category" style="background-color: {{ $category->color }}">{{ $category->category_name }}</div>
                             @endforeach
                         </div>
-                    </div>
+
                 </div>
             @else
                 <div class="note_instance">
@@ -119,7 +134,10 @@
                             <span id="note-name-{{ $item["id"] }}" class="font-bold">{{ $item["name"] }}</span>
                         </h3>
                     </a>
+                    <div class="action flex mt-5">
+                    <div class="edit-name">
                     <button class="edit-label px-5 py-2 bg-green-600" data-id="{{ $item["id"] }}" data-type="{{ $item["type"] }}">✏️</button>
+                    </div>
 
                     <div class="delete">
                         <form action="{{ route("delete_note") }}" method="post">
@@ -136,6 +154,7 @@
                                 <div class="category" style="background-color: {{ $category->color }}">{{ $category->category_name }}</div>
                             @endforeach
                         </div>
+                    </div>
                     </div>
                 </div>
             @endif

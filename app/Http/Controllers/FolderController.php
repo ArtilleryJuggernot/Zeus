@@ -10,6 +10,7 @@ use App\Models\possede_categorie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class FolderController extends Controller
@@ -256,10 +257,6 @@ class FolderController extends Controller
             ['folders' => $folders]);
     }
 
-    // POST
-
-
-    //         $folderPath = Folder::find($folderId)->path;
     public static function generateFolderTree($folderId)
     {
         $folderPath = Folder::find($folderId)->path;
@@ -285,8 +282,6 @@ class FolderController extends Controller
         }
         return $folderTree;
     }
-
-
 
     public  function Store(Request $request)
     {
@@ -361,5 +356,84 @@ class FolderController extends Controller
         LogsController::deleteFolder($user_id,$folder->id,$folder->name,"SUCCESS");
         $folder->delete();
         return redirect()->back()->with(["success" => "Dossier supprimé avec succès"]);
+    }
+
+
+    public function Download(Request $request)
+    {
+
+        $validatedData = $request->validate([
+            'id' => ["integer"]
+        ]);
+        $id =  $validatedData["id"];
+        $path = Folder::find($id)->path;
+        $PATH_MAIN = "app/files/user_" . Auth::user()->id;
+
+        // Chemin absolu du dossier à compresser
+        $folderPath = storage_path('app/' . $path);
+        if (!Storage::exists($path) || !is_dir($folderPath)) {
+            abort(404, 'Le dossier spécifié est introuvable.');
+        }
+
+        // Créer un nom de fichier temporaire pour le fichier ZIP
+        $zipFilePath = tempnam(sys_get_temp_dir(), 'folder_zip');
+
+        // Créer un fichier ZIP
+        $zip = new \ZipArchive();
+        if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            abort(500, 'Impossible de créer le fichier ZIP.');
+        }
+
+
+        // Appeler la fonction récursive pour ajouter les fichiers et dossiers au ZIP
+        $this->addFolderToZip($zip, $folderPath, $path);
+
+        $zip->close();
+
+        // Stream le fichier ZIP au client
+        return response()->download($zipFilePath, 'dossier.zip')->deleteFileAfterSend(true);
+    }
+
+    private function addFolderToZip($zip, $folderPath, $relativePath)
+    {
+        // Récupérer tous les éléments du dossier
+        $items = Storage::files($relativePath);
+        $folders = Storage::directories($relativePath);
+
+        // Ajouter les fichiers du dossier au ZIP
+        foreach ($items as $item) {
+            $relativeFilePath = $relativePath . '/' . basename($item);
+            $itemPath = storage_path('app/' . $item);
+            $this->addFileToZip($zip, $itemPath, $relativeFilePath);
+        }
+
+        // Appeler récursivement pour chaque sous-dossier
+        foreach ($folders as $folder) {
+            $this->addFolderToZip($zip, $folderPath, $folder);
+        }
+    }
+
+
+
+    private function addFileToZip($zip, $filePath, $relativePath)
+    {
+
+            // Déchiffrer la note
+            $content = File::get($filePath);
+
+            if($relativePath[0] != "/")
+                $relativePath = "/" . $relativePath;
+            $note = Note::where('path',  $relativePath)->first();
+            $ivSize = openssl_cipher_iv_length('aes-256-cbc');
+            $iv = substr($content, 0, $ivSize);
+            $encryptedData = substr($content, $ivSize);
+            $decryptedData = openssl_decrypt($encryptedData, "aes-256-cbc", $note->note_key, 0, $iv);
+
+            // Ajouter le contenu déchiffré au fichier ZIP
+            $user_id_length = strlen(Auth::user()->id);
+            $zip->addFromString(substr($relativePath,13 + $user_id_length) . '.md', $decryptedData);
+
+            //$zip->addFile($filePath, $relativePath);
+
     }
 }

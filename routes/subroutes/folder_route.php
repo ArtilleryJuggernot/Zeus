@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FolderController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -21,3 +22,7 @@ Route::get("/view_folder/{id}",[\App\Http\Controllers\FolderController::class,"V
 Route::post("/delete_folder",[\App\Http\Controllers\FolderController::class,"Delete"])
     ->middleware(["is_notban","auth"])
     ->name("delete_folder");
+
+Route::post("/downloadFolder",[FolderController::class,"Download"])
+    ->middleware(["is_notban","auth"])
+    ->name("downloadFolder");

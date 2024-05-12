@@ -10,6 +10,7 @@
     <!-- Assurez-vous d'avoir le lien vers votre fichier CSS -->
     <link rel="stylesheet" href="{{ asset("css/category.css") }}" />
     <link rel="stylesheet" href="{{ asset("css/notification/notification.css") }}" />
+
 </head>
 
 <body class="bg-gray-100">
@@ -146,7 +147,9 @@
     @endforeach
 </div>
 
-<h2 class="font-bold text-xl mb-2">Tâches finis :</h2>
+
+<button class="accordion bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg mb-4">Tâches finis :</button>
+<div class="panel">
 <div class="folders grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     <!-- Boucle pour afficher les dossiers -->
     @foreach ($task_list_finish as $task)
@@ -162,20 +165,23 @@
             <div class="task-is-finish">
                 <p class="font-bold">{{ $task->is_finish ? 'Finis' : 'En cours' }}</p>
             </div>
-            <form action="{{ route("UpdateTaskStatus") }}" method="POST" class="task-form">
-                @csrf
-                <input type="hidden" name="task_id" value="{{ $task->id }}" />
-                <!-- ID de la tâche -->
-                <label class="font-bold">
-                    <input type="checkbox" class="task-checkFinish mr-2" @if($task->is_finish) checked @endif
-                    name="task_completed" />
-                    @if ($task->is_finish)
-                        Mettre la tâche en cours
-                    @else
-                        Finir la tâche
-                    @endif
-                </label>
-            </form>
+            <div class="action-container">
+            <div class="updatetask">
+                <form action="{{ route("UpdateTaskStatus") }}" method="POST" class="task-form">
+                    @csrf
+                    <input type="hidden" name="task_id" value="{{ $task->id }}" />
+                    <!-- ID de la tâche -->
+                    <label class="font-bold">
+                        <input type="checkbox" class="task-checkFinish mr-2" @if($task->is_finish) checked @endif
+                        name="task_completed" />
+                        @if ($task->is_finish)
+                            Mettre la tâche en cours
+                        @else
+                            Finir la tâche
+                        @endif
+                    </label>
+                </form>
+            </div>
             <div class="delete">
                 <form action="{{ route("delete_task") }}" method="post">
                     <input name="id" type="hidden" value="{{ $task->id }}" />
@@ -183,11 +189,12 @@
                     @csrf
                 </form>
             </div>
+            </div>
             <!-- Autres détails du dossier si nécessaire -->
         </div>
     @endforeach
 </div>
-
+</div>
 </body>
 
 </html>

@@ -18,7 +18,6 @@
             src="{{ asset("js/stack_edit/stack_edit_note.js") }}"
         ></script>
 
-        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     </head>
     <body>
         @if ($errors->any())
