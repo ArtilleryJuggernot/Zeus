@@ -289,7 +289,7 @@ class NoteController extends Controller
 
         // Logique de sauvegarde ici (par exemple, enregistrer dans la base de données ou dans un fichier)
 
-        public function Store(Request $request)
+    public function Store(Request $request)
     {
 
         $validateData = $request->validate([
@@ -335,7 +335,7 @@ class NoteController extends Controller
         return redirect()->back()->with("success","La note a bien été créée !");
     }
 
-        public function Delete(Request $request)
+    public function Delete(Request $request)
         {
             // TODO verification des accès
             $validateData = $request->validate([
@@ -382,5 +382,40 @@ class NoteController extends Controller
             $note->delete();
             LogsController::deleteNote($user_id,$id,$note->name,"SUCCESS");
             return redirect()->back()->with(["success" => "Note supprimé avec succès"]);
+        }
+
+
+
+        public function Download(Request $request)
+        {
+            // Valider les données de la requête
+            $request->validate([
+                'id' => ['required', 'integer'],
+            ]);
+
+            $id = $request->id;
+            $note = Note::find($id);
+
+            // Vérifier si la note existe
+            if (!$note) {
+                return redirect()->route('home')->with('failure', 'La note que vous souhaitez télécharger n\'a pas été trouvée');
+            }
+
+            // Vérifier si l'utilisateur est autorisé à accéder à cette note
+            if ($note->owner_id != Auth::user()->id) {
+                return redirect()->route('home')->with('failure', 'Vous n\'êtes pas autorisé à télécharger cette note');
+            }
+
+            // Déchiffrer la note
+            $content = File::get(storage_path('app/' . $note->path));
+            $ivSize = openssl_cipher_iv_length('aes-256-cbc');
+            $iv = substr($content, 0, $ivSize);
+            $encryptedData = substr($content, $ivSize);
+            $decryptedData = openssl_decrypt($encryptedData, "aes-256-cbc", $note->note_key, 0, $iv);
+
+            // Retourner la note déchiffrée en tant que téléchargement
+            return response()->streamDownload(function () use ($decryptedData) {
+                echo $decryptedData;
+            }, $note->name . '.md');
         }
 }

@@ -138,23 +138,28 @@
                     <div class="edit-name">
                     <button class="edit-label px-5 py-2 bg-green-600" data-id="{{ $item["id"] }}" data-type="{{ $item["type"] }}">✏️</button>
                     </div>
-
                     <div class="delete">
                         <form action="{{ route("delete_note") }}" method="post">
                             <input name="id" type="hidden" value="{{ $item["id"] }}" />
                             <button title="Supprimer la note" class="del px-5 py-2" type="submit">❌</button>
                             @csrf
                         </form>
-                        <div class="list-cat">
-                            @foreach ($item["categories"] as $category)
-                                @php
-                                    $category = \App\Models\Categorie::find($category->categorie_id);
-                                @endphp
-
-                                <div class="category" style="background-color: {{ $category->color }}">{{ $category->category_name }}</div>
-                            @endforeach
+                    </div>
+                        <div class="download">
+                            <form action="{{ route('downloadNote', ['id' => $item["id"] ]) }}" method="post">
+                                <button type="submit"  class=" bg-blue-600 hover:bg-blue-800 px-5 py-2" title="Télécharger le dossier">⬇️</button>
+                                @csrf
+                            </form>
                         </div>
                     </div>
+                    <div class="list-cat">
+                        @foreach ($item["categories"] as $category)
+                            @php
+                                $category = \App\Models\Categorie::find($category->categorie_id);
+                            @endphp
+
+                            <div class="category" style="background-color: {{ $category->color }}">{{ $category->category_name }}</div>
+                        @endforeach
                     </div>
                 </div>
             @endif

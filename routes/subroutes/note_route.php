@@ -27,3 +27,7 @@ Route::post('/save-note', [\App\Http\Controllers\NoteController::class, 'saveNot
 Route::post("/delete_note",[\App\Http\Controllers\NoteController::class,"Delete"])
     ->middleware(["is_notban","auth"])
     ->name("delete_note");
+
+Route::post("/downloadNote",[\App\Http\Controllers\NoteController::class,"Download"])
+    ->middleware(["is_notban","auth"])
+    ->name("downloadNote");
