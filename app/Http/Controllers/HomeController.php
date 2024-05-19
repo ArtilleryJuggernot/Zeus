@@ -20,7 +20,7 @@ class HomeController extends Controller
 
 
 
-        $this::attribuerCategoriesAuxRessources();
+        //$this::attribuerCategoriesAuxRessources();
 
         // Mettre en priorité les tâches à faire aujourd'hui (Livre)
 
