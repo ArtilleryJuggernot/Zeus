@@ -20,6 +20,7 @@ class GitAutoCommit extends Command
     public function handle()
     {
         $commands = [
+            'cd ./storage/app/files/',
             'git add .',
             'git commit -m "Scheduled commit"',
             'git push'
