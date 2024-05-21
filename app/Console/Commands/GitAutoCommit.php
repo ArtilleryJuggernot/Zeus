@@ -21,7 +21,8 @@ class GitAutoCommit extends Command
     {
         $commands = [
             'cd ./storage/app/files/',
-            'pwd',
+            'git config user.email "zeusartilleryuno@gmail.com"',
+            'git config user.name "Zeus autosave" ',
             'git add .',
             'git commit -m "Scheduled commit"',
             'git push'
