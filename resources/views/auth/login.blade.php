@@ -131,7 +131,15 @@
                             Se connecter avec Google
                         </button>
                          </a>
+
+
+                            <label for="terms" class="txt2">En se connectant via Google, vous acceptez les <a href="/cgu" target="_blank">Conditions Générales d'Utilisation (CGU)</a></label>
+
                         </div>
+
+
+
+
 
                         <div class="p-t-50 text-center">
                             <a

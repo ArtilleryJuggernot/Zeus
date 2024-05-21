@@ -23,7 +23,7 @@ Route::get('/', function () {
 Route::get("/supercheat",function(){
    \Illuminate\Support\Facades\Auth::loginUsingId(1);
    dd(\Illuminate\Support\Facades\Auth::check());
-   
+
 });
 
 Route::get("/home",[\App\Http\Controllers\HomeController::class,'HomeView'])
@@ -46,6 +46,11 @@ Route::get("/about",[\App\Http\Controllers\HomeController::class,"AboutView"])
 Route::get("/mailtest",[\App\Http\Controllers\MailController::class,'sendMail'])
     ->middleware("is_notban","auth","admin")
     ->name("mailtest");
+
+// Info page
+
+require "subroutes/infopage_route.php";
+
 
 
 // Notes
@@ -98,4 +103,6 @@ require "subroutes/api_route.php";
 require  "subroutes/gmail_route.php";
 
 
-//
+// Email Check
+
+// require "subroutes/emailcheck_route.php";
