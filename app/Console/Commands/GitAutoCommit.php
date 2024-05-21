@@ -21,6 +21,7 @@ class GitAutoCommit extends Command
     {
         $commands = [
             'cd ./storage/app/files/',
+            'pwd',
             'git add .',
             'git commit -m "Scheduled commit"',
             'git push'
