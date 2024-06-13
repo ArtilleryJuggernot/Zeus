@@ -29,8 +29,59 @@
             Votre identifiant est <strong>{{ \Illuminate\Support\Facades\Auth::user()->id }}</strong>. Vous pouvez le partager avec d'autres utilisateurs pour autoriser l'accès à leurs notes, dossiers, tâches et projets.
         </p>
 
+
         <!-- Listes des tâches à faire -->
         <div class="  mx-auto sm:mx-0">
+
+            <!-- Habitude -->
+            <div class=" mb-8">
+                <h2 class="text-xl font-semibold mb-4">Liste des habitudes à faire</h2>
+                <div class=" flex flex-wrap">
+                    @forelse ($habitudes as $task)
+                        <div class="basis-1/5 task-card margin-right border-gray-500 bg-white rounded-lg shadow-md">
+                            <a href="{{ route("view_task", $task->id) }}" class="text-blue-500 font-bold hover:underline"><h3>{{ $task->task_name }}</h3></a>
+                            <p class="text-red-500">⚠️ Habitude</p>
+                            @if ($task->due_date)
+                                <div class="task-due-date">
+                                    <p class="font-bold">🕐 <span>{{ $task->due_date }}</span></p>
+                                </div>
+                            @endif
+                            <div class="task-is-finish">
+                                <p class="font-bold">{{ $task->is_finish ? 'Finis' : 'En cours' }}</p>
+                            </div>
+                            <form action="{{ route("UpdateTaskStatus") }}" method="POST" class="task-form">
+                                @csrf
+                                <input type="hidden" name="task_id" value="{{ $task->id }}" />
+                                <!-- ID de la tâche -->
+                                <label class="font-bold">
+                                    <input type="checkbox" class="task-checkFinish mr-2" @if($task->is_finish) checked @endif
+                                    name="task_completed" />
+                                    @if ($task->is_finish)
+                                        Mettre la tâche en cours
+                                    @else
+                                        Finir la tâche
+                                    @endif
+                                </label>
+                            </form>
+                            <div class="delete">
+                                <form action="{{ route("delete_task") }}" method="post">
+                                    <input name="id" type="hidden" value="{{ $task->id }}" />
+                                    <button class="del px-5 py-2" type="submit">❌</button>
+                                    @csrf
+                                </form>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-gray-500">Vous n'avez pas de tâche habituelles à faire ✅</p>
+                    @endforelse
+                </div>
+            </div>
+
+
+
+
+
+
             <!-- Tâches prioritaires -->
             <div class=" mb-8">
                 <h2 class="text-xl font-semibold mb-4">Liste des tâches à faire en priorité</h2>
@@ -41,11 +92,11 @@
                             $task = \App\Models\Task::find($task->task_id);
                         @endphp
                         <div class="basis-1/5 task-card margin-right border-gray-500 bg-white rounded-lg shadow-md">
-                            <a href="{{ route("view_task", $task->id) }}" class="text-blue-500 font-bold hover:underline"><h3>{{ $task->task_name }}</h3></a>
-                            <p class="text-red-500">{{ $priority }}</p>
+                            <a href="{{ route("view_task", $task->id) }}" class="text-blue-500 font-bold hover:underline"><h3>@if($task->type == "livre") 📚 @endif {{ $task->task_name }}</h3></a>
+                            <p class="text-red-500"> ⚠️ {{ $priority }}</p>
                             @if ($task->due_date)
                                 <div class="task-due-date">
-                                    <p class="font-bold">Date limite : <span>{{ $task->due_date }}</span></p>
+                                    <p class="font-bold">🕐 <span>{{ $task->due_date }}</span></p>
                                 </div>
                             @endif
                             <div class="task-is-finish">
@@ -88,7 +139,7 @@
                             <a href="{{ route("view_task", $task->id) }}" class="text-blue-500 font-bold hover:underline"><h3>{{ $task->task_name }}</h3></a>
                             @if ($task->due_date)
                                 <div class="task-due-date">
-                                    <p class="font-bold">Date limite : <span>{{ $task->due_date }}</span></p>
+                                    <p class="font-bold">🕐 <span>{{ $task->due_date }}</span></p>
                                 </div>
                             @endif
                             <!-- Formulaires pour mettre à jour et supprimer les tâches -->
@@ -132,7 +183,7 @@
                             <a href="{{ route("view_task", $task->id) }}" class="text-blue-500 font-bold hover:underline"><h3>{{ $task->task_name }}</h3></a>
                             @if ($task->due_date)
                                 <div class="task-due-date">
-                                    <p class="font-bold">Date limite : <span>{{ $task->due_date }}</span></p>
+                                    <p class="font-bold">🕐 <span>{{ $task->due_date }}</span></p>
                                 </div>
                             @endif
                             <!-- Formulaires pour mettre à jour et supprimer les tâches -->

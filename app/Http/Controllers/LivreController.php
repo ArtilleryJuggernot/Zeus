@@ -121,6 +121,7 @@ class LivreController extends Controller
         for ($i = 0; $i < $tasksCount ; $i++) {
             $task = new Task();
             $task->owner_id = $user_id;
+            $task->type = "livre";
             $taskStartPage = $startPage + $i * $pagesPerTask;
 
             if($taskStartPage > $endPage)

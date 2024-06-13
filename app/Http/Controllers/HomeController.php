@@ -58,6 +58,12 @@ class HomeController extends Controller
         $task_priority = PriorityController::sortTasksByPriority($task_priorities);
 
 
+        // Habitude
+
+        $habitudes = Task::where([
+            ["type","habitude"],
+            ["is_finish",0]
+        ])->get();
 
 
 
@@ -66,6 +72,7 @@ class HomeController extends Controller
             "tachesTimed" => $tachesTimed,
             "tachePasse" => $tachesPasse,
             "task_priority" => $task_priority,
+            "habitudes" => $habitudes
         ]);
     }
 

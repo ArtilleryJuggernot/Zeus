@@ -106,3 +106,8 @@ require  "subroutes/gmail_route.php";
 // Email Check
 
 // require "subroutes/emailcheck_route.php";
+
+
+// Module : Habitude
+
+require "subroutes/habitude_route.php";

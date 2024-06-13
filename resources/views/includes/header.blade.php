@@ -88,9 +88,19 @@
                     <ul class="submenu">
                         <li>
                             <a href="{{ route("livre_overview") }}">
-                                📚 Mes livres
+                                📚 Mes Livres
                             </a>
                         </li>
+
+                        <li>
+                            <a href="{{ route("habitude_overview") }}">
+                                🏆 Mes Habitudes
+                            </a>
+                        </li>
+
+
+
+
                     </ul>
                 </li>
             @endif

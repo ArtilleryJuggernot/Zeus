@@ -180,3 +180,10 @@ hr.rounded {
     margin-bottom: 10px;
 }
 
+.priority_block{
+ display: block!important;
+}
+
+.priority_none{
+    display: none !important;
+}

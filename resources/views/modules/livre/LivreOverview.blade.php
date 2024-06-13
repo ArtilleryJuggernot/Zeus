@@ -18,7 +18,10 @@
 
 <body class="bg-gray-100">
 
-<div class="container mx-auto p-4">
+<div class="container mx-auto">
+
+    <h1 class="font-bold text-2xl text-center">Section Module Livre 📚</h1>
+
 
     <div class="add-projet mb-8">
         <h2 class="text-lg font-bold mb-2">Ajouter un livre :</h2>

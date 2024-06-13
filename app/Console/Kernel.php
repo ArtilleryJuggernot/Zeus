@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('git:auto-commit')->hourly();
+        $schedule->command("habitude-routine")->daily();
         // $schedule->command('inspire')->hourly();
 
     }
