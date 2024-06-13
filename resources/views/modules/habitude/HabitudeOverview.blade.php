@@ -53,7 +53,7 @@
                 <input type="hidden" name="day_0" id="day_0" value="0"/>
                 </div>
 
-                <div class="time-container priority_none  p-5" style="display: none">
+                <div class="time-container priority_none  p-5" ">
 
 
                 <div class="timepicker">
@@ -111,7 +111,7 @@
                 <input type="hidden" name="day_1" id="day_1" value="0"/>
                 </div>
 
-                <div class="time-container priority_none  p-5" style="display: none">
+                <div class="time-container priority_none  p-5" ">
 
 
                     <div class="timepicker">
@@ -166,7 +166,7 @@
                 <input type="hidden" name="day_2" id="day_2" value="0"/>
                 </div>
 
-                <div class="time-container priority_none  p-5" style="display: none">
+                <div class="time-container priority_none  p-5" ">
 
 
                     <div class="timepicker">
@@ -219,7 +219,7 @@
                 <input type="hidden" name="day_3" id="day_3" value="0"/>
                 </div>
 
-                <div class="time-container priority_none  p-5" style="display: none">
+                <div class="time-container priority_none  p-5" ">
 
 
                     <div class="timepicker">
@@ -273,7 +273,7 @@
                 <input type="hidden" name="day_4" id="day_4" value="0"/>
                 </div>
 
-                <div class="time-container priority_none  p-5" style="display: none">
+                <div class="time-container priority_none  p-5" ">
 
 
                     <div class="timepicker">
@@ -329,7 +329,7 @@
                 <input type="hidden" name="day_5" id="day_5" value="0"/>
                 </div>
 
-                <div class="time-container priority_none  p-5" style="display: none">
+                <div class="time-container priority_none  p-5" ">
 
 
                     <div class="timepicker">
@@ -383,7 +383,7 @@
                 <input type="hidden" name="day_6" id="day_6" value="0"/>
                 </div>
 
-                <div class="time-container priority_none  p-5" style="display: none">
+                <div class="time-container priority_none  p-5" ">
 
 
                     <div class="timepicker">

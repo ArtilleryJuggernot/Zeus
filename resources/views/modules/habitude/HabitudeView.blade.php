@@ -54,7 +54,7 @@
 
 
 
-                    <div class="time-container priority_none  p-5" style="display: none">
+                    <div class="time-container priority_none  p-5" ">
 
 
                         <div class="timepicker">
@@ -112,7 +112,7 @@
                         <input type="hidden" name="day_1" id="day_1" value="{{array_key_exists(1,$habits_possede) ? 1 : 0}}"/>
                     </div>
 
-                    <div class="time-container priority_none  p-5" style="display: none">
+                    <div class="time-container priority_none  p-5" ">
 
 
                         <div class="timepicker">
@@ -167,7 +167,7 @@
                         <input type="hidden" name="day_2" id="day_2" value="{{array_key_exists(2,$habits_possede) ? 1 : 0}}"/>
                     </div>
 
-                    <div class="time-container priority_none  p-5" style="display: none">
+                    <div class="time-container priority_none  p-5" ">
 
 
                         <div class="timepicker">
@@ -220,7 +220,7 @@
                         <input type="hidden" name="day_3" id="day_3" value="{{array_key_exists(3,$habits_possede) ? 1 : 0}}"/>
                     </div>
 
-                    <div class="time-container priority_none  p-5" style="display: none">
+                    <div class="time-container priority_none  p-5" ">
 
 
                         <div class="timepicker">
@@ -274,7 +274,7 @@
                         <input type="hidden" name="day_4" id="day_4" value="{{array_key_exists(4,$habits_possede) ? 1 : 0}}"/>
                     </div>
 
-                    <div class="time-container priority_none  p-5" style="display: none">
+                    <div class="time-container priority_none  p-5" ">
 
 
                         <div class="timepicker">
@@ -330,7 +330,7 @@
                         <input type="hidden" name="day_5" id="day_5" value="{{array_key_exists(5,$habits_possede) ? 1 : 0}}"/>
                     </div>
 
-                    <div class="time-container priority_none  p-5" style="display: none">
+                    <div class="time-container priority_none  p-5" ">
 
 
                         <div class="timepicker">
@@ -384,7 +384,7 @@
                         <input type="hidden" name="day_6" id="day_6" value="{{array_key_exists(6,$habits_possede) ? 1 : 0}}"/>
                     </div>
 
-                    <div class="time-container priority_none  p-5" style="display: none">
+                    <div class="time-container priority_none  p-5" ">
 
 
                         <div class="timepicker">
