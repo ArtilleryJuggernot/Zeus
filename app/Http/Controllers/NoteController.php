@@ -128,6 +128,38 @@ class NoteController extends Controller
         //dd($path_parent);
     }
 
+
+    public static function generateNoteTree($noteId)
+    {
+        $notePath = Note::find($noteId)->path;
+        $segments = explode('/', $notePath);
+
+        $base_path = "/files/" . $segments[2]; // /files/user_X/
+
+        $folder_root = Folder::where('path',$base_path)->first();
+
+        $folderTree[] = [
+            'id' => $folder_root->id,
+            'name' => $folder_root->name
+        ];
+        $currentPath = '';
+        // Parcours
+        for ($i = 3; $i < count($segments); $i++){
+            $base_path .= "/" . $segments[$i];
+            if($i == count($segments) -1 )
+                $folder_root = Note::where('path',$base_path)->first();
+            else
+            $folder_root = Folder::where('path',$base_path)->first();
+
+            $folderTree[] = [
+                'id' => $folder_root->id,
+                'name' => $folder_root->name
+            ];
+        }
+        return $folderTree;
+    }
+
+
     public function View(int $id)       // TODO : Système d'autorisation par dossier recursif
     {                                   // TODO : En voyant le dossier parent
         $user_id = Auth::user()->id;

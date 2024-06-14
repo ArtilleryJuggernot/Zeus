@@ -31,6 +31,9 @@
             </div>
         @endif
 
+
+
+
         <div id="notification" class="notification">
             <div class="progress"></div>
         </div>
@@ -49,6 +52,30 @@
         </script>
 
         <h1 class=" pt-5 mb-4 text-2xl font-bold text-center leading-none tracking-tight text-gray-900 md:text-5xl lg:text-3xl dark:text-white">Editeur de Note - {{ $note->name }}</h1>
+
+        @if ($note->owner_id != \Illuminate\Support\Facades\Auth::user()->id)
+        <div class="arborescence">
+            <span class="mb-4  text-left font-bold leading-none tracking-tight text-gray-900 text-xl dark:text-white">Arborescence - {{$note->name}}</span>
+            <br><br>
+            @php
+                $folder_tree = \App\Http\Controllers\NoteController::generateNoteTree($note->id);
+                $max = (count($folder_tree));
+            @endphp
+            @foreach ($folder_tree as $index => $folder_arbo)
+                <a class="folder_arbo font-bold" href="@if($index == $max-1) {{route("note_view",$folder_arbo["id"])}} @else{{ route("folder_view", $folder_arbo["id"]) }} @endif  ">
+                    @if($index == 0) 🏠 @elseif($index == $max-1) 📝 @else 📁 @endif
+                    {{ $folder_arbo["name"] }}
+                </a>
+                @if($index  < count($folder_tree) - 1)
+                    <span class="folder_separator_arbo"> > </span>
+                @endif
+            @endforeach
+            <br>
+
+            <br>
+        </div>
+        @endif
+
 
         @if ($note->owner_id != \Illuminate\Support\Facades\Auth::user()->id)
             <h3 class="it">

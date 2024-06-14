@@ -133,12 +133,12 @@ class HabitudeController extends Controller
     }
 
 
-    public function Toggle(Request $request)
+    public function Delete(Request $request)
     {
 
     }
 
-    public function Delete(Request $request)
+    public function Toggle(Request $request)
     {
 
     }
