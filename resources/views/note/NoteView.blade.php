@@ -53,7 +53,7 @@
 
         <h1 class=" pt-5 mb-4 text-2xl font-bold text-center leading-none tracking-tight text-gray-900 md:text-5xl lg:text-3xl dark:text-white">Editeur de Note - {{ $note->name }}</h1>
 
-        @if ($note->owner_id != \Illuminate\Support\Facades\Auth::user()->id)
+        @if ($note->owner_id == \Illuminate\Support\Facades\Auth::user()->id)
         <div class="arborescence">
             <span class="mb-4  text-left font-bold leading-none tracking-tight text-gray-900 text-xl dark:text-white">Arborescence - {{$note->name}}</span>
             <br><br>
