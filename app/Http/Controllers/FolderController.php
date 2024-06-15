@@ -366,7 +366,8 @@ class FolderController extends Controller
             'id' => ["integer"]
         ]);
         $id =  $validatedData["id"];
-        $path = Folder::find($id)->path;
+        $folder = Folder::find($id);
+        $path = $folder->path;
         $PATH_MAIN = "app/files/user_" . Auth::user()->id;
 
         // Chemin absolu du dossier à compresser
@@ -391,7 +392,7 @@ class FolderController extends Controller
         $zip->close();
 
         // Stream le fichier ZIP au client
-        return response()->download($zipFilePath, 'dossier.zip')->deleteFileAfterSend(true);
+        return response()->download($zipFilePath, $folder->name . '.zip')->deleteFileAfterSend(true);
     }
 
     private function addFolderToZip($zip, $folderPath, $relativePath)

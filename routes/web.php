@@ -111,3 +111,5 @@ require  "subroutes/gmail_route.php";
 // Module : Habitude
 
 require "subroutes/habitude_route.php";
+
+require "subroutes/pdf_route.php";

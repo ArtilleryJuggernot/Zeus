@@ -12,7 +12,6 @@
             href="{{ asset("css/notification/notification.css") }}"
         />
         @vite('resources/css/app.css')
-        <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
         <script
             type="module"
             src="{{ asset("js/stack_edit/stack_edit_note.js") }}"
@@ -20,6 +19,9 @@
 
     </head>
     <body>
+    <script>
+
+    </script>
         @if ($errors->any())
             <div class="alert alert-danger">
                 <h2>Il y a eu des erreurs</h2>
@@ -95,16 +97,19 @@
             </h3>
         @endif
 
+
         <div id="editor_md"></div>
 
-        <div class="flex justify-center">
-            <button class="space_btn bg-green-600 px-2 py-2 text-white font-bold mr-2" onclick="saveNote()">
-                Sauvegarder la note
-            </button>
 
-            <button class="space_btn bg-green-600 px-2 py-2 text-white font-bold ml-2" onclick="downloadPDF()">
-                Télécharger le PDF
-            </button>
+    <div class="flex flex-col items-center justify-center">
+        <span>(La note est sauvegarder de manière automatique au fur et à mesure de l'édition)</span>
+        <form action="{{ route('note_pdf', ['note_id' => $note->id, 'user_id' =>  \Illuminate\Support\Facades\Auth::user()->id]) }}" method="post">
+                <button type="submit" class="space_btn bg-green-600 px-2 py-2 text-white font-bold ml-2 pdf_btn">
+                    Télécharger le PDF
+                </button>
+                @csrf
+            </form>
+
         </div>
 
         <div class="cat_display">

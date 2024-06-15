@@ -12,6 +12,6 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
+        '/note_pdf',  // Ajoutez votre endpoint ici
     ];
 }

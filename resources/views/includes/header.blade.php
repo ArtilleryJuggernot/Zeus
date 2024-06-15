@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="{{ asset("css/background/bg_day.css") }}">
     <link rel="stylesheet" href="{{ asset("css/animation/particule.css") }}">
     <link rel="icon" href="{{ url("img/favicon/favicon-32x32.png") }}">
+    <!-- PWA  -->
+    <meta name="theme-color" content="#6777ef"/>
+    <link rel="apple-touch-icon" href="{{ asset('img/logo-zeus.jpeg') }}">
+    <link rel="manifest" href="{{ asset('/manifest.json') }}">
 </head>
 <body class="bg-white">
 <div class="header">
@@ -165,5 +169,24 @@
 @if (\Illuminate\Support\Facades\Auth::user())
     @include("includes.search.searchbar")
 @endif
+
+<script src="{{ asset('/sw.js') }}"></script>
+<script>
+    if ("serviceWorker" in navigator) {
+        // Register a service worker hosted at the root of the
+        // site using the default scope.
+        navigator.serviceWorker.register("/sw.js").then(
+            (registration) => {
+                console.log("Service worker registration succeeded:", registration);
+            },
+            (error) => {
+                console.error(`Service worker registration failed: ${error}`);
+            },
+        );
+    } else {
+        console.error("Service workers are not supported.");
+    }
+</script>
+
 </body>
 </html>

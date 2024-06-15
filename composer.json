@@ -6,8 +6,10 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "ext-curl": "*",
         "ext-openssl": "*",
-        "barryvdh/laravel-dompdf": "^2.0",
+        "ext-zip": "*",
+        "barryvdh/laravel-dompdf": "^2.2",
         "calcinai/php-imagick": "^0.1.2",
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "dev-main",
@@ -17,13 +19,13 @@
         "laravel/socialite": "^5.13",
         "laravel/tinker": "^2.8",
         "laravelcollective/html": "^6.4",
+        "league/commonmark": "^2.4",
         "orbitale/imagemagick-php": "^3.3",
-        "thiagoprz/eloquent-composite-key": "^1.0",
-        "ext-curl": "*",
-	"ext-zip":"*"
+        "thiagoprz/eloquent-composite-key": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
+        "ladumor/laravel-pwa": "^0.0.4",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
         "mockery/mockery": "^1.4.4",

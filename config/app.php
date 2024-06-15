@@ -170,6 +170,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\FortifyServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
+        Ladumor\LaravelPwa\PWAServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
     ])->toArray(),
 
@@ -187,6 +189,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         'Form' => 'Collective\Html\FormFacade',
         'Html' => 'Collective\Html\HtmlFacade',
+        'LaravelPwa' => \Ladumor\LaravelPwa\LaravelPwa::class,
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
