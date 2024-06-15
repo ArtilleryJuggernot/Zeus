@@ -316,6 +316,8 @@ class FolderController extends Controller
         $newFolder->save();
         LogsController::createFolder($user_id,$newFolder->getKey(),$name,"SUCCESS");
 
+        $folder_id = $newFolder->getKey();
+        CategorieController::HeritageCategorie($folder_id,$newFolder->path,"folder");
 
 
         return redirect()->back()->with("success","Le dossier a bien été créer !");

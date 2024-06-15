@@ -33,12 +33,22 @@ class ProjetController extends Controller
                 foreach ($categories as $category){
 
                     $category = Categorie::find($category->categorie_id);
-                    $newCategoryAssign = new possede_categorie();
-                    $newCategoryAssign->ressource_id = $task->id;
-                    $newCategoryAssign->type_ressource = "task";
-                    $newCategoryAssign->categorie_id = $category->category_id;
-                    $newCategoryAssign->owner_id = $projet->owner_id;
-                    $newCategoryAssign->save();
+
+
+                    if(!possede_categorie::where([
+                        ["ressource_id",$task->id],
+                        ["type_ressource","task"],
+                        ["categorie_id",$category->category_id]
+                    ])->get()){
+                        $newCategoryAssign = new possede_categorie();
+                        $newCategoryAssign->ressource_id = $task->id;
+                        $newCategoryAssign->type_ressource = "task";
+                        $newCategoryAssign->categorie_id = $category->category_id;
+                        $newCategoryAssign->owner_id = $projet->owner_id;
+                        $newCategoryAssign->save();
+                    }
+
+
                 }
             }
         }

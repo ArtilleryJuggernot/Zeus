@@ -48,7 +48,7 @@ class CategorieController extends Controller
 
         LogsController::deleteCategory(Auth::user()->id,$cat->category_id,$cat->category_name);
         $cat->delete();
-        return redirect()->back()->with(["success" => "La catégorie supprimé avec succès"]);
+        return redirect()->back()->with(["success" => "La catégorie a été supprimée avec succès"]);
     }
 
 
@@ -93,19 +93,25 @@ class CategorieController extends Controller
        $ressourceType = $validateData["ressourceType"];
 
 
-       $newPossedeCat = new possede_categorie();
-       $newPossedeCat->ressource_id = $ressourceId;
-       $newPossedeCat->type_ressource = $ressourceType;
-       $newPossedeCat->categorie_id = $categoryId;
-       $newPossedeCat->owner_id = $user_id;
+        if(!possede_categorie::where([
+            ["ressource_id",$ressourceId],
+            ["type_ressource",$ressourceType],
+            ["categorie_id",$categoryId]
+        ])->get()){
+            $newPossedeCat = new possede_categorie();
+            $newPossedeCat->ressource_id = $ressourceId;
+            $newPossedeCat->type_ressource = $ressourceType;
+            $newPossedeCat->categorie_id = $categoryId;
+            $newPossedeCat->owner_id = $user_id;
+            $newPossedeCat->save();
+        }
 
-       $newPossedeCat->save();
 
        $CategoryName = Categorie::find($categoryId)->category_name;
 
        LogsController::AddCategoryToRessources($user_id,$categoryId,$CategoryName,$ressourceId,$ressourceType);
 
-       return redirect()->back()->with("success","La catégorie " . $CategoryName . " a bien été ajouter à la ressource");
+       return redirect()->back()->with("success","La catégorie " . $CategoryName . " a bien été ajoutée à la ressource");
 
     }
 
@@ -163,6 +169,22 @@ class CategorieController extends Controller
             "ressources" => $ressources
         ]
         );
+
+    }
+
+
+    public static function HeritageCategorie($ressource_id,$path,$type)
+    {
+        if($type == "note"){
+            $tree = NoteController::generateNoteTree($ressource_id);
+            dd($tree);
+        }
+
+        if($type == "folder"){
+            $tree = FolderController::generateFolderTree($ressource_id);
+            dd($tree);
+        }
+
 
     }
 

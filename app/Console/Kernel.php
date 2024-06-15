@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('git:auto-commit')->hourly();
         $schedule->command("habitude-routine")->daily();
-        // $schedule->command('inspire')->hourly();
+        $schedule->command("category-mass-assign")->daily();
 
     }
 
