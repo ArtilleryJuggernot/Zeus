@@ -6,8 +6,10 @@ use App\Http\Controllers\HomeController;
 use App\Models\Folder;
 use App\Models\Note;
 use App\Models\possede_categorie;
+use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class CategoryMassAssign extends Command
 {
@@ -30,10 +32,16 @@ class CategoryMassAssign extends Command
      */
     public function handle()
     {
+        $output = new ConsoleOutput();
+
         // Récupérer toutes les notes et les dossiers
+        $users = User::all();
+        foreach ($users as $user){
+            $user_id = $user->id;
+
         $ressources = collect();
-        $notes = Note::all();
-        $folders = Folder::all();
+        $notes = Note::where("owner_id",$user_id)->get();
+        $folders = Folder::where("owner_id",$user_id)->get();
         $ressources = $ressources->merge($notes)->merge($folders);
 
         // Parcourir chaque ressource
@@ -49,7 +57,7 @@ class CategoryMassAssign extends Command
 
             // Si la ressource est un dossier, ajoutez ses propres catégories également
             if ($ressource instanceof Folder) {
-                $ressourceCategories = Folder::getFolderCategories($ressource->id);
+                $ressourceCategories = Folder::getFolderCategories($ressource->id,$user_id);
                 $parentCategories = $parentCategories->merge($ressourceCategories);
             }
 
@@ -63,17 +71,18 @@ class CategoryMassAssign extends Command
                     $ps->categorie_id = $categorie->category_id;
 
                     // verification qu'il n'y a pas de doublons
-                    if(possede_categorie::where([
+                    if(!possede_categorie::where([
                         ["ressource_id",$ressource->id],
                         ["type_ressource",$ps->type_ressource],
                         ["categorie_id",$categorie->category_id]
                     ])->get()){
-                        $ps->owner_id = Auth::user()->id;
+                        $ps->owner_id = $user_id;
                         $ps->save();
                     }
 
                 }
             }
         }
+    }
     }
 }
