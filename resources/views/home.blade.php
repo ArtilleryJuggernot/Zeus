@@ -17,6 +17,8 @@
 
 <!-- Contenu de la page d'accueil -->
 
+
+
     <div class="max-w-3xl mx-auto sm:mx-0">
         <h1 class="text-3xl font-bold mb-4">
             Hello {{ \Illuminate\Support\Facades\Auth::user()->name }} ⚡

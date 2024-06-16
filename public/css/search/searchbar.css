@@ -16,8 +16,12 @@
     width: 100%; /* Prend toute la largeur de la fenêtre */
     height: 100%; /* Prend toute la hauteur de la fenêtre */
     background-color: rgba(0, 0, 0, 0.7); /* Fond noir semi-transparent */
-    z-index: 999; /* Assure que l'overlay est au-dessus du contenu */
+    z-index: 100; /* Assure que l'overlay est au-dessus du contenu */
     display: none; /* Masque l'overlay par défaut */
+}
+
+.btn-searchbar{
+    z-index: 101;
 }
 
 /* Styliser le contenu de l'overlay */

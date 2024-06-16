@@ -55,7 +55,6 @@ class Folder extends Model
 
     public static function getFolderCategories($id,$user_id)
     {
-
         $resourceCategories = possede_categorie::where('ressource_id', $id)
             ->where('type_ressource', 'folder')
             ->where('owner_id', $user_id)

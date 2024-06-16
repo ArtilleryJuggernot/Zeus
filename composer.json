@@ -13,6 +13,7 @@
         "calcinai/php-imagick": "^0.1.2",
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "dev-main",
+        "jenssegers/agent": "^2.6",
         "laravel/fortify": "^1.19",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",

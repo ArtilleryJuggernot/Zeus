@@ -6,6 +6,10 @@
         <link rel="stylesheet" href="{{ asset("css/includes/footer.css") }}" />
         @vite('resources/css/app.css')
     </head>
+
+
+
+
     <body class="flex flex-col min-h-screen">
     <!-- Contenu de votre site ici -->
 

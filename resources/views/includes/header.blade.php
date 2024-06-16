@@ -166,6 +166,10 @@
     @csrf
 </form>
 
+
+
+
+
 @if (\Illuminate\Support\Facades\Auth::user())
     @include("includes.search.searchbar")
 @endif

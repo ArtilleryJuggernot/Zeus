@@ -172,6 +172,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Ladumor\LaravelPwa\PWAServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+        Jenssegers\Agent\AgentServiceProvider::class,
 
     ])->toArray(),
 
@@ -190,6 +191,7 @@ return [
         'Form' => 'Collective\Html\FormFacade',
         'Html' => 'Collective\Html\HtmlFacade',
         'LaravelPwa' => \Ladumor\LaravelPwa\LaravelPwa::class,
+        'Agent' => Jenssegers\Agent\Facades\Agent::class,
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
