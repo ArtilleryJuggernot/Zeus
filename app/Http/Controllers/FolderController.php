@@ -184,11 +184,9 @@ class FolderController extends Controller
         if($pas_user) // Pas l'utilisateur propriétaire, on regarde si l'utilisateur courant à les droits sur au moins un dossier supérieur
         {
             $accesRecursif = $this->checkHasPermissionView($id);
-            //dd($accesRecursif);
-//            dd(!$accesRecursif);
+
         }
 //        if( ($pas_user && !$autorisation_partage) || !isset($accesRecursif)){
-        //dd($pas_user && !$accesRecursif);
         if( ($pas_user) && !$accesRecursif){
              return redirect()->route("home")->with("failure","Vous n'êtes pas autorisé à voir cette ressource");
         }
@@ -331,8 +329,6 @@ class FolderController extends Controller
         $id =  $validatedData["id"];
         $folder = Folder::find($id);
         $user_id = Auth::user()->id;
-        //dd(storage_path($folder->path));
-        //dd(Storage::exists($folder->path));
 
         if(!$folder)
             return redirect()->route("home")->with("failure","Une erreur s'est produite lors de la recherche d'un dossier");

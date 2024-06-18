@@ -71,11 +71,12 @@ class CategoryMassAssign extends Command
                     $ps->categorie_id = $categorie->category_id;
 
                     // verification qu'il n'y a pas de doublons
-                    if(!possede_categorie::where([
+                    $condition = possede_categorie::where([
                         ["ressource_id",$ressource->id],
                         ["type_ressource",$ps->type_ressource],
                         ["categorie_id",$categorie->category_id]
-                    ])->get()){
+                    ])->get()->isEmpty();
+                    if($condition){
                         $ps->owner_id = $user_id;
                         $ps->save();
                     }

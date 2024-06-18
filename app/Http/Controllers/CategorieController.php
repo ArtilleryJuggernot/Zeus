@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categorie;
+use App\Models\Folder;
+use App\Models\Note;
 use App\Models\possede_categorie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -93,11 +95,13 @@ class CategorieController extends Controller
        $ressourceType = $validateData["ressourceType"];
 
 
-        if(!possede_categorie::where([
-            ["ressource_id",$ressourceId],
-            ["type_ressource",$ressourceType],
-            ["categorie_id",$categoryId]
-        ])->get()){
+       $condition = possede_categorie::where([
+           ["ressource_id",$ressourceId],
+           ["type_ressource",$ressourceType],
+           ["categorie_id",$categoryId]
+       ])->get()->isEmpty();
+
+        if($condition){
             $newPossedeCat = new possede_categorie();
             $newPossedeCat->ressource_id = $ressourceId;
             $newPossedeCat->type_ressource = $ressourceType;
@@ -175,16 +179,37 @@ class CategorieController extends Controller
 
     public static function HeritageCategorie($ressource_id,$path,$type)
     {
-        if($type == "note"){
-            $tree = NoteController::generateNoteTree($ressource_id);
-            dd($tree);
-        }
+        $type == "note" ?  $tree = NoteController::generateNoteTree($ressource_id) : $tree = FolderController::generateFolderTree($ressource_id);
+        $type == "note" ? $user_id = Note::find($ressource_id)->owner_id : $user_id = Folder::find($ressource_id)->owner_id;
+        $max = count($tree) - 1;
 
-        if($type == "folder"){
-            $tree = FolderController::generateFolderTree($ressource_id);
-            dd($tree);
-        }
+            for ($i = 0; $i < $max; $i++){
+                $folder_id = $tree[$i]["id"];
+                // Obtenir les catégories du dossier parents
+                $associate_cat = possede_categorie::where([
+                    ["ressource_id",$folder_id],
+                    ["type_ressource","folder"],
+                    ["owner_id",$user_id],
+                ])->get();
 
+                foreach ($associate_cat as $asso_cat){
+                    $cat_id = $asso_cat->categorie_id;
+                    $condition  = possede_categorie::where([
+                        ["ressource_id",$ressource_id],
+                        ["type_ressource",$type],
+                        ["categorie_id",$cat_id]
+                    ])->get()->isEmpty();
+                    if($condition){
+                        $newPossedeCat = new possede_categorie();
+                        $newPossedeCat->ressource_id = $ressource_id;
+                        $newPossedeCat->type_ressource = $type;
+                        $newPossedeCat->categorie_id = $cat_id;
+                        $newPossedeCat->owner_id = $user_id;
+                        $newPossedeCat->save();
+                    }
+                }
+
+            }
 
     }
 

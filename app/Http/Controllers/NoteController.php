@@ -364,6 +364,9 @@ class NoteController extends Controller
 
         $newNote->save();
         LogsController::createNote($user_id,$newNote->getKey(),$name,"SUCCESS");
+        $note_id = $newNote->getKey();
+        CategorieController::HeritageCategorie($note_id,$newNote->path,"note");
+
         return redirect()->back()->with("success","La note a bien été créée !");
     }
 

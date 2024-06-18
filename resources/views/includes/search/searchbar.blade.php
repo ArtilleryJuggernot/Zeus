@@ -25,7 +25,7 @@
 @if($agent->isMobile() ||$agent->isTablet() )
     <button class="btn-searchbar  fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-gray-300 text-gray-800 py-3 px-6 rounded-lg shadow-md hover:bg-gray-400 hover:shadow-lg transition duration-300">
         Rechercher une ressource 🔎
-    </button>
+    </button
 @endif
 
 

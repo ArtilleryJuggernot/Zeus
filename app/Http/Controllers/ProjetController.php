@@ -34,12 +34,12 @@ class ProjetController extends Controller
 
                     $category = Categorie::find($category->categorie_id);
 
-
-                    if(!possede_categorie::where([
+                    $condition = possede_categorie::where([
                         ["ressource_id",$task->id],
                         ["type_ressource","task"],
                         ["categorie_id",$category->category_id]
-                    ])->get()){
+                    ])->get()->isEmpty();
+                    if($condition){
                         $newCategoryAssign = new possede_categorie();
                         $newCategoryAssign->ressource_id = $task->id;
                         $newCategoryAssign->type_ressource = "task";

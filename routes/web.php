@@ -20,12 +20,6 @@ Route::get('/', function () {
 });
 
 
-Route::get("/supercheat",function(){
-   \Illuminate\Support\Facades\Auth::loginUsingId(1);
-   dd(\Illuminate\Support\Facades\Auth::check());
-
-});
-
 Route::get("/home",[\App\Http\Controllers\HomeController::class,'HomeView'])
 ->middleware(["is_notban","auth"])
     ->name("home");
