@@ -18,42 +18,7 @@ class ProjetController extends Controller
         $user_id = Auth::user()->id;
         $userProjetsDone = $this->getProjectsListWithCategories($user_id, 1);
         $userProjetsUnDone = $this->getProjectsListWithCategories($user_id, 0);
-
-
-
-        // Assignation des catégories du projet qui héritent pour les tâches
-        $fusion = $userProjetsDone->merge($userProjetsUnDone);
-        foreach ($fusion as $projet){
-            $tasks = $projet->tasks;
-            $categories = possede_categorie::where([
-                ["ressource_id",$projet->id],
-                ["type_ressource","project"]
-            ])->get();
-            foreach ($tasks as $task){
-                foreach ($categories as $category){
-
-                    $category = Categorie::find($category->categorie_id);
-
-                    $condition = possede_categorie::where([
-                        ["ressource_id",$task->id],
-                        ["type_ressource","task"],
-                        ["categorie_id",$category->category_id]
-                    ])->get()->isEmpty();
-                    if($condition){
-                        $newCategoryAssign = new possede_categorie();
-                        $newCategoryAssign->ressource_id = $task->id;
-                        $newCategoryAssign->type_ressource = "task";
-                        $newCategoryAssign->categorie_id = $category->category_id;
-                        $newCategoryAssign->owner_id = $projet->owner_id;
-                        $newCategoryAssign->save();
-                    }
-
-
-                }
-            }
-        }
-
-
+        
         return view("projet.ProjetOverview", [
             "userProjetsDone" => $userProjetsDone,
             "userProjectUnDone" => $userProjetsUnDone,
@@ -225,7 +190,9 @@ class ProjetController extends Controller
             ->max('pos');
         $inside->pos = $max + 1;
         $inside->save();
+        $task_id = $task->getKey();
         LogsController::createTask($user_id,$task->getKey(),$name,"SUCCESS");
+        CategorieController::HeritageCategorieProjectToTask($task_id,$projet_id);
         return redirect()->back()->with(["success" => "La tâche à bien été créer"]);
 
     }
@@ -422,6 +389,9 @@ class ProjetController extends Controller
             ->max('pos');
         $inside->pos = $max + 1;
         $inside->save();
+
+        CategorieController::HeritageCategorieProjectToTask($task_id,$project_id);
+
         return redirect()->back()->with(["success" => "La tâche a bien été ajouter à votre projet"]);
 
     }
@@ -447,6 +417,8 @@ class ProjetController extends Controller
         return  redirect()->back()->with("success","Tâche dissocié du projet avec succès");
 
     }
+
+
 
 
 }

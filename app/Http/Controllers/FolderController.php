@@ -304,7 +304,7 @@ class FolderController extends Controller
         $newFolder->path = $path_final;
 
 
-        $check = Storage::makeDirectory($newFolder->path);               // Persistance + save
+        $check = Storage::makeDirectory($newFolder->path);        // Persistance + save
 
         if(!$check){
             LogsController::createFolder($user_id,0,$name,"FAILURE");

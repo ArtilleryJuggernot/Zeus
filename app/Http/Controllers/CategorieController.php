@@ -6,6 +6,7 @@ use App\Models\Categorie;
 use App\Models\Folder;
 use App\Models\Note;
 use App\Models\possede_categorie;
+use App\Models\Projet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -213,5 +214,35 @@ class CategorieController extends Controller
 
     }
 
+
+    public static function HeritageCategorieProjectToTask($task_id,$project_id)
+    {
+        // Hérité les catégories associés au projet à la tâche nouvellement créer ou associé
+        $user_id = Projet::find($project_id)->owner_id;
+        $cat_list  = possede_categorie::where(
+            [
+                ["ressource_id",$project_id],
+                ["type_ressource","project"]
+            ])->get();
+        foreach ($cat_list as $cat){
+            $cat_id = $cat->categorie_id;
+
+
+            $condition = possede_categorie::where([
+                ["ressource_id",$task_id],
+                ["type_ressource","task"],
+                ["categorie_id",$cat_id]
+            ])->get()->isEmpty();
+
+            if($condition){
+                $newPossedeCat = new possede_categorie();
+                $newPossedeCat->ressource_id = $task_id;
+                $newPossedeCat->type_ressource = "task";
+                $newPossedeCat->categorie_id = $cat_id;
+                $newPossedeCat->owner_id = $user_id;
+                $newPossedeCat->save();
+            }
+        }
+    }
 }
 
