@@ -18,7 +18,7 @@ class ProjetController extends Controller
         $user_id = Auth::user()->id;
         $userProjetsDone = $this->getProjectsListWithCategories($user_id, 1);
         $userProjetsUnDone = $this->getProjectsListWithCategories($user_id, 0);
-        
+
         return view("projet.ProjetOverview", [
             "userProjetsDone" => $userProjetsDone,
             "userProjectUnDone" => $userProjetsUnDone,
@@ -300,12 +300,12 @@ class ProjetController extends Controller
         foreach ($inside as $i){
             insideprojet::where([
                 "projet_id" => $project_id,
-                "task_id" => $i->id
+                "task_id" => $i->task_id
             ])->delete();
-            Task::find($i->id)->delete();
+            Task::find($i->task_id)->delete();
+
         }
 
-        insideprojet::where("projet_id", $project_id)->delete();
 
 
         // Supprimer les droits associés à une note

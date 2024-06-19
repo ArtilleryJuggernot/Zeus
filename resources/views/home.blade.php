@@ -33,7 +33,7 @@
 
 
         <!-- Listes des tâches à faire -->
-        <div class="  mx-auto sm:mx-0">
+        <div class="mx-auto sm:mx-0">
 
             <!-- Habitude -->
             <div class=" mb-8">
