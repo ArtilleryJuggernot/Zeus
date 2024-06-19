@@ -37,11 +37,11 @@
 
             <!-- Habitude -->
             <div class=" mb-8">
-                <h2 class="text-xl font-semibold mb-4">Liste des habitudes à faire</h2>
+                <h2 class="text-xl font-semibold mb-4">Liste des habitudes à faire 🏆</h2>
                 <div class=" flex flex-wrap">
                     @forelse ($habitudes as $task)
-                        <div class="basis-1/5 task-card margin-right border-gray-500 bg-white rounded-lg shadow-md">
-                            <a href="{{ route("view_task", $task->id) }}" class="text-blue-500 font-bold hover:underline"><h3>{{ $task->task_name }}</h3></a>
+                        <div class="basis-1/5 task-card margin-right  bg-white rounded-lg shadow-md">
+                            <a href="{{ route("view_task", $task->id) }}" class="text-blue-500 font-bold hover:underline"><h3>🏆{{ $task->task_name }}</h3></a>
                             <p class="text-red-500">⚠️ Habitude</p>
                             @if ($task->due_date)
                                 <div class="task-due-date">
@@ -86,15 +86,15 @@
 
             <!-- Tâches prioritaires -->
             <div class=" mb-8">
-                <h2 class="text-xl font-semibold mb-4">Liste des tâches à faire en priorité</h2>
+                <h2 class="text-xl font-semibold mb-4">Liste des tâches à faire en priorité 🎯</h2>
                 <div class=" flex flex-wrap">
                     @forelse ($task_priority as $task)
                         @php
                             $priority = $task->priority;
                             $task = \App\Models\Task::find($task->task_id);
                         @endphp
-                        <div class="basis-1/5 task-card margin-right border-gray-500 bg-white rounded-lg shadow-md">
-                            <a href="{{ route("view_task", $task->id) }}" class="text-blue-500 font-bold hover:underline"><h3>@if($task->type == "livre") 📚 @endif {{ $task->task_name }}</h3></a>
+                        <div class="basis-1/5 task-card margin-right  bg-white rounded-lg shadow-md">
+                            <a href="{{ route("view_task", $task->id) }}" class="text-blue-500 font-bold hover:underline"><h3>🎯 @if($task->type == "livre") 📚 @endif {{ $task->task_name }}</h3></a>
                             <p class="text-red-500"> ⚠️ {{ $priority }}</p>
                             @if ($task->due_date)
                                 <div class="task-due-date">
@@ -134,7 +134,7 @@
 
             <!-- Tâches actuelles -->
             <div class=" mb-8">
-                <h2 class="text-xl font-semibold mb-4">Liste des tâches actuelles à faire (avec date limite)</h2>
+                <h2 class="text-xl font-semibold mb-4">Liste des tâches actuelles à faire (avec date limite) 📚🕐</h2>
                 <div class=" flex flex-wrap">
                     @forelse ($tachesTimed as $task)
                         <div class="task-card basis-1/5 margin-right bg-white rounded-lg shadow-md">
