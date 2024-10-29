@@ -112,6 +112,8 @@
     </div>
 </div>
 
+
+@if($user->id == \Illuminate\Support\Facades\Auth::user()->id)
 <h2 class="font-bold text-xl pt-5 pb-5">Modification du mot de passe</h2>
 
 <div class="form">
@@ -135,6 +137,7 @@
         @csrf
     </form>
 </div>
+@endif
 
 @include("includes.footer")
 

@@ -7,6 +7,9 @@
     <link rel="apple-touch-icon" href="{{ asset('img/logo-zeus.jpeg') }}">
     <link rel="manifest" href="{{ asset('/manifest.json') }}">
     @vite('resources/css/app.css')
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="{{ asset('js/app.js') }}"></script>
+
 </head>
 <body class="bg-white">
 <header class="bg-gray-800 text-white shadow-md">
@@ -101,10 +104,14 @@
                 </nav>
             </div>
 
+
+
             <!-- Photo de profil ou initiale -->
             <div class="flex items-center">
                 @if (Auth::user())
                     <div class="ml-20 relative group w-16">
+
+
                         <a href="{{ route('profile', Auth::user()->id) }}" class="flex items-center">
                             @php
                                 $profilePath = 'storage/' . \Illuminate\Support\Facades\Auth::user()->id . '.png';
@@ -119,6 +126,8 @@
                                 </div>
                             @endif
                         </a>
+
+
                         <div class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <a href="{{ route('weekly_stats') }}" class="block px-4 py-2 text-sm hover:bg-gray-700">Statistiques de la semaine</a>
                             <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-700" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

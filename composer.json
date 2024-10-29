@@ -21,6 +21,7 @@
         "laravel/tinker": "^2.8",
         "laravelcollective/html": "^6.4",
         "league/commonmark": "^2.4",
+        "livewire/livewire": "^3.5",
         "orbitale/imagemagick-php": "^3.3",
         "thiagoprz/eloquent-composite-key": "^1.0"
     },
