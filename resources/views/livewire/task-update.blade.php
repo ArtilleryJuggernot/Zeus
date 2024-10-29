@@ -1,6 +1,6 @@
-<div class="task-card basis-1/5 margin-right bg-white rounded-lg shadow-md relative border-2 border-black p-4 m-2" x-data="{ isEditing: false }">
+<div class="task-card flex-grow margin-right bg-white rounded-lg shadow-md relative border-2 border-black p-4 pr-6 m-2" x-data="{ isEditing: false }">
     <a href="{{ route('view_task', $taskId) }}" class="text-blue-500 font-bold hover:underline">
-        <h3>{{ $taskName }}</h3>
+        <h3 class="whitespace-nowrap">{{ $taskName }}</h3>
     </a>
     <p class="text-red-500">⚠️ {{ $priority }}</p>
     @if ($dueDate)
