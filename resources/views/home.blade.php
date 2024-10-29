@@ -223,7 +223,6 @@
         </div>
 </body>
 
-<script src="{{ asset("js/particules.js") }}"></script>
 <script src="{{ asset("js/task_update.js") }}"></script>
 <script src="{{ asset("js/notification.js") }}"></script>
 
