@@ -55,12 +55,11 @@ class FolderController extends Controller
 
     public function getFolderIdFromPath($folderPath) {
         $folderPath = "/" . $folderPath;
-        $folder = Folder::where('path',"=",$folderPath)->first();
-        if ($folder) {
-            return $folder->id;
-        }
-        return redirect()->route("home")->with("failure","Une erreur s'est produite lors de l'obtention des dossiers");
+        $folder = Folder::where('path', "=", $folderPath)->first();
+
+        return $folder ? $folder->id : null;
     }
+
 
     public function getNoteIdFromPath($notePath) {
         $notePath = "/" . $notePath;
@@ -73,44 +72,47 @@ class FolderController extends Controller
     }
 
     public function getFolderContents($folderId) {
-
         $folderPath = Folder::find($folderId)->path;
 
-        if(!$folderPath){
-            return redirect()->route("home")->with("failure","Une erreur s'est produite lors de l'obtention d'un chemin de dossier");
+        if (!$folderPath) {
+            return redirect()->route("home")->with("failure", "Une erreur s'est produite lors de l'obtention d'un chemin de dossier");
         }
 
         $directories = Storage::directories($folderPath);
         $files = Storage::files($folderPath);
 
-
         $folderContents = [];
         foreach ($directories as $subFolder) {
-                $subFolderId = $this->getFolderIdFromPath($subFolder);
+            $subFolderId = $this->getFolderIdFromPath($subFolder);
+            if ($subFolderId) {  // Ignore si l'ID est null
                 $categories = $this->getFolderCategories($subFolderId);
                 $folderContents[] = [
                     'type' => 'folder',
                     'name' => basename($subFolder),
                     'path' => $subFolder,
-                    'id' => $this->getFolderIdFromPath($subFolder),
+                    'id' => $subFolderId,
                     'categories' => $categories,
                 ];
             }
+        }
 
-
-            foreach ($files as $file) {
-                $categories = $this->getNotesCategories($this->getNoteIdFromPath($file));
+        foreach ($files as $file) {
+            $noteId = $this->getNoteIdFromPath($file);
+            if ($noteId) {  // Ignore si l'ID est null
+                $categories = $this->getNotesCategories($noteId);
                 $folderContents[] = [
                     'type' => 'note',
                     'name' => basename($file),
                     'path' => $file,
-                    'id' => $this->getNoteIdFromPath($file),
+                    'id' => $noteId,
                     'categories' => $categories
-                    // Autres détails de la note si nécessaire
                 ];
             }
+        }
+
         return $folderContents;
     }
+
 
     // l'ID du dossier à vérifié
     private function checkHasPermissionView(int $id)
