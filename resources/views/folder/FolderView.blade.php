@@ -84,13 +84,20 @@
 <!-- Liste des Dossiers et Notes -->
 <div class="folders flex flex-wrap justify-start">
     @forelse ($folderContents as $item)
-        <div class="flex-grow  bg-white flex flex-col justify-between">
-            @if ($item['type'] == 'folder')
-                <livewire:folder-item :folder="$item" :ownedCategories="$ownedCategories" :notOwnedCategories="$notOwnedCategories" :key="$item['id']" />
-            @else
-                <livewire:note-item :note="$item" :ownedCategories="$ownedCategories" :notOwnedCategories="$notOwnedCategories" :key="$item['id']" />
-            @endif
-        </div>
+
+        {{-- Vérifiez que l'élément est un tableau et contient bien une clé 'type' --}}
+        @if (is_array($item) && isset($item['type']))
+            <div class="flex-grow bg-white flex flex-col justify-between">
+                @if ($item['type'] === 'folder')
+                    <livewire:folder-item :folder="$item" :ownedCategories="$ownedCategories" :notOwnedCategories="$notOwnedCategories" :key="$item['id']" />
+                @elseif ($item['type'] === 'note')
+                    <livewire:note-item :note="$item" :ownedCategories="$ownedCategories" :notOwnedCategories="$notOwnedCategories" :key="$item['id']" />
+                @endif
+            </div>
+        @else
+            <p class="text-lg font-bold text-red-600">Erreur : Type d'élément non pris en charge</p>
+        @endif
+
     @empty
         <p class="text-lg font-bold text-gray-600">> Le dossier est vide</p>
     @endforelse
