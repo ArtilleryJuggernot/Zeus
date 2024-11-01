@@ -10,6 +10,7 @@ class task_priorities extends Model
     use HasFactory;
     protected $table = "task_priorities";
 
+    protected $guarded = false;
 
     public function task()
     {

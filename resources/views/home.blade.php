@@ -12,6 +12,18 @@
     <div class="progress"></div>
 </div>
 
+@php
+
+/*\Illuminate\Support\Facades\Mail::raw('Test email from Laravel',function ($message){
+   $message->to('hugojuggernot@gmail.com')
+   ->subject('Bidule chouette Zeus !');
+});*/
+
+@endphp
+
+
+
+
 <div class="sm:mx-0 p-6">
 
     <div class="items-center justify-center">
