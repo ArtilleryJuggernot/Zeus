@@ -65,50 +65,7 @@
 <div class="folders grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     <!-- Boucle pour afficher les dossiers -->
     @foreach ($task_list_unfinish as $task)
-        <div class="folder-card bg-white rounded-lg p-4 shadow-md">
-            <a href="{{ route("view_task", $task->id) }}" class="text-blue-500 font-bold hover:underline">
-                <h3>{{ $task->task_name }}</h3>
-            </a>
-            <div class="task-due-date">
-                @if ($task->due_date)
-                    <p class="font-bold">Date limite : <span>{{ $task->due_date }}</span></p>
-                @endif
-            </div>
-            <div class="task-is-finish">
-                <p class="font-bold">{{ $task->is_finish ? 'Finis' : 'En cours' }}</p>
-            </div>
-            <div class="task-project">
-                <p class="font-bold">Projets associés :</p>
-                <ul>
-                    @foreach ($task->projects as $project)
-                        <li>{{ $project->name }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            <form action="{{ route("UpdateTaskStatus") }}" method="POST" class="task-form">
-                @csrf
-                <input type="hidden" name="task_id" value="{{ $task->id }}" />
-                <!-- ID de la tâche -->
-                <label class="font-bold">
-                    <input type="checkbox" class="task-checkFinish mr-2" @if($task->is_finish) checked @endif
-                    name="task_completed" />
-                    @if ($task->is_finish)
-                        Mettre la tâche en cours
-                    @else
-                        Finir la tâche
-                    @endif
-                </label>
-            </form>
-            <div class="delete">
-                <form action="{{ route("delete_task") }}" method="post">
-                    <input name="id" type="hidden" value="{{ $task->id }}" />
-                    <button type="submit"
-                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Supprimer</button>
-                    @csrf
-                </form>
-            </div>
-            <!-- Autres détails du dossier si nécessaire -->
-        </div>
+        <livewire:task-update :taskId="$task->id"/>
     @endforeach
 </div>
 
@@ -116,50 +73,7 @@
 <div class="folders grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     <!-- Boucle pour afficher les dossiers -->
     @foreach ($task_list_finish as $task)
-        <div class="folder-card bg-white rounded-lg p-4 shadow-md">
-            <a href="{{ route("view_task", $task->id) }}" class="text-blue-500 font-bold hover:underline">
-                <h3>{{ $task->task_name }}</h3>
-            </a>
-            <div class="task-due-date">
-                @if ($task->due_date)
-                    <p class="font-bold">Date limite : <span>{{ $task->due_date }}</span></p>
-                @endif
-            </div>
-            <div class="task-is-finish">
-                <p class="font-bold">{{ $task->is_finish ? 'Finis' : 'En cours' }}</p>
-            </div>
-            <div class="task-project">
-                <p class="font-bold">Projets associés :</p>
-                <ul>
-                    @foreach ($task->projects as $project)
-                        <li>{{ $project->name }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            <form action="{{ route("UpdateTaskStatus") }}" method="POST" class="task-form">
-                @csrf
-                <input type="hidden" name="task_id" value="{{ $task->id }}" />
-                <!-- ID de la tâche -->
-                <label class="font-bold">
-                    <input type="checkbox" class="task-checkFinish mr-2" @if($task->is_finish) checked @endif
-                    name="task_completed" />
-                    @if ($task->is_finish)
-                        Mettre la tâche en cours
-                    @else
-                        Finir la tâche
-                    @endif
-                </label>
-            </form>
-            <div class="delete">
-                <form action="{{ route("delete_task") }}" method="post">
-                    <input name="id" type="hidden" value="{{ $task->id }}" />
-                    <button type="submit"
-                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Supprimer</button>
-                    @csrf
-                </form>
-            </div>
-            <!-- Autres détails du dossier si nécessaire -->
-        </div>
+        <livewire:task-update :taskId="$task->id"/>
     @endforeach
 </div>
 

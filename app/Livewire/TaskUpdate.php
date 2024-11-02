@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\task_priorities;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use App\Models\Task;
 use App\Models\TaskPriority;
@@ -15,6 +16,7 @@ class TaskUpdate extends Component
     public $priority;
     public $is_finish;
     public $isEditing = false; // État de l'édition
+    public $task;
 
     protected $rules = [
         'taskName' => 'required|string|max:255',
@@ -44,7 +46,6 @@ class TaskUpdate extends Component
 
     public function updateTask()
     {
-        $this->validate();
 
         $task = Task::find($this->taskId);
         if ($task) {
@@ -55,13 +56,35 @@ class TaskUpdate extends Component
             $task->save();
 
             // Mettre à jour la priorité
-            task_priorities::updateOrCreate(
+            if($this->priority != "None"){
+                task_priorities::updateOrCreate(
                 ['task_id' => $this->taskId],
                 ['priority' => $this->priority]
             );
+            }
+            elseif ($this->priority == "None") {
+                task_priorities::where([
+                    ["task_id", "=", $this->taskId],
+                    ["user_id", "=", Auth::user()->id],
+                ])->delete();
+            }
 
             session()->flash('success', 'Tâche mise à jour avec succès!');
             $this->isEditing = false; // Fermer l'éditeur après mise à jour
+        }
+    }
+
+
+    public function updateTaskStatus($taskId, $status)
+    {
+        $task = Task::find($taskId);
+        if ($task) {
+            $task->is_finish = $status;
+            $task->save();
+
+            // Mettre à jour la propriété locale
+            $this->is_finish = $status;
+            session()->flash('success', 'Le statut de la tâche a été mis à jour avec succès!');
         }
     }
 

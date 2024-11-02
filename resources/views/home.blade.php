@@ -13,12 +13,12 @@
 </div>
 
 @php
-
-/*\Illuminate\Support\Facades\Mail::raw('Test email from Laravel',function ($message){
+/*
+\Illuminate\Support\Facades\Mail::raw('Test email from Laravel',function ($message){
    $message->to('hugojuggernot@gmail.com')
-   ->subject('Bidule chouette Zeus !');
-});*/
-
+   ->subject("J'ai était investit d'une grande mission");
+});
+*/
 @endphp
 
 
