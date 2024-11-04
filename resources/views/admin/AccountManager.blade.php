@@ -29,6 +29,7 @@
             <th class="px-4 py-2">Nom</th>
             <th class="px-4 py-2">Email</th>
             <th class="px-4 py-2">Action</th>
+            <th class="px-4 py-2">Suppression de compte</th>
         </tr>
         </thead>
         <tbody>
@@ -46,21 +47,25 @@
                             </button>
                         </form>
                     @else
+                        @if( \Illuminate\Support\Facades\Auth::user()->id != $user->id )
                         <form action="{{ route("user.ban", $user->id) }}" method="POST" style="display: inline">
                             @csrf
                             <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                                 Ban
                             </button>
                         </form>
+                        @endif
+                    @endif
+                        <livewire:password-reset :userId="$user->id" />
+                </td>
+                <td>
+                    @if(\Illuminate\Support\Facades\Auth::user()->id != $user->id)
+                        <livewire:delete-user :userId="$user->id" />
+
+                    @else
+                        Il s'agit de votre compte, vous ne pouvez pas le supprimer
                     @endif
 
-                    <form action="{{ route("user.reset-password", $user->id) }}" method="POST" style="display: inline">
-                        @csrf
-                        @method("PATCH")
-                        <button type="submit" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
-                            Reset Password
-                        </button>
-                    </form>
                 </td>
             </tr>
         @endforeach
