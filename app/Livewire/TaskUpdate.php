@@ -88,8 +88,29 @@ class TaskUpdate extends Component
         }
     }
 
+
+    public function deleteTask($taskId)
+    {
+        // Récupérer la tâche
+        $task = Task::find($taskId);
+        if ($task) {
+            // Supprimer la tâche
+            $task->delete();
+
+            // Supprimer la priorité associée
+            task_priorities::where('task_id', $taskId)->delete();
+
+            session()->flash('success', 'Tâche supprimée avec succès!');
+        }
+    }
+
+
     public function render()
     {
         return view('livewire.task-update');
     }
+
+
+
+
 }
