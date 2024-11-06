@@ -46,7 +46,7 @@
                 <p>Êtes-vous sûr de vouloir supprimer cette tâche ?</p>
                 <div class="mt-4 flex justify-between">
                     <button @click="showConfirm = false" class="bg-gray-300 text-gray-800 py-2 px-4 rounded">Annuler</button>
-                    <button wire:click="deleteTask({{ $taskId }})" class="bg-red-500 text-white py-2 px-4 rounded">Supprimer</button>
+                    <button wire:click="deleteTask({{ $taskId }})" @click="showConfirm = false" class="bg-red-500 text-white py-2 px-4 rounded">Supprimer</button>
                 </div>
             </div>
         </div>
