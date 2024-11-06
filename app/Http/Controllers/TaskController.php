@@ -241,18 +241,12 @@ class TaskController extends Controller
     {
         //dd($request);
 
-        if ($request->has('is_due')) {
             $validateData = $request->validate([
                 "tache_name" => ["required", "string", "max:250"],
                 "is_due" => ["nullable", "in:on,off"],
                 "dt_input" => ["nullable", "date"],
                 "priority" => ["in:None,Urgence,Grande priorité,Prioritaire"]
             ]);
-        } else {
-            $validateData = $request->validate([
-                "tache_name" => ["required", "string", "max:250"],
-            ]);
-        }
 
 
         $name = $validateData["tache_name"];
@@ -267,11 +261,13 @@ class TaskController extends Controller
         $task->save();
         LogsController::createTask(Auth::user()->id,$task->getKey(),$name,"SUCCESS");
 
+        if($validateData["priority"] != "None"){
         task_priorities::create([
             "user_id" => Auth::user()->id,
             "task_id" => $task->id,
             "priority" => $validateData["priority"]
         ]);
+        }
         return redirect()->back()->with(["success" => "La tâche à bien été créer"]);
     }
 
