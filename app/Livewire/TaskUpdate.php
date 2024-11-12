@@ -59,13 +59,15 @@ class TaskUpdate extends Component
             if($this->priority != "None"){
                 task_priorities::updateOrCreate(
                 ['task_id' => $this->taskId],
-                ['priority' => $this->priority]
+                ['priority' => $this->priority],
+                    ['user_id' => $task->owner_id]
             );
             }
             elseif ($this->priority == "None") {
                 task_priorities::where([
                     ["task_id", "=", $this->taskId],
                     ["user_id", "=", Auth::user()->id],
+                    
                 ])->delete();
             }
 
