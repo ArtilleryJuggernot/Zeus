@@ -19,6 +19,10 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->boolean('is_banned')->default(false);
+            $table->integer('is_ban')->default(0);
+            $table->timestamp('last_co')->useCurrent();
+            $table->string('pfp_path', 256)->nullable();
         });
     }
 

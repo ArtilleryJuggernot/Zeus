@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateInsideProjetTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -14,12 +14,10 @@ class CreateInsideProjetTable extends Migration
     public function up()
     {
         Schema::create('inside_projet', function (Blueprint $table) {
-            $table->id(); // Si vous souhaitez avoir une clé primaire automatique
             $table->unsignedBigInteger('task_id');
             $table->unsignedBigInteger('projet_id');
             $table->integer('pos');
-            // Indice pour la colonne projet_id
-            $table->index('projet_id');
+            $table->primary(['task_id', 'projet_id', 'pos']); // Définir la clé primaire composite
         });
     }
 
@@ -33,4 +31,4 @@ class CreateInsideProjetTable extends Migration
     {
         Schema::dropIfExists('inside_projet');
     }
-}
+};

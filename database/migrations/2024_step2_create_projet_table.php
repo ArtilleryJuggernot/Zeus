@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProjetTable extends Migration
+return new class extends Migration
+
 {
     public function up()
     {
@@ -13,7 +14,7 @@ class CreateProjetTable extends Migration
             $table->id();
             $table->string('name', 256)->nullable();
             $table->unsignedBigInteger('owner_id');
-
+            $table->string('type', 255)->default('none'); // Ajout de la colonne "type"
             $table->foreign('owner_id')->references('id')->on('users');
         });
     }
@@ -22,4 +23,4 @@ class CreateProjetTable extends Migration
     {
         Schema::dropIfExists('projet');
     }
-}
+};

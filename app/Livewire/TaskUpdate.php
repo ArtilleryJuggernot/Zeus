@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\insideprojet;
 use App\Models\task_priorities;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -67,7 +68,7 @@ class TaskUpdate extends Component
                 task_priorities::where([
                     ["task_id", "=", $this->taskId],
                     ["user_id", "=", Auth::user()->id],
-                    
+
                 ])->delete();
             }
 
@@ -97,11 +98,12 @@ class TaskUpdate extends Component
         $task = Task::find($taskId);
         if ($task) {
             // Supprimer la tâche
+
             $task->delete();
 
             // Supprimer la priorité associée
             task_priorities::where('task_id', $taskId)->delete();
-
+            insideprojet::where("task_id", $taskId)->delete();
             session()->flash('success', 'Tâche supprimée avec succès!');
         }
     }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateNotesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -19,6 +19,7 @@ class CreateNotesTable extends Migration
             $table->string('path')->nullable();
             $table->string('name')->nullable();
             $table->timestamps();
+            $table->string('note_key', 32)->nullable(); // Ajout de la colonne "note_key"
 
             // Supprimez cette ligne si vous utilisez l'id automatique
             // $table->primary('note_id');
@@ -38,4 +39,4 @@ class CreateNotesTable extends Migration
     {
         Schema::dropIfExists('notes');
     }
-}
+};
