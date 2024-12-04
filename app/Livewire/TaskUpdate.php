@@ -98,12 +98,14 @@ class TaskUpdate extends Component
         $task = Task::find($taskId);
         if ($task) {
             // Supprimer la tâche
-
-            $task->delete();
-
             // Supprimer la priorité associée
             task_priorities::where('task_id', $taskId)->delete();
             insideprojet::where("task_id", $taskId)->delete();
+
+            
+            $task->delete();
+
+
             session()->flash('success', 'Tâche supprimée avec succès!');
         }
     }
