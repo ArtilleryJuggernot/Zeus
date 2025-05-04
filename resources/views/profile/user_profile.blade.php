@@ -84,12 +84,12 @@
     <div class="flex flex-col md:flex-row items-center gap-8 z-10 relative">
         <!-- Avatar -->
         <div class="flex flex-col items-center">
-            @php
-                $profilePath = 'storage/' . $user->id . '.png';
-                $hasProfilePic = Storage::exists($profilePath);
-                $initials = collect(explode(' ', $user->name))->map(fn($w) => strtoupper(mb_substr($w,0,1)))->join('');
-                $initials = mb_substr($initials, 0, 2);
-            @endphp
+        @php
+    $profilePath = $user->id . '.png';
+    $hasProfilePic = Storage::disk('public')->exists($profilePath);
+    $initials = collect(explode(' ', $user->name))->map(fn($w) => strtoupper(mb_substr($w,0,1)))->join('');
+    $initials = mb_substr($initials, 0, 2);
+@endphp
             @if($hasProfilePic)
                 <img class="w-40 h-40 rounded-full border-4 border-blue-400 shadow-lg object-cover animate-fade-in" src="{{ asset('storage/' . $user->id . '.png') }}" alt="Photo de profil">
             @else
