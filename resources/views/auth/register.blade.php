@@ -21,6 +21,7 @@
                 <img src="{{ asset("img/logo-zeus.jpeg") }}" alt="IMG" />
             </div>
 
+            @if($allow_new_users)
             <form method="POST" action="{{ route("register") }}" class="login100-form validate-form">
                 @csrf
                 <span class="login100-form-title">Register Zeus</span>
@@ -88,6 +89,11 @@
 
 
             </form>
+            @else
+                <div class="alert alert-warning text-center font-bold p-4 rounded bg-yellow-100 border border-yellow-400 mt-8">
+                    Les inscriptions sont actuellement désactivées par l'administrateur.
+                </div>
+            @endif
         </div>
     </div>
 </div>

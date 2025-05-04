@@ -142,6 +142,7 @@
 
 
                         <div class="p-t-50 text-center">
+                            @if($allow_new_users)
                             <a
                                 href="{{ route("register") }}"
                                 class="txt2"
@@ -153,6 +154,11 @@
                                     aria-hidden="true"
                                 ></i>
                             </a>
+                            @else
+                            <div class="alert alert-info text-center font-bold p-2 rounded bg-blue-100 border border-blue-400 mt-2">
+                                Les inscriptions sont désactivées.
+                            </div>
+                            @endif
                         </div>
                     </form>
                 </div>

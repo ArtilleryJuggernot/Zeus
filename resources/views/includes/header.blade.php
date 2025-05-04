@@ -95,6 +95,7 @@
                                 <div class="absolute left-0 mt-2 w-60 bg-gray-800 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
                                     <a href="{{ route('user_manage') }}" class="block px-4 py-2 text-sm hover:bg-gray-700 whitespace-nowrap">👑 Gestion des utilisateurs</a>
                                     <a href="{{ route('logs_manage') }}" class="block px-4 py-2 text-sm hover:bg-gray-700 whitespace-nowrap">👑 Gestion des logs</a>
+                                    <a href="{{ route('admin.settings') }}" class="block px-4 py-2 text-sm hover:bg-blue-700 whitespace-nowrap">⚙️ Paramètres du site</a>
                                 </div>
                             </div>
                         @endif
@@ -182,6 +183,7 @@
                         <div class="hidden group-hover:block bg-gray-700 rounded-md shadow-lg">
                             <a href="{{ route('user_manage') }}" class="block px-4 py-2 text-sm hover:bg-gray-600">👑 Gestion des utilisateurs</a>
                             <a href="{{ route('logs_manage') }}" class="block px-4 py-2 text-sm hover:bg-gray-600">👑 Gestion des logs</a>
+                            <a href="{{ route('admin.settings') }}" class="block px-4 py-2 text-sm hover:bg-blue-700">⚙️ Paramètres du site</a>
                         </div>
                     </div>
                 @endif

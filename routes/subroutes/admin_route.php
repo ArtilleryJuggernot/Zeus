@@ -33,3 +33,7 @@ Route::post('/admin/impersonate/{user}', [\App\Http\Controllers\AdminController:
 Route::post('/admin/delete-user/{user}', [\App\Http\Controllers\AdminController::class, 'deleteUser'])
     ->middleware('auth','admin')
     ->name('admin.deleteUser');
+
+Route::get('/admin/settings', function() {
+    return view('admin.parametre_admin_page');
+})->middleware('auth','admin')->name('admin.settings');
