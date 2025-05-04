@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get("/home",[\App\Http\Controllers\HomeController::class,'HomeView'])
+->middleware(["is_notban","auth"])
+    ->name("home");
+
 
 // Home view welcome
 Route::get('/', function () {
@@ -20,9 +24,6 @@ Route::get('/', function () {
 });
 
 
-Route::get("/home",[\App\Http\Controllers\HomeController::class,'HomeView'])
-->middleware(["is_notban","auth"])
-    ->name("home");
 
 Route::get("/banned",function (){
     return view("bannis");
