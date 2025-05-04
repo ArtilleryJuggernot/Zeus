@@ -35,7 +35,10 @@
     function doSearch() {
         document.getElementById('resultblock').innerHTML = '';
         var query = document.getElementById('search').value;
-
+        if (query.length < 3) {
+            // Ne rien faire si moins de 3 caractères
+            return;
+        }
         fetch('/do_search', {
             method: 'POST',
             headers: {
