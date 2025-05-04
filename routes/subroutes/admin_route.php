@@ -25,3 +25,7 @@ Route::post('/user/unban/{user}', [\App\Http\Controllers\AdminController::class,
 Route::patch('/user/reset-password/{user}', [\App\Http\Controllers\AdminController::class,"resetPassword"])
     ->middleware("auth","admin")
     ->name('user.reset-password');
+
+Route::post('/admin/impersonate/{user}', [\App\Http\Controllers\AdminController::class, 'impersonate'])
+    ->middleware('auth','admin')
+    ->name('admin.impersonate');

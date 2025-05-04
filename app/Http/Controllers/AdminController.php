@@ -11,20 +11,32 @@ use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
-    public function AccountManager()
+    public function AccountManager(Request $request)
     {
         $user = Auth::user();
 
         // Adminstrateur
         if($user->id != 1) return redirect()->route("home")->with("failure","Vous n'êtes pas administrateur");
 
+        $sort = $request->input('sort', 'id_desc');
+        $users = User::query();
 
-        $users = User::all();
-        return view("admin.AccountManager",[
-            "users" => $users
-        ]);
+        if ($sort === 'id_asc') {
+            $users = $users->orderBy('id', 'asc');
+        } elseif ($sort === 'id_desc') {
+            $users = $users->orderBy('id', 'desc');
+        } elseif ($sort === 'last_login') {
+            $users = $users->orderBy('last_login_at', 'desc');
+        } elseif ($sort === 'most_resources') {
+            // On charge tout et on trie en PHP (sinon requête complexe)
+            $users = $users->get()->sortByDesc(function($u) {
+                return $u->notes()->count() + $u->folders()->count() + $u->tasks()->count() + $u->projets()->count();
+            });
+            return view("admin.AccountManager",["users" => $users, "sort" => $sort]);
+        }
+        $users = $users->get();
+        return view("admin.AccountManager",["users" => $users, "sort" => $sort]);
     }
-
 
     public function logs(Request $request)
     {
@@ -58,17 +70,14 @@ class AdminController extends Controller
         return view('admin.logs', compact('filteredLogs', 'actions'));
     }
 
-
-
     public function banUser(User $user, Request $request)
     {
-
         //dd($user);
-        if(!$user) return $this->AccountManager()->with("failure","L'utilisateur ciblé n'existe pas");
+        if(!$user) return $this->AccountManager($request)->with("failure","L'utilisateur ciblé n'existe pas");
 
         $user->is_ban = 1;
         $user->save();
-        return $this->AccountManager()->with("success","L'utilisateur à bien été bannis");
+        return $this->AccountManager($request)->with("success","L'utilisateur à bien été bannis");
         // Ajoutez ici la redirection ou la réponse souhaitée
     }
 
@@ -76,7 +85,7 @@ class AdminController extends Controller
     {
         $user->is_ban = 0;
         $user->save();
-        return $this->AccountManager()->with("success","L'utilisateur à bien été débannis");
+        return $this->AccountManager($request)->with("success","L'utilisateur à bien été débannis");
     }
 
     public function resetPassword(User $user)
@@ -84,6 +93,18 @@ class AdminController extends Controller
         $newPassword = Str::password(15);
         //$user->update(['password' => Hash::make('nouveau_mot_de_passe')]);
         // Ajoutez ici la redirection ou la réponse souhaitée
+    }
 
+    public function impersonate(User $user)
+    {
+        Auth::login($user);
+        return redirect()->route('home')->with('success', "Vous êtes maintenant connecté en tant que {$user->name}");
+    }
+
+    public function deleteUser(User $user)
+    {
+        if($user->id == 1) return back()->with('failure', "Impossible de supprimer l'administrateur.");
+        $user->delete();
+        return back()->with('success', "L'utilisateur a bien été supprimé.");
     }
 }

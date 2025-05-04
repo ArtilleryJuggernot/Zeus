@@ -42,4 +42,24 @@ class User extends Authenticatable //implements MustVerifyEmail
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Relations Eloquent personnalisées pour les ressources de l'utilisateur
+     */
+    public function notes()
+    {
+        return $this->hasMany(\App\Models\Note::class, 'owner_id');
+    }
+    public function folders()
+    {
+        return $this->hasMany(\App\Models\Folder::class, 'owner_id');
+    }
+    public function tasks()
+    {
+        return $this->hasMany(\App\Models\Task::class, 'owner_id');
+    }
+    public function projets()
+    {
+        return $this->hasMany(\App\Models\Projet::class, 'owner_id');
+    }
 }
