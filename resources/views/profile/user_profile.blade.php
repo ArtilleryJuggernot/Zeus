@@ -85,11 +85,12 @@
         <!-- Avatar -->
         <div class="flex flex-col items-center">
             @php
-                $hasPfp = $user->pfp_path && \Illuminate\Support\Facades\Storage::exists('storage/' . Auth::user()->id . '.png');
+                $profilePath = 'storage/' . $user->id . '.png';
+                $hasProfilePic = Storage::exists($profilePath);
                 $initials = collect(explode(' ', $user->name))->map(fn($w) => strtoupper(mb_substr($w,0,1)))->join('');
                 $initials = mb_substr($initials, 0, 2);
             @endphp
-            @if($hasPfp)
+            @if($hasProfilePic)
                 <img class="w-40 h-40 rounded-full border-4 border-blue-400 shadow-lg object-cover animate-fade-in" src="{{ asset('storage/' . $user->id . '.png') }}" alt="Photo de profil">
             @else
                 <div class="w-40 h-40 rounded-full bg-blue-500 flex items-center justify-center text-white text-6xl font-bold border-4 border-blue-400 shadow-lg animate-fade-in select-none">
