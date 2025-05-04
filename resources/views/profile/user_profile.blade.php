@@ -85,7 +85,7 @@
         <!-- Avatar -->
         <div class="flex flex-col items-center">
             @php
-                $hasPfp = $user->pfp_path && \Illuminate\Support\Facades\Storage::exists( $user->id . '.png');
+                $hasPfp = $user->pfp_path && \Illuminate\Support\Facades\Storage::exists('storage/' . Auth::user()->id . '.png');
                 $initials = collect(explode(' ', $user->name))->map(fn($w) => strtoupper(mb_substr($w,0,1)))->join('');
                 $initials = mb_substr($initials, 0, 2);
             @endphp
