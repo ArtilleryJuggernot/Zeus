@@ -32,6 +32,7 @@
       top: 0; left: 0; width: 100%; height: 100%;
       pointer-events: none;
       z-index: 1;
+
     }
     .card-content {
       position: relative;
@@ -84,7 +85,7 @@
         <!-- Avatar -->
         <div class="flex flex-col items-center">
             @php
-                $hasPfp = $user->pfp_path && \Illuminate\Support\Facades\Storage::exists('profile_picture/' . $user->id . '.png');
+                $hasPfp = $user->pfp_path && \Illuminate\Support\Facades\Storage::exists( $user->id . '.png');
                 $initials = collect(explode(' ', $user->name))->map(fn($w) => strtoupper(mb_substr($w,0,1)))->join('');
                 $initials = mb_substr($initials, 0, 2);
             @endphp
