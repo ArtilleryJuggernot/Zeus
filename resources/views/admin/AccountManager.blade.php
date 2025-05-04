@@ -46,7 +46,22 @@
         @foreach ($users as $user)
             <tr class="hover:bg-blue-50 transition">
                 <td class="px-6 py-4 font-bold text-blue-700">{{ $user->id }}</td>
-                <td class="px-6 py-4">{{ $user->name }}</td>
+                <td class="px-6 py-4 flex items-center gap-3">
+                    @php
+                        $profilePath = $user->id . '.png';
+                        $hasProfilePic = Storage::disk('public')->exists($profilePath);
+                        $initials = collect(explode(' ', $user->name))->map(fn($w) => strtoupper(mb_substr($w,0,1)))->join('');
+                        $initials = mb_substr($initials, 0, 2);
+                    @endphp
+                    @if($hasProfilePic)
+                        <img src="{{ asset('storage/' . $user->id . '.png') }}" alt="pp" class="w-10 h-10 rounded-full border-2 border-blue-400 shadow object-cover">
+                    @else
+                        <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-lg font-bold border-2 border-blue-400 shadow select-none">
+                            {{ $initials }}
+                        </div>
+                    @endif
+                    <span>{{ $user->name }}</span>
+                </td>
                 <td class="px-6 py-4">{{ $user->email }}</td>
                 <td class="px-6 py-4 text-center font-semibold">
                     {{ $user->notes()->count() + $user->folders()->count() + $user->tasks()->count() + $user->projets()->count() }}

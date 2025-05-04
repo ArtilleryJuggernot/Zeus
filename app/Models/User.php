@@ -62,4 +62,14 @@ class User extends Authenticatable //implements MustVerifyEmail
     {
         return $this->hasMany(\App\Models\Projet::class, 'owner_id');
     }
+
+    protected static function booted()
+    {
+        static::deleting(function ($user) {
+            $user->notes()->delete();
+            $user->folders()->delete();
+            $user->tasks()->delete();
+            $user->projets()->delete();
+        });
+    }
 }
