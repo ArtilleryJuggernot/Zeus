@@ -29,3 +29,7 @@ Route::patch('/user/reset-password/{user}', [\App\Http\Controllers\AdminControll
 Route::post('/admin/impersonate/{user}', [\App\Http\Controllers\AdminController::class, 'impersonate'])
     ->middleware('auth','admin')
     ->name('admin.impersonate');
+
+Route::post('/admin/delete-user/{user}', [\App\Http\Controllers\AdminController::class, 'deleteUser'])
+    ->middleware('auth','admin')
+    ->name('admin.deleteUser');
