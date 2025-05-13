@@ -19,7 +19,7 @@
 </head>
 @include('includes.header')
 <body class="bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 min-h-screen flex flex-col">
-<div class="flex-1 w-full px-2 py-8" x-data="homePage()">
+<div class="flex-1 w-full px-0 py-8 max-w-full mx-auto">
     <!-- Header & Stats -->
     <div class="text-center my-8 animate-fade-in">
         <h1 class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent animate-gradient drop-shadow-lg flex items-center justify-center gap-2">
@@ -47,14 +47,14 @@
     </div>
 
     <!-- Accordéons verticaux pour chaque section -->
-    <div class="max-w-5xl mx-auto flex flex-col gap-8 animate-fade-in">
+    <div class="w-full max-w-[1800px] mx-auto flex flex-col gap-8 animate-fade-in">
         <!-- Habitudes -->
         <div x-data="{open:true}">
             <button @click="open=!open" class="w-full flex items-center justify-between px-6 py-4 bg-blue-200 hover:bg-blue-300 rounded-xl font-bold text-blue-700 shadow transition-all text-lg">
                 <span class="flex items-center gap-2"><svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>Habitudes à faire 🏆</span>
                 <svg :class="{'rotate-180':open}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
             </button>
-            <div x-show="open" x-transition class="mt-4 grid grid-cols-1 gap-6">
+            <div x-show="open" x-transition class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @forelse ($habitudes as $task)
                     <livewire:task-update :taskId="$task->id" :taskName="$task->task_name" :dueDate="$task->due_date" :is_finish="$task->is_finish" :allCategories="$allCategories" />
                 @empty
@@ -63,14 +63,13 @@
             </div>
         </div>
 
-
         <!-- Tâches prioritaires -->
         <div x-data="{open:true}">
             <button @click="open=!open" class="w-full flex items-center justify-between px-6 py-4 bg-yellow-200 hover:bg-yellow-300 rounded-xl font-bold text-yellow-700 shadow transition-all text-lg">
                 <span class="flex items-center gap-2"><svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 17.75L18.2 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>Tâches prioritaires</span>
                 <svg :class="{'rotate-180':open}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
             </button>
-            <div x-show="open" x-transition class="mt-4 grid grid-cols-1 gap-6">
+            <div x-show="open" x-transition class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @forelse ($task_priority as $task)
                     <livewire:task-update :taskId="$task->task_id" :taskName="$task->task_name" :dueDate="$task->due_date" :is_finish="$task->is_finish" :priority="$task->priority" :allCategories="$allCategories" />
                 @empty
@@ -78,28 +77,13 @@
                 @endforelse
             </div>
         </div>
-        <!-- Tâches en cours -->
-        <div x-data="{open:true}">
-            <button @click="open=!open" class="w-full flex items-center justify-between px-6 py-4 bg-blue-200 hover:bg-blue-300 rounded-xl font-bold text-blue-700 shadow transition-all text-lg">
-                <span class="flex items-center gap-2"><svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>Tâches en cours</span>
-                <svg :class="{'rotate-180':open}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
-            </button>
-            <div x-show="open" x-transition class="mt-4 grid grid-cols-1 gap-6">
-                @forelse ($task_list_unfinish as $task)
-                    <livewire:task-update :taskId="$task->id" :taskName="$task->task_name" :dueDate="$task->due_date" :is_finish="$task->is_finish" :allCategories="$allCategories" />
-                @empty
-                    <div class="text-center text-gray-400 italic">Aucune tâche en cours</div>
-                @endforelse
-            </div>
-        </div>
-        
         <!-- Tâches avec date limite -->
         <div x-data="{open:true}">
             <button @click="open=!open" class="w-full flex items-center justify-between px-6 py-4 bg-pink-200 hover:bg-pink-300 rounded-xl font-bold text-pink-700 shadow transition-all text-lg">
                 <span class="flex items-center gap-2"><svg class="w-6 h-6 text-pink-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>Tâches avec date limite</span>
                 <svg :class="{'rotate-180':open}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
             </button>
-            <div x-show="open" x-transition class="mt-4 grid grid-cols-1 gap-6">
+            <div x-show="open" x-transition class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @forelse ($tachesTimed as $task)
                     <livewire:task-update :taskId="$task->id" :taskName="$task->task_name" :dueDate="$task->due_date" :is_finish="$task->is_finish" :allCategories="$allCategories" />
                 @empty
@@ -113,7 +97,7 @@
                 <span class="flex items-center gap-2"><svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>Tâches non réalisées</span>
                 <svg :class="{'rotate-180':open}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
             </button>
-            <div x-show="open" x-transition class="mt-4 grid grid-cols-1 gap-6">
+            <div x-show="open" x-transition class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @forelse ($tachePasse as $task)
                     <livewire:task-update :taskId="$task->id" :taskName="$task->task_name" :dueDate="$task->due_date" :is_finish="$task->is_finish" :allCategories="$allCategories" />
                 @empty
@@ -166,7 +150,7 @@ window.addEventListener('open-edit-modal', function(e) {
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-blue-400">
                   <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                 </svg>
-                Éditer la tâche SINJ
+                Éditer la tâche
             </h3>
             <form x-show="editTaskData" :action="'/tasks/update/' + (editTaskData?.taskId ?? '')" method="POST" class="space-y-5">
                 @csrf

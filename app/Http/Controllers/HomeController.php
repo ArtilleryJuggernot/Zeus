@@ -67,14 +67,14 @@ class HomeController extends Controller
         $timed_ids = $tachesTimed->pluck('id')->toArray();
         $passe_ids = $tachesPasse->pluck('id')->toArray();
 
-        $task_list_unfinish = Task::where('owner_id', $user->id)
-            ->where('is_finish', 0)
-            ->where('type', '!=', 'habitude')
-            ->whereNotIn('id', $priority_task_ids)
-            ->whereNotIn('id', $habitude_ids)
-            ->whereNotIn('id', $timed_ids)
-            ->whereNotIn('id', $passe_ids)
-            ->get();
+        // $task_list_unfinish = Task::where('owner_id', $user->id)
+        //     ->where('is_finish', 0)
+        //     ->where('type', '!=', 'habitude')
+        //     ->whereNotIn('id', $priority_task_ids)
+        //     ->whereNotIn('id', $habitude_ids)
+        //     ->whereNotIn('id', $timed_ids)
+        //     ->whereNotIn('id', $passe_ids)
+        //     ->get();
 
         // Toutes les catégories pour l'autocomplétion/édition
         $allCategories = \App\Models\Categorie::all()->map(function($cat) {
@@ -91,7 +91,7 @@ class HomeController extends Controller
             "tachePasse" => $tachesPasse,
             "task_priority" => $task_priority,
             "habitudes" => $habitudes,
-            "task_list_unfinish" => $task_list_unfinish,
+            // "task_list_unfinish" => $task_list_unfinish,
             "allCategories" => $allCategories
         ]);
     }
