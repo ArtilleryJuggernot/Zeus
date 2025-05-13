@@ -105,16 +105,27 @@
 
 
 
-<!-- Catégories -->
+<!-- Catégories animées et stylisées -->
 <div class="cat_display mx-auto max-w-5xl p-4 bg-white rounded-lg shadow-md mb-6">
     <h2 class="font-bold mb-4">Liste des catégories</h2>
-    <div class="flex flex-wrap gap-2">
+    <div class="flex flex-wrap gap-3">
         @foreach ($ressourceCategories as $category)
             @php
-                $category = \App\Models\Categorie::find($category->categorie_id);
+                $cat = \App\Models\Categorie::find($category->categorie_id);
             @endphp
-            <div class="category text-white font-bold py-1 px-3 rounded" style="background-color: {{ $category->color }}">
-                {{ $category->category_name }}
+            <div class="flex items-center px-4 py-2 rounded-full shadow-md font-semibold text-white"
+                 style="background: linear-gradient(90deg, {{ $cat->color }}, #fff2 80%); box-shadow: 0 2px 8px {{ $cat->color }}44;"
+                 x-data="{ show: false }"
+                 x-init=\"setTimeout(() => show = true, {{ $loop->index * 100 }})\"
+                 x-show=\"show\"
+                 x-transition:enter=\"transition ease-out duration-500\"
+                 x-transition:enter-start=\"opacity-0 scale-75\"
+                 x-transition:enter-end=\"opacity-100 scale-100\"
+            >
+                <svg class="w-5 h-5 mr-2 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                </svg>
+                {{ $cat->category_name }}
             </div>
         @endforeach
     </div>
