@@ -1,16 +1,20 @@
 // Import de la bibliothèque D3.js
 
 // Fonction pour créer le graphique D3 Force
-export function createGraph(data) {
+export function createGraph(data, options = {}) {
     const width = 1600;
     const height = 900;
 
     // Création du conteneur SVG
     const svg = d3.create("svg")
-        .attr("width", width)
-        .attr("height", height)
+        .attr("width", "100%")
+        .attr("height", "100%")
         .attr("viewBox", [-width / 2, -height / 2, width, height])
-        .attr("style", "max-width: 100%; height: auto;");
+        .style("background", "none")
+        .style("cursor", "grab");
+
+    // Groupe pour appliquer le zoom/pan
+    const container = svg.append("g");
 
     // Convertir les données en un format utilisable pour D3 Force
     const nodes = [];
@@ -64,48 +68,82 @@ export function createGraph(data) {
     // Définir l'échelle logarithmique pour la taille du cercle en fonction du degré
     const degreeScale = d3.scaleLog()
         .domain([1, d3.max(Object.values(nodeDegrees))])
-        .range([5, 15]); // Plage de tailles de nœud souhaitée
+        .range([12, 28]); // Plage de tailles de nœud souhaitée
 
     // Création du graphique D3 Force
     const simulation = d3.forceSimulation(nodes)
-        .force("link", d3.forceLink(links).id(d => d.id).distance(100))
-        .force("charge", d3.forceManyBody().strength(-50))
-        .force("center", d3.forceCenter(0, 0));
+        .force("link", d3.forceLink(links).id(d => d.id).distance(200))
+        .force("charge", d3.forceManyBody().strength(-300))
+        .force("center", d3.forceCenter(0, 0))
+        .force("collision", d3.forceCollide().radius(d => Math.max(32, degreeScale(nodeDegrees[d.id]) * 2)).iterations(2))
+        .alphaDecay(0.03);
+
+    // Pour une disposition initiale en cercle autour du parent (optionnel, pour l'effet "Obsidian")
+    // On place les enfants d'un même parent sur un cercle
+    function arrangeNodesInCircle() {
+        const parentToChildren = {};
+        links.forEach(link => {
+            if (!parentToChildren[link.source]) parentToChildren[link.source] = [];
+            parentToChildren[link.source].push(link.target);
+        });
+        Object.keys(parentToChildren).forEach(parentId => {
+            const children = parentToChildren[parentId];
+            const angleStep = (2 * Math.PI) / children.length;
+            children.forEach((childId, i) => {
+                const child = nodes.find(n => n.id === childId);
+                const parent = nodes.find(n => n.id === parentId);
+                if (child && parent) {
+                    const angle = i * angleStep;
+                    const radius = 300; // Rayon du cercle
+                    child.x = parent.x + Math.cos(angle) * radius;
+                    child.y = parent.y + Math.sin(angle) * radius;
+                }
+            });
+        });
+    }
+    arrangeNodesInCircle();
+    simulation.alpha(1).restart();
 
     // Ajouter les liens
-    const link = svg.append("g")
+    const link = container.append("g")
         .selectAll("line")
         .data(links)
         .enter().append("line")
         .attr("stroke", "#999")
         .attr("stroke-opacity", 0.6)
-        .attr("stroke-width", 1);
+        .attr("stroke-width", 1.5);
 
     // Ajouter les nœuds avec la taille de cercle basée sur le degré
-    const node = svg.append("g")
+    const node = container.append("g")
         .selectAll("circle")
         .data(nodes)
         .enter().append("circle")
-        .attr("r", d => Math.max(8, Math.min(20, degreeScale(nodeDegrees[d.id])))) // Assurez-vous que la taille est comprise entre 5 et 15
+        .attr("r", d => Math.max(12, Math.min(28, degreeScale(nodeDegrees[d.id])))) // Assurez-vous que la taille est comprise entre 12 et 28
         .attr("fill", d => d.color) // Utilisez la propriété color pour définir la couleur de remplissage
+        .attr("class", "node-glow")
+        .style("cursor", "pointer")
         .call(drag(simulation))
+        .on("mouseover", function() { d3.select(this).classed("node-selected", true); })
+        .on("mouseout", function() { d3.select(this).classed("node-selected", false); })
         .on("click", (event, d) => {
-            // Gérer l'événement de clic ici
-            console.log("Node clicked:", d);
-            // Rediriger vers l'URL spécifique au nœud, par exemple
+            if (options.onNodeSelect) options.onNodeSelect(d.name);
             window.location.href = d.link;
         });
 
     // Ajouter les noms des nœuds
-    const labels = svg.append("g")
+    const labels = container.append("g")
         .selectAll("text")
         .data(nodes)
         .enter().append("text")
         .text(d => d.name)
-        .attr("fill","white")
+        .attr("fill", "#111")
+        .attr("font-size", 22)
+        .attr("font-weight", "bold")
         .attr("class", "nodes-inst")
         .attr("text-anchor", "middle")
-        .attr("dy", 25); // Ajuster la position verticale des étiquettes
+        .attr("dy", 38)
+        .style("pointer-events", "none")
+        .style("text-shadow", "0 2px 8px #fff, 0 1px 0 #fff");
 
     // Mettre à jour les positions des éléments à chaque tick de la simulation
     simulation.on("tick", () => {
@@ -115,12 +153,8 @@ export function createGraph(data) {
             .attr("x2", d => d.target.x)
             .attr("y2", d => d.target.y);
 
-        node.attr("transform", d => `translate(${d.x},${d.y})`); // Utiliser "transform" pour positionner les nœuds
-
-        // Mettre à jour les positions des étiquettes
-        labels
-            .attr("x", d => d.x)
-            .attr("y", d => d.y);
+        node.attr("cx", d => d.x).attr("cy", d => d.y);
+        labels.attr("x", d => d.x).attr("y", d => d.y);
     });
 
     // Fonction pour permettre le déplacement des nœuds
@@ -148,22 +182,32 @@ export function createGraph(data) {
             .on("end", dragended);
     }
 
+    // Pan/Zoom fluide
     const zoom = d3.zoom()
-        .scaleExtent([0.1, 10]) // Définir les limites de zoom
-        .on("zoom", zoomed);
+        .scaleExtent([0.1, 3])
+        .on("zoom", (event) => {
+            container.attr("transform", event.transform);
+            // Affichage conditionnel des labels selon le zoom
+            const showLabels = event.transform.k > 0.5;
+            labels.style("display", showLabels ? "block" : "none");
+        });
+    svg.call(zoom);
 
-    // Appliquer le zoom au conteneur SVG
-    svg.call(zoom)
-        .on("wheel", zoomed);
-
-    // Fonction de zoom en fonction de l'événement de la souris
-    function zoomed(event) {
-        // Récupérer la transformation du zoom actuel
-        const transform = event.transform;
-
-        // Appliquer la transformation au conteneur SVG
-        svg.attr("transform", transform);
+    // Contrôles externes
+    if (options.controls) {
+        options.controls.zoomIn.onclick = () => svg.transition().call(zoom.scaleBy, 1.2);
+        options.controls.zoomOut.onclick = () => svg.transition().call(zoom.scaleBy, 0.8);
+        options.controls.center.onclick = () => svg.transition().call(zoom.transform, d3.zoomIdentity);
     }
+
+    // Pan à la souris (drag sur le fond)
+    svg.on("mousedown", function(event) {
+        if (event.target.tagName === 'svg') {
+            svg.style("cursor", "grabbing");
+        }
+    }).on("mouseup", function() {
+        svg.style("cursor", "grab");
+    });
 
     return svg.node();
 }
