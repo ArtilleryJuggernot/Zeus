@@ -19,6 +19,22 @@
             }
         </style>
         <script type="module" src="{{ asset('js/stack_edit/stack_edit_note.js') }}"></script>
+        
+
+        <script>
+            var content = {!! json_encode($content) !!};
+                @if(\Illuminate\Support\Facades\Auth::user()->id == $note->owner_id)
+                    const perm = "F"; // L'utilisateur propriétaire à tout les droits
+                @else
+                    const perm = "{{ $perm_user->perm }}";
+                @endif
+
+                const csrf = '{{ csrf_token() }}';
+                const note_id =  '{{ $note->id }}';
+                const user_id = '{{ \Illuminate\Support\Facades\Auth::user()->id }}';
+        </script>
+
+
         @vite('resources/css/app.css')
     </head>
     <body class="bg-gradient-to-br from-blue-50 via-pink-50 to-yellow-50 min-h-screen flex flex-col items-center justify-center py-8">
@@ -76,7 +92,12 @@
 
             <!-- Éditeur StackEdit intégré, largeur max et hauteur confortable -->
             <div class="w-full  mx-auto flex justify-center mb-8 animate-pop">
-                <iframe id="stackedit-iframe" src="https://stackedit.io/app#providerId=local&noteId={{ $note->id }}" class="w-full h-[700px] rounded-2xl shadow-xl border-2 border-blue-200 bg-white/90 transition-all duration-500" style="min-height:400px;"></iframe>
+        <div id="editor_md" class="w-full h-[700px] rounded-2xl shadow-xl border-2 border-blue-200 bg-white/90 transition-all duration-500" style="min-height:400px;">
+
+
+
+        </div>
+
             </div>
 
             <div class="flex flex-col items-center justify-center mb-8 animate-pop">
