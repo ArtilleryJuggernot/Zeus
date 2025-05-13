@@ -31,3 +31,11 @@ Route::post("/delete_task",[\App\Http\Controllers\TaskController::class,"Delete"
 Route::post("/UpdateTaskStatus",[\App\Http\Controllers\TaskController::class,"UpdateFinishStatus"])
     ->middleware(["is_notban","auth"])
     ->name("UpdateTaskStatus");
+
+Route::post("/update_task_finish",[\App\Http\Controllers\TaskController::class,"UpdateFinishStatus"])
+    ->middleware(["is_notban","auth"])
+    ->name("update_task_finish");
+
+Route::post("/update_task_quick",[\App\Http\Controllers\TaskController::class,"updateTaskQuick"])
+    ->middleware(["is_notban","auth"])
+    ->name("update_task_quick");

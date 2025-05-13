@@ -27,10 +27,16 @@ class TaskController extends Controller
 
         $task_list_finish = $this->getTaskListWithCategories($user_id, 1);
         $task_list_unfinish = $this->getTaskListWithCategories($user_id, 0);
+        $nb_finished = $task_list_finish->count();
+        $nb_unfinished = $task_list_unfinish->count();
+        $categories = \App\Models\Categorie::where('owner_id', $user_id)->get();
 
         return view("task.TaskOverview", [
             "task_list_finish" => $task_list_finish,
             "task_list_unfinish" => $task_list_unfinish,
+            "nb_finished" => $nb_finished,
+            "nb_unfinished" => $nb_unfinished,
+            "categories" => $categories,
         ]);
     }
 
@@ -239,38 +245,46 @@ class TaskController extends Controller
 
     public function Store(Request $request)
     {
-        //dd($request);
-
-            $validateData = $request->validate([
-                "tache_name" => ["required", "string", "max:250"],
-                "is_due" => ["nullable", "in:on,off"],
-                "dt_input" => ["nullable", "date"],
-                "priority" => ["in:None,Urgence,Grande priorité,Prioritaire"]
-            ]);
-
+        $validateData = $request->validate([
+            "tache_name" => ["required", "string", "max:250"],
+            "is_due" => ["nullable", "in:on,off"],
+            "dt_input" => ["nullable", "date"],
+            "priority" => ["in:None,Urgence,Grande priorité,Prioritaire"],
+            "categories" => ["nullable", "array"],
+            "categories.*" => ["integer"],
+        ]);
 
         $name = $validateData["tache_name"];
         $task = new Task();
         $task->task_name = $name;
         $task->owner_id = Auth::user()->id;
 
-
-
         if ($request->has("is_due") && $validateData["is_due"] == "on") {
-            $task->due_date = $validateData["dt_input"]; // Date limite
+            $task->due_date = $validateData["dt_input"];
         }
         $task->description = "# " .  $name;
         $task->save();
-        LogsController::createTask(Auth::user()->id,$task->getKey(),$name,"SUCCESS");
+        \App\Http\Controllers\LogsController::createTask(Auth::user()->id,$task->getKey(),$name,"SUCCESS");
 
         if($validateData["priority"] != "None"){
-        task_priorities::create([
-            "user_id" => Auth::user()->id,
-            "task_id" => $task->id,
-            "priority" => $validateData["priority"]
-        ]);
+            \App\Models\task_priorities::create([
+                "user_id" => Auth::user()->id,
+                "task_id" => $task->id,
+                "priority" => $validateData["priority"]
+            ]);
         }
-        return redirect()->back()->with(["success" => "La tâche à bien été créer"]);
+        // Ajout des catégories si spécifiées
+        if(isset($validateData["categories"])) {
+            foreach($validateData["categories"] as $cat_id) {
+                \App\Models\possede_categorie::create([
+                    'ressource_id' => $task->id,
+                    'type_ressource' => 'task',
+                    'categorie_id' => $cat_id,
+                    'owner_id' => Auth::user()->id,
+                ]);
+            }
+        }
+        return redirect()->back()->with(["success" => "La tâche a bien été créée"]);
     }
 
     public function Delete(Request $request)
@@ -312,13 +326,11 @@ class TaskController extends Controller
 
     public function UpdateFinishStatus(Request $request)
     {
-
         $validateData = $request->validate([
             "task_id" => ["required", "integer"],
         ]);
 
-        if ($request->has("task_completed")) $status_task = "on";
-        else $status_task = "off";
+        $status_task = $request->input('task_completed', 'off');
 
         $task_id = $validateData["task_id"];
 
@@ -327,7 +339,6 @@ class TaskController extends Controller
         if (!$task) return redirect()->route("home")->with("failure","La tâche modifié n'existe pas");
         if ($task->owner_id != Auth::user()->id) return redirect()->route("home")->with("failure","Vous n'avez pas les permissions pour modifié cette tâche");
 
-
         if ($status_task == "on") $task->is_finish = true;
         else $task->is_finish = false;
 
@@ -335,7 +346,65 @@ class TaskController extends Controller
         $message = "Tâche marquée comme terminée avec succès";
         if(!$task->is_finish)  $message = "Tâche marquée comme en cours avec succès";
         return redirect()->back()->with("success",$message);
+    }
 
+    public function updateTaskQuick(Request $request)
+    {
+        $validateData = $request->validate([
+            'task_id' => ['required', 'integer'],
+            'tache_name' => ['required', 'string', 'max:250'],
+            'is_due' => ['nullable', 'in:on,off'],
+            'dt_input' => ['nullable', 'date'],
+            'priority' => ['in:None,Urgence,Grande priorité,Prioritaire'],
+            'categories' => ['nullable', 'array'],
+            'categories.*' => ['integer'],
+        ]);
+
+        $task = Task::find($validateData['task_id']);
+        if (!$task) return redirect()->back()->with('failure', "La tâche n'existe pas");
+        $task->task_name = $validateData['tache_name'];
+        $task->description = '# ' . $validateData['tache_name'];
+        if (isset($validateData['is_due']) && $validateData['is_due'] == 'on') {
+            $task->due_date = $validateData['dt_input'];
+        } else {
+            $task->due_date = null;
+        }
+        $task->save();
+
+        // Priorité
+        $prio = \App\Models\task_priorities::where('task_id', $task->id)->first();
+        if ($validateData['priority'] != 'None') {
+            if ($prio) {
+                $prio->priority = $validateData['priority'];
+                $prio->save();
+            } else {
+                \App\Models\task_priorities::create([
+                    'user_id' => $task->owner_id,
+                    'task_id' => $task->id,
+                    'priority' => $validateData['priority']
+                ]);
+            }
+        } else if ($prio) {
+            $prio->delete();
+        }
+
+        // Catégories
+        \App\Models\possede_categorie::where([
+            ['ressource_id', $task->id],
+            ['type_ressource', 'task'],
+            ['owner_id', $task->owner_id],
+        ])->delete();
+        if (isset($validateData['categories'])) {
+            foreach ($validateData['categories'] as $cat_id) {
+                \App\Models\possede_categorie::create([
+                    'ressource_id' => $task->id,
+                    'type_ressource' => 'task',
+                    'categorie_id' => $cat_id,
+                    'owner_id' => $task->owner_id,
+                ]);
+            }
+        }
+        return redirect()->back()->with('success', 'Tâche mise à jour avec succès');
     }
 
 }

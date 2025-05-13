@@ -11,5 +11,6 @@ class possede_categorie extends Model
     public $table = "possede_categorie";
     public $primaryKey = "id";
     public $timestamps = false;
+    public $guarded = [];
 
 }
