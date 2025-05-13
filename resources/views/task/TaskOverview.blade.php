@@ -32,7 +32,7 @@
     @endif
 
     <!-- Formulaire d'ajout de tâche -->
-    <div x-data="{ open: false }" class="mb-10 flex justify-center">
+    <div x-data="addTaskForm()" class="mb-10 flex justify-center">
         <div class="w-full max-w-xl">
             <button @click="open = !open" class="bg-gradient-to-r from-blue-500 to-pink-500 hover:from-blue-600 hover:to-pink-600 text-white font-bold py-3 px-6 rounded-xl mb-4 w-full text-center shadow-lg transition-all duration-300 animate-fade-in">
                 <span class="inline-flex items-center"><svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>Ajouter une tâche</span>
@@ -87,14 +87,15 @@
                            
                             Catégories :
                         </label>
+                        <input type="text" placeholder="Rechercher une catégorie..." x-model="categorySearch" class="mb-2 w-full px-3 py-1 rounded border border-blue-200 focus:ring-2 focus:ring-blue-400 text-sm bg-blue-50 placeholder-blue-300" />
                         <div class="max-h-40 overflow-y-auto rounded-lg border border-gray-200 bg-gray-50 p-2 flex flex-col gap-2">
-                            @foreach($categories as $cat)
+                            <template x-for="cat in filteredCategories()" :key="cat.category_id">
                                 <label class="flex items-center gap-3 cursor-pointer hover:bg-blue-50 rounded px-2 py-1 transition">
-                                    <span class="w-4 h-4 rounded-full inline-block" style="background: {{ $cat->color ?? '#3b82f6' }};"></span>
-                                    <span class="text-gray-700 font-medium">{{ $cat->category_name }}</span>
-                                    <input type="checkbox" name="categories[]" value="{{ $cat->category_id }}" class="ml-auto accent-blue-500 w-5 h-5" />
+                                    <span class="w-4 h-4 rounded-full inline-block" :style="'background: ' + (cat.color ?? '#3b82f6') + ';'"></span>
+                                    <span class="text-gray-700 font-medium" x-text="cat.category_name"></span>
+                                    <input type="checkbox" name="categories[]" :value="cat.category_id" class="ml-auto accent-blue-500 w-5 h-5" />
                                 </label>
-                            @endforeach
+                            </template>
                         </div>
                         <p class="text-xs text-gray-400 mt-1">Astuce : cochez une ou plusieurs catégories</p>
                     </div>
@@ -231,15 +232,16 @@
                                     </svg>
                                     Catégories :
                                 </label>
+                                <input type="text" placeholder="Rechercher une catégorie..." x-model="categorySearch" class="mb-2 w-full px-3 py-1 rounded border border-blue-200 focus:ring-2 focus:ring-blue-400 text-sm bg-blue-50 placeholder-blue-300" />
                                 <div class="max-h-40 overflow-y-auto rounded-lg border border-gray-200 bg-gray-50 p-2 flex flex-col gap-2">
-                                    @foreach($categories as $cat)
+                                    <template x-for="cat in filteredCategories()" :key="cat.category_id">
                                         <label class="flex items-center gap-3 cursor-pointer hover:bg-blue-50 rounded px-2 py-1 transition">
-                                            <span class="w-4 h-4 rounded-full inline-block" style="background: {{ $cat->color ?? '#3b82f6' }};"></span>
-                                            <span class="text-gray-700 font-medium">{{ $cat->category_name }}</span>
-                                            <input type="checkbox" name="categories[]" :value="{{ $cat->category_id }}" class="ml-auto accent-blue-500 w-5 h-5"
-                                                :checked="editTask.categories.includes({{ $cat->category_id }})">
+                                            <span class="w-4 h-4 rounded-full inline-block" :style="'background: ' + (cat.color ?? '#3b82f6') + ';'"></span>
+                                            <span class="text-gray-700 font-medium" x-text="cat.category_name"></span>
+                                            <input type="checkbox" name="categories[]" :value="cat.category_id" class="ml-auto accent-blue-500 w-5 h-5"
+                                                :checked="editTask.categories.includes(cat.category_id)">
                                         </label>
-                                    @endforeach
+                                    </template>
                                 </div>
                             </div>
                             <div class="flex justify-end gap-3 mt-6">
@@ -340,6 +342,16 @@ function taskEditModal() {
             priority: 'None',
             categories: []
         },
+        categorySearch: '',
+        allCategories: [
+            @foreach($categories as $cat)
+            {
+                category_id: {{ $cat->category_id }},
+                category_name: @js($cat->category_name),
+                color: @js($cat->color)
+            },
+            @endforeach
+        ],
         get editFormAction() {
             return '{{ route('update_task_quick') }}';
         },
@@ -352,10 +364,39 @@ function taskEditModal() {
             this.editTask.categories = Array.isArray(task.categories) ? [...task.categories] : [];
             this.editModalOpen = true;
             document.body.classList.add('overflow-hidden');
+            this.categorySearch = '';
         },
         closeEditModal() {
             this.editModalOpen = false;
             document.body.classList.remove('overflow-hidden');
+        },
+        filteredCategories() {
+            if (!this.categorySearch) return this.allCategories;
+            const search = this.categorySearch.toLowerCase();
+            return this.allCategories.filter(cat => cat.category_name.toLowerCase().includes(search));
+        }
+    }
+}
+</script>
+
+<script>
+function addTaskForm() {
+    return {
+        open: false,
+        categorySearch: '',
+        allCategories: [
+            @foreach($categories as $cat)
+            {
+                category_id: {{ $cat->category_id }},
+                category_name: @js($cat->category_name),
+                color: @js($cat->color)
+            },
+            @endforeach
+        ],
+        filteredCategories() {
+            if (!this.categorySearch) return this.allCategories;
+            const search = this.categorySearch.toLowerCase();
+            return this.allCategories.filter(cat => cat.category_name.toLowerCase().includes(search));
         }
     }
 }
