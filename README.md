@@ -2,7 +2,7 @@
 
 **Le second cerveau moderne pour l'organisation, la gestion de projets et la prise de notes intelligente.**
 
-![Zeus Banner](img/screens/zeus_presentation.png)
+![Zeus Banner](public/img/screens/zeus_presentation.png)
 
 ---
 
