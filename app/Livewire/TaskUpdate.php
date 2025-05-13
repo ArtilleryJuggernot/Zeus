@@ -18,6 +18,8 @@ class TaskUpdate extends Component
     public $is_finish;
     public $isEditing = false; // État de l'édition
     public $task;
+    public $allCategories = [];
+    public $categorySearch = '';
 
     protected $rules = [
         'taskName' => 'required|string|max:255',
@@ -25,23 +27,26 @@ class TaskUpdate extends Component
         'priority' => 'required|string|in:Urgence,Grande priorité,Prioritaire',
     ];
 
-    public function mount($taskId)
+    protected $listeners = [
+        'openEditModal' => 'openEditModal',
+    ];
+
+    public function mount($taskId, $taskName = null, $dueDate = null, $is_finish = null, $priority = null, $allCategories = [])
     {
+        $this->taskId = $taskId;
+        $this->taskName = $taskName;
+        $this->dueDate = $dueDate;
+        $this->is_finish = $is_finish;
+        $this->priority = $priority;
+        $this->allCategories = $allCategories;
         $this->task = Task::find($taskId);
+        // Si certains paramètres ne sont pas fournis, on complète depuis la base
         if ($this->task) {
-            $this->taskId = $this->task->id;
-            $this->taskName = $this->task->task_name;
-            $this->dueDate = $this->task->due_date;
-            $this->is_finish = $this->task->is_finish;
-
-            // Récupérer la priorité de la tâche
-
-
-
-
-            if(task_priorities::where("task_id",$this->taskId)->first())
+            if ($this->taskName === null) $this->taskName = $this->task->task_name;
+            if ($this->dueDate === null) $this->dueDate = $this->task->due_date;
+            if ($this->is_finish === null) $this->is_finish = $this->task->is_finish;
+            if ($this->priority === null && task_priorities::where('task_id', $this->taskId)->first())
                 $this->priority = task_priorities::where('task_id', $this->taskId)->first()->priority;
-
         }
     }
 
@@ -110,6 +115,18 @@ class TaskUpdate extends Component
         }
     }
 
+    public function openEditModal($taskId)
+    {
+        $this->mount($taskId);
+        $this->isEditing = true;
+        $this->dispatch('lock-scroll');
+    }
+
+    public function closeEditModal()
+    {
+        $this->isEditing = false;
+        $this->dispatch('unlock-scroll');
+    }
 
     public function render()
     {

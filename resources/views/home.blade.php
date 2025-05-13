@@ -3,144 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <title>Accueil - Zeus</title>
-    @livewireStyles <!-- Styles Livewire -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link rel="stylesheet" href="{{ asset('css/notification/notification.css') }}">
+    <script src="{{ asset('js/notification.js') }}"></script>
+    <style>
+        @keyframes pop {
+            0% { transform: scale(0.8); opacity: 0; }
+            80% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop { animation: pop 0.5s cubic-bezier(.4,0,.2,1) both; }
+    </style>
 </head>
-@include("includes.header")
-<body class="flex flex-col min-h-screen bg-gray-100">
-<div id="particleCanvas"></div>
-<div id="notification" class="notification">
-    <div class="progress"></div>
-</div>
-
-@php
-/*
-\Illuminate\Support\Facades\Mail::raw('Test email from Laravel',function ($message){
-   $message->to('hugojuggernot@gmail.com')
-   ->subject("J'ai était investit d'une grande mission");
-});
-*/
-@endphp
-
-
-
-
-<div class="sm:mx-0 p-6">
-
-    <div class="items-center justify-center">
-        <h1 class="text-3xl font-bold mb-4">
-            Hello {{ Auth::user()->name }} ⚡
-            <img src="{{ asset('img/thunder_anim.gif') }}" class="inline-block w-10 h-10">
+@include('includes.header')
+<body class="bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 min-h-screen flex flex-col">
+<div class="flex-1 w-full px-2 py-8" x-data="homePage()">
+    <!-- Header & Stats -->
+    <div class="text-center my-8 animate-fade-in">
+        <h1 class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent animate-gradient drop-shadow-lg flex items-center justify-center gap-2">
+            Bienvenue, {{ Auth::user()->name }}
         </h1>
-        <p class="text-left mb-8">
-            Bienvenue sur l'accueil, appuyez sur <span class="font-bold">CTRL + P</span> pour accéder au menu rapide des <span class="font-bold">ressources</span>.<br>
-            Votre identifiant est <strong>{{ Auth::user()->id }}</strong>. Vous pouvez le partager avec d'autres utilisateurs pour autoriser l'accès à leurs notes, dossiers, tâches et projets.
-        </p>
+        <p class="text-lg text-gray-500 mt-2">Votre tableau de bord productif et stylé ✨</p>
+        <div class="flex justify-center gap-4 mt-4 flex-wrap">
+            <span class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-semibold shadow animate-pop">
+                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+                {{ count($habitudes) }} habitudes
+            </span>
+            <span class="inline-flex items-center px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full font-semibold shadow animate-pop">
+                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 17.75L18.2 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                {{ count($task_priority) }} tâches prioritaires
+            </span>
+            <span class="inline-flex items-center px-3 py-1 bg-pink-100 text-pink-700 rounded-full font-semibold shadow animate-pop">
+                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                {{ count($tachesTimed) }} tâches à échéance
+            </span>
+            <span class="inline-flex items-center px-3 py-1 bg-gray-200 text-gray-700 rounded-full font-semibold shadow animate-pop">
+                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+                {{ count($tachePasse) }} tâches non réalisées
+            </span>
+        </div>
     </div>
 
-
-    <!-- Listes des tâches à faire -->
-    <div class="mx-auto sm:mx-0">
-        <!-- Habitude -->
-        <div class="mb-8">
-            <h2 class="text-xl font-semibold mb-4">Liste des habitudes à faire 🏆</h2>
-            <div class="flex flex-wrap">
+    <!-- Accordéons verticaux pour chaque section -->
+    <div class="max-w-5xl mx-auto flex flex-col gap-8 animate-fade-in">
+        <!-- Habitudes -->
+        <div x-data="{open:true}">
+            <button @click="open=!open" class="w-full flex items-center justify-between px-6 py-4 bg-blue-200 hover:bg-blue-300 rounded-xl font-bold text-blue-700 shadow transition-all text-lg">
+                <span class="flex items-center gap-2"><svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>Habitudes à faire 🏆</span>
+                <svg :class="{'rotate-180':open}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div x-show="open" x-transition class="mt-4 grid grid-cols-1 gap-6">
                 @forelse ($habitudes as $task)
-                    <div class="basis-1/5 task-card margin-right bg-white rounded-lg shadow-md p-4">
-                        <a href="{{ route('view_task', $task->id) }}" class="text-blue-500 font-bold hover:underline">
-                            <h3>🏆{{ $task->task_name }}</h3>
-                        </a>
-                        <p class="text-red-500">⚠️ Habitude</p>
-                        @if ($task->due_date)
-                            <div class="task-due-date">
-                                <p class="font-bold">🕐 <span>{{ $task->due_date }}</span></p>
-                            </div>
-                        @endif
-                        <div class="task-is-finish">
-                            <p class="font-bold">{{ $task->is_finish ? 'Finis' : 'En cours' }}</p>
-                        </div>
-                        <div class="flex justify-between items-center mt-2">
-                            <form action="{{ route('UpdateTaskStatus') }}" method="POST" class="task-form">
-                                @csrf
-                                <input type="hidden" name="task_id" value="{{ $task->id }}" />
-                                <label class="font-bold flex items-center">
-                                    <input type="checkbox" class="task-checkFinish mr-2" @if($task->is_finish) checked @endif name="task_completed" />
-                                    @if ($task->is_finish)
-                                        Mettre la tâche en cours
-                                    @else
-                                        Finir la tâche
-                                    @endif
-                                </label>
-                            </form>
-                            <form action="{{ route('delete_task') }}" method="POST">
-                                @csrf
-                                <input name="id" type="hidden" value="{{ $task->id }}" />
-                                <button type="submit" class="text-red-500 hover:text-red-700">❌</button>
-                            </form>
-                            <!-- Bouton pour modifier -->
-                            <button class="text-blue-500 hover:text-blue-700" @click="openModal">🛠️</button>
-                        </div>
-                    </div>
+                    <livewire:task-update :taskId="$task->id" :taskName="$task->task_name" :dueDate="$task->due_date" :is_finish="$task->is_finish" :allCategories="$allCategories" />
                 @empty
-                    <p class="text-gray-500">Vous n'avez pas de tâche habituelles à faire ✅</p>
+                    <div class="text-center text-gray-400 italic">Aucune habitude à faire</div>
                 @endforelse
             </div>
         </div>
-
 
 
         <!-- Tâches prioritaires -->
-        <div class="mb-8">
-            <h2 class="text-xl font-semibold mb-4">Liste des tâches à faire en priorité 🎯</h2>
-            <div class="flex flex-wrap">
+        <div x-data="{open:true}">
+            <button @click="open=!open" class="w-full flex items-center justify-between px-6 py-4 bg-yellow-200 hover:bg-yellow-300 rounded-xl font-bold text-yellow-700 shadow transition-all text-lg">
+                <span class="flex items-center gap-2"><svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 17.75L18.2 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>Tâches prioritaires</span>
+                <svg :class="{'rotate-180':open}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div x-show="open" x-transition class="mt-4 grid grid-cols-1 gap-6">
                 @forelse ($task_priority as $task)
-                    <livewire:task-update :taskId="$task->task_id" :priority="$task->priority" />
+                    <livewire:task-update :taskId="$task->task_id" :taskName="$task->task_name" :dueDate="$task->due_date" :is_finish="$task->is_finish" :priority="$task->priority" :allCategories="$allCategories" />
                 @empty
-                    <p class="text-gray-500">Vous n'avez pas de tâche en priorité ✅</p>
+                    <div class="text-center text-gray-400 italic">Aucune tâche prioritaire</div>
                 @endforelse
             </div>
         </div>
-
-        <!-- Tâches actuelles -->
-        <div class=" mb-8">
-            <h2 class="text-xl font-semibold mb-4">Liste des tâches actuelles à faire (avec date limite) 📚🕐</h2>
-            <div class=" flex flex-wrap">
+        <!-- Tâches en cours -->
+        <div x-data="{open:true}">
+            <button @click="open=!open" class="w-full flex items-center justify-between px-6 py-4 bg-blue-200 hover:bg-blue-300 rounded-xl font-bold text-blue-700 shadow transition-all text-lg">
+                <span class="flex items-center gap-2"><svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>Tâches en cours</span>
+                <svg :class="{'rotate-180':open}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div x-show="open" x-transition class="mt-4 grid grid-cols-1 gap-6">
+                @forelse ($task_list_unfinish as $task)
+                    <livewire:task-update :taskId="$task->id" :taskName="$task->task_name" :dueDate="$task->due_date" :is_finish="$task->is_finish" :allCategories="$allCategories" />
+                @empty
+                    <div class="text-center text-gray-400 italic">Aucune tâche en cours</div>
+                @endforelse
+            </div>
+        </div>
+        
+        <!-- Tâches avec date limite -->
+        <div x-data="{open:true}">
+            <button @click="open=!open" class="w-full flex items-center justify-between px-6 py-4 bg-pink-200 hover:bg-pink-300 rounded-xl font-bold text-pink-700 shadow transition-all text-lg">
+                <span class="flex items-center gap-2"><svg class="w-6 h-6 text-pink-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>Tâches avec date limite</span>
+                <svg :class="{'rotate-180':open}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div x-show="open" x-transition class="mt-4 grid grid-cols-1 gap-6">
                 @forelse ($tachesTimed as $task)
-                    <livewire:task-update :taskId="$task->id"/>
+                    <livewire:task-update :taskId="$task->id" :taskName="$task->task_name" :dueDate="$task->due_date" :is_finish="$task->is_finish" :allCategories="$allCategories" />
                 @empty
-                            <p class="text-gray-500">Vous n'avez pas de tâche à réaliser ✅</p>
-                        @endforelse
-                    </div>
-            </div>
-
-        <!-- Tâches non réalisées -->
-        <div class=" mb-8">
-            <h2 class="text-xl font-semibold mb-4">Liste des tâches actuelles qui n'ont pas été réalisées</h2>
-            <div class=" flex flex-wrap">
-                @forelse ($tachePasse as $task)
-                    <livewire:task-update :taskId="$task->id"/>
-                @empty
-                    <p class="text-gray-500">Vous n'avez pas de tâche non-réalisée ✅</p>
-
+                    <div class="text-center text-gray-400 italic">Aucune tâche à échéance</div>
                 @endforelse
             </div>
         </div>
-
-
-
-
+        <!-- Tâches non réalisées -->
+        <div x-data="{open:true}">
+            <button @click="open=!open" class="w-full flex items-center justify-between px-6 py-4 bg-gray-200 hover:bg-gray-300 rounded-xl font-bold text-gray-700 shadow transition-all text-lg">
+                <span class="flex items-center gap-2"><svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>Tâches non réalisées</span>
+                <svg :class="{'rotate-180':open}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div x-show="open" x-transition class="mt-4 grid grid-cols-1 gap-6">
+                @forelse ($tachePasse as $task)
+                    <livewire:task-update :taskId="$task->id" :taskName="$task->task_name" :dueDate="$task->due_date" :is_finish="$task->is_finish" :allCategories="$allCategories" />
+                @empty
+                    <div class="text-center text-gray-400 italic">Aucune tâche non réalisée</div>
+                @endforelse
+            </div>
+        </div>
     </div>
-
 </div>
-
-@include("includes.footer")
-@livewireScripts <!-- Scripts Livewire -->
-<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x" defer></script>
 <script>
-    @if(session("success"))
+function homePage() {
+    return {
+        editModalOpen: false,
+        editTaskData: null,
+        openEditModal(task) {
+            this.editTaskData = task;
+            this.editModalOpen = true;
+            document.body.classList.add('overflow-hidden');
+        },
+        closeEditModal() {
+            this.editModalOpen = false;
+            this.editTaskData = null;
+            document.body.classList.remove('overflow-hidden');
+        }
+    }
+}
+// Listener JS pour ouvrir la modale depuis n'importe quelle carte Livewire
+window.addEventListener('open-edit-modal', function(e) {
+    const scope = document.querySelector('[x-data]');
+    if(scope && scope.__x) {
+        scope.__x.$data.openEditModal(e.detail);
+    }
+});
+</script>
+<script>
+    @if(session('success'))
     showNotification("{{ session('success') }}", 'success');
-    @elseif(session("failure"))
+    @elseif(session('failure'))
     showNotification("{{ session('failure') }}", 'failure');
     @endif
 </script>
-</body>
-</html>
+@include('includes.footer')
+
+<!-- Modale globale d'édition (à placer à la fin du body) -->
+<template x-if="editModalOpen">
+    <div class="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-60" x-init="$watch('editModalOpen', value => { document.body.style.overflow = value ? 'hidden' : '' })" style="backdrop-filter: blur(2px);">
+        <div class="relative bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg mx-4 animate-pop border border-blue-200">
+            <button @click="closeEditModal()" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-2xl">&times;</button>
+            <h3 class="text-xl font-bold mb-4 text-blue-700 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-blue-400">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                </svg>
+                Éditer la tâche SINJ
+            </h3>
+            <form x-show="editTaskData" :action="'/tasks/update/' + (editTaskData?.taskId ?? '')" method="POST" class="space-y-5">
+                @csrf
+                <input type="hidden" name="task_id" :value="editTaskData?.taskId">
+                <div>
+                    <label class="font-bold flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5-3.9 19.5m-2.1-19.5-3.9 19.5" />
+                        </svg>
+                        Nom de la tâche :
+                    </label>
+                    <input type="text" name="tache_name" :value="editTaskData?.taskName" required class="border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full shadow-sm" />
+                </div>
+                <div class="flex items-center gap-3">
+                    <label class="font-bold flex items-center gap-2">
+                        <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        Date limite ?
+                    </label>
+                    <input type="date" name="dt_input" :value="editTaskData?.dueDate" class="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-pink-400 transition w-1/2" />
+                </div>
+                <div>
+                    <label class="font-bold flex items-center gap-2">
+                        <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 17.75L18.2 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                        Priorité :
+                    </label>
+                    <select name="priority" :value="editTaskData?.priority" class="w-full border border-gray-300 rounded-lg py-2 px-3 focus:ring-2 focus:ring-purple-400">
+                        <option value="None">Aucune</option>
+                        <option value="Urgence">🔥 Urgence</option>
+                        <option value="Grande priorité">⚡ Grande priorité</option>
+                        <option value="Prioritaire">⭐ Prioritaire</option>
+                    </select>
+                </div>
+                <!-- Catégories (à adapter si besoin) -->
+                <div>
+                    <label class="font-bold flex items-center gap-2 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                        </svg>
+                        Catégories :
+                    </label>
+                    <!-- À compléter pour la gestion des catégories -->
+                </div>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" @click="closeEditModal()" class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold">Annuler</button>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-bold flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+                        Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</template>
