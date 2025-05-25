@@ -1,0 +1,9 @@
+PATCH http://localhost:8000/api/notes/123/update
+Content-Type: application/json
+Authorization: Bearer VOTRE_TOKEN
+
+{
+  "name": "Nouveau nom de la note",
+  "content": "Texte ajouté ou remplacé.",
+  "mode": "append"  // ou "replace"
+} 

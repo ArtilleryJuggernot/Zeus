@@ -27,10 +27,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 use App\Http\Controllers\Api\NoteApiController;
 use App\Http\Controllers\Api\AdminApiController;
+use App\Http\Controllers\Api\FolderControllerApi;
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:1000,1'])->group(function () {
     Route::post('/notes/create', [NoteApiController::class, 'store']);
     Route::post('/admin/reset-password', [AdminApiController::class, 'resetUserPassword']);
+    Route::patch('/notes/{id}/update', [NoteApiController::class, 'updateNote']);
+    Route::get('/notes/folder/{folder_id}', [NoteApiController::class, 'getNotesByFolder']);
+    Route::get('/folder/get_content/{folder_id}', [FolderControllerApi::class, 'getContent']);
 });
 
 

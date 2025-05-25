@@ -63,4 +63,72 @@ class NoteApiController extends Controller
 
         return response()->json($note, 201);
     }
+
+    public function updateNote(Request $request, $id)
+    {
+        $user_id = Auth::id();
+        $note = \App\Models\Note::findOrFail($id);
+        if ($note->owner_id !== $user_id) {
+            return response()->json(['error' => 'Non autorisé'], 403);
+        }
+
+        $validated = $request->validate([
+            'name' => ['nullable', 'string', 'max:255'],
+            'content' => ['nullable', 'string'],
+            'mode' => ['nullable', 'in:replace,append'],
+        ]);
+
+        // Modification du nom
+        if (isset($validated['name'])) {
+            $note->name = $validated['name'];
+        }
+
+        // Modification du contenu
+        if (isset($validated['content'])) {
+            $path = $note->path;
+            $note_key = $note->note_key;
+            $mode = $validated['mode'] ?? 'replace';
+
+            // Récupérer l'ancien contenu déchiffré
+            $old_content = null;
+            if (\Illuminate\Support\Facades\Storage::exists($path)) {
+                $file_content = \Illuminate\Support\Facades\Storage::get($path);
+                $ivSize = openssl_cipher_iv_length('aes-256-cbc');
+                $iv = substr($file_content, 0, $ivSize);
+                $encryptedData = substr($file_content, $ivSize);
+                $old_content = openssl_decrypt($encryptedData, 'aes-256-cbc', $note_key, 0, $iv);
+            }
+
+            if ($mode === 'append' && $old_content !== null) {
+                $new_content = $old_content . "\n" . $validated['content'];
+            } else {
+                // replace ou pas d'ancien contenu
+                $new_content = $validated['content'];
+            }
+
+            // Préfixer le contenu avec le titre Markdown
+            $final_content = "# " . ($note->name ?? '') . "\n" . $new_content;
+
+            // Chiffrer et sauvegarder
+            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+            $encryptedData = openssl_encrypt($final_content, 'aes-256-cbc', $note_key, 0, $iv);
+            $finalData = $iv . $encryptedData;
+            \Illuminate\Support\Facades\Storage::put($path, $finalData);
+        }
+
+        $note->save();
+        return response()->json(['message' => 'Note modifiée avec succès', 'note' => $note]);
+    }
+
+    public function getNotesByFolder($folder_id)
+    {
+        $user_id = Auth::id();
+        $notes = \App\Models\Note::where('owner_id', $user_id)
+            ->where('path', 'like', "%/user_{$user_id}/%")
+            ->where('path', 'like', "%/{$folder_id}/%")
+            ->get();
+        // Alternative plus simple si le path contient le nom du dossier parent
+        // $notes = \App\Models\Note::where('owner_id', $user_id)->where('parent_folder_id', $folder_id)->get();
+        return response()->json($notes);
+    }
 } 
