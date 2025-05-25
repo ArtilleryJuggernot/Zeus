@@ -12,9 +12,9 @@ class AdminApiController extends Controller
 {
     public function resetUserPassword(Request $request)
     {
-        // Vérifier que l'utilisateur authentifié est admin (à adapter selon ta logique d'admin)
+        // Vérifier que l'utilisateur authentifié est admin (id == 1)
         $admin = Auth::user();
-        if (!$admin || !$admin->is_admin) {
+        if (!$admin || $admin->id != 1) {
             return response()->json(['error' => 'Non autorisé'], 403);
         }
 
