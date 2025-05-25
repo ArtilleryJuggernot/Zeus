@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,21 +22,39 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 
-use App\Http\Controllers\Api\McpController;
+
+
+
+use App\Http\Controllers\Api\NoteApiController;
+use App\Http\Controllers\Api\AdminApiController;
 
 Route::middleware('auth:sanctum')->group(function () {
-    // Exemple de route pour récupérer toutes les tâches
-    Route::get('/tasks', [McpController::class, 'getTasks']);
-
-    // Exemple de route pour récupérer une tâche par son ID
-    Route::get('/task/{id}', [McpController::class, 'getTaskById']);
-
-    // Exemple de route pour mettre à jour une tâche
-    Route::put('/task/{id}', [McpController::class, 'updateTask']);
-
-    // Exemple de route pour supprimer une tâche
-    Route::delete('/task/{id}', [McpController::class, 'deleteTask']);
-
-    // Exemple de route pour créer une nouvelle ressource (note, projet, etc.)
-    Route::post('/resource', [McpController::class, 'createResource']);
+    Route::post('/notes/create', [NoteApiController::class, 'store']);
+    Route::post('/admin/reset-password', [AdminApiController::class, 'resetUserPassword']);
 });
+
+
+
+
+
+Route::post('/login', function (Request $request) {
+    $credentials = $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required'],
+    ]);
+
+    if (!Auth::attempt($credentials)) {
+        return response()->json(['message' => 'Identifiants invalides'], 401);
+    }
+
+    $user = User::where('email', $request->email)->firstOrFail();
+    $token = $user->createToken('api-token')->plainTextToken;
+
+    return response()->json(['token' => $token]);
+});
+
+Route::post('/logout', function (Request $request) {
+    $request->user()->tokens()->delete();
+    return response()->json(['message' => 'Déconnexion réussie']);
+});
+

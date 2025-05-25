@@ -1,0 +1,11 @@
+POST http://localhost:8000/api/notes/create
+Content-Type: application/json
+Authorization: Bearer XXX
+
+{
+  "name": "Titre de la note via API",
+  "content": "Ceci est le contenu de la note. via API",
+  "parent_folder_id": 1
+}
+
+
