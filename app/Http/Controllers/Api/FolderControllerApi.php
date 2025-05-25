@@ -14,17 +14,27 @@ class FolderControllerApi extends Controller
     {
         $user_id = Auth::id();
         $folder = Folder::findOrFail($folder_id);
-        // Vérification d'accès (optionnel : à adapter selon ta logique de droits)
-        // if ($folder->owner_id !== $user_id) {
-        //     return response()->json(['error' => 'Non autorisé'], 403);
-        // }
+        $basePath = $folder->path;
+        $baseDepth = substr_count($basePath, '/');
 
-        // Sous-dossiers
-        $subfolders = Folder::where('parent_id', $folder_id)->get(['id', 'name', 'path']);
-        // Notes dans ce dossier
-        $notes = Note::where('path', 'like', $folder->path . '/%')
+        // Sous-dossiers directs
+        $subfolders = Folder::where('path', 'like', $basePath . '/%')
+            ->get(['id', 'name', 'path'])
+            ->filter(function ($subfolder) use ($baseDepth) {
+                // On ne garde que les enfants directs (profondeur +1)
+                return substr_count($subfolder->path, '/') === $baseDepth + 1;
+            })
+            ->values();
+
+        // Notes enfants directs
+        $notes = Note::where('path', 'like', $basePath . '/%')
             ->where('owner_id', $user_id)
-            ->get(['id', 'name', 'path']);
+            ->get(['id', 'name', 'path'])
+            ->filter(function ($note) use ($baseDepth) {
+                // On ne garde que les notes enfants directs (profondeur +1)
+                return substr_count($note->path, '/') === $baseDepth + 1;
+            })
+            ->values();
 
         return response()->json([
             'folder' => [
