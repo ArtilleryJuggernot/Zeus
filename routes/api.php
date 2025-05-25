@@ -33,7 +33,6 @@ Route::middleware(['auth:sanctum', 'throttle:1000,1'])->group(function () {
     Route::post('/notes/create', [NoteApiController::class, 'store']);
     Route::post('/admin/reset-password', [AdminApiController::class, 'resetUserPassword']);
     Route::patch('/notes/{id}/update', [NoteApiController::class, 'updateNote']);
-    Route::get('/notes/folder/{folder_id}', [NoteApiController::class, 'getNotesByFolder']);
     Route::get('/folder/get_content/{folder_id}', [FolderControllerApi::class, 'getContent']);
 });
 
