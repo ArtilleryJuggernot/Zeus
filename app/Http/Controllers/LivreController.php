@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Auth;
 
 class LivreController extends Controller
 {
+    /**
+     * Affiche la vue d'ensemble des livres de l'utilisateur (en cours et terminés).
+     */
     public function Overview()
     {
         $user_id = Auth::user()->id;
@@ -26,12 +29,18 @@ class LivreController extends Controller
         ]);
     }
 
-    private function getLivreWithCategories($user_id,$is_finish)
+    /**
+     * Récupère les projets de type 'livre' pour l'utilisateur, avec leurs catégories associées.
+     * @param int $user_id
+     * @param int $is_finish 0 = en cours, 1 = terminé
+     * @return \Illuminate\Support\Collection
+     */
+    private function getLivreWithCategories($user_id, $is_finish)
     {
         $projects = Projet::where([
             ["owner_id", "=", $user_id],
             ["is_finish", "=", $is_finish],
-            ["type","=","livre"]
+            ["type", "=", "livre"]
         ])->get();
 
         foreach ($projects as $project) {
@@ -40,7 +49,12 @@ class LivreController extends Controller
         return $projects;
     }
 
-
+    /**
+     * Récupère les catégories associées à un projet de type livre.
+     * @param int $projectId
+     * @param int $user_id
+     * @return array
+     */
     protected function getLivreCategories($projectId, $user_id)
     {
         $resourceCategories = possede_categorie::where('ressource_id', $projectId)
@@ -56,10 +70,14 @@ class LivreController extends Controller
         return $ownedCategories;
     }
 
-
+    /**
+     * Crée un nouveau projet de type livre, découpe le livre en tâches (pages à lire par jour/semaine/mois),
+     * et crée les tâches associées avec les bonnes dates limites.
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function Store(Request $request)
     {
-
         $user_id = Auth::user()->id;
         $livreName = $request->get('livre_name');
         $startPage = intval($request->get('startPage'));
@@ -69,76 +87,70 @@ class LivreController extends Controller
 
         $startDate = Carbon::now();
 
-        // Calculer le nombre total de pages à lire
-        $totalPages = $endPage - $startPage + 1;
-
-        // Vérifier que le nombre de pages de départ ne dépasse pas le nombre de pages d'arrivée
+        // Vérification des entrées utilisateur
+        if ($startPage < 0 || $endPage < 0 || $dtNum <= 0) {
+            return redirect()->back()->with("error", "Merci de remplir tous les champs correctement (aucune valeur négative, durée > 0).");
+        }
         if ($startPage > $endPage) {
-            return redirect()->back()->with("error","Le nombre de pages de départ ne peut pas dépasser le nombre de pages d'arrivée.");
+            return redirect()->back()->with("error", "Le nombre de pages de départ ne peut pas dépasser le nombre de pages d'arrivée.");
+        }
+        if ($startPage == $endPage) {
+            return redirect()->back()->with("error", "Le livre doit contenir au moins 1 page à lire.");
         }
 
-        // Modifier la date limite en fonction du type de delta
+        // Calcul du nombre total de pages à lire
+        $totalPages = $endPage - $startPage + 1;
+
+        // Calcul de la date limite en fonction du type de delta
         switch ($deltaType) {
             case 'jours':
                 $endDate = $startDate->copy()->addDays($dtNum);
+                $tasksCount = $dtNum;
                 break;
             case 'semaines':
                 $endDate = $startDate->copy()->addWeeks($dtNum);
+                $tasksCount = $dtNum * 7;
                 break;
             case 'mois':
                 $endDate = $startDate->copy()->addMonths($dtNum);
+                $tasksCount = $dtNum * 30; // Approximation : 1 mois = 30 jours
                 break;
             default:
-                $endDate = $startDate->copy()->addDays($dtNum); // Par défaut, utiliser le delta en jours
+                $endDate = $startDate->copy()->addDays($dtNum);
+                $tasksCount = $dtNum;
         }
 
+        // On ne crée pas plus de tâches que de pages
+        $tasksCount = min($tasksCount, $totalPages);
+        if ($tasksCount <= 0) {
+            return redirect()->back()->with("error", "Impossible de découper le livre en tâches (vérifiez vos paramètres).");
+        }
 
-
-
-
-        //dd("je reçois la requête");
-        $tasksCount = $endDate->diff($startDate)->days;
-
-
-
-
-
-        // Diviser le nombre de pages en restant en tranches égales
+        // Calcul du nombre de pages par tâche (arrondi supérieur)
         $pagesPerTask = ceil($totalPages / $tasksCount);
 
-
-        // Créer le projet
+        // Création du projet (livre)
         $projet = new Projet();
         $projet->name = $livreName;
         $projet->type = 'livre'; // Type de projet livre
-        $projet->owner_id = Auth::user()->id;
+        $projet->owner_id = $user_id;
         $projet->save();
-        LogsController::CreateProject($user_id,$projet->getKey(),$projet->name);
+        LogsController::CreateProject($user_id, $projet->getKey(), $projet->name);
 
-        $user_id = Auth::user()->id;
-
-        // Créer les tâches
-        for ($i = 0; $i < $tasksCount ; $i++) {
+        // Création des tâches (une par tranche de pages)
+        for ($i = 0; $i < $tasksCount; $i++) {
             $task = new Task();
             $task->owner_id = $user_id;
             $task->type = "livre";
             $taskStartPage = $startPage + $i * $pagesPerTask;
-
-            if($taskStartPage > $endPage)
-                break;
-
-            $taskEndPage = min($startPage + ($i + 1) * $pagesPerTask - 1, $endPage); // Limite supérieure est la dernière page
-
-            // Définition du nom de la tâche
-            $task->task_name = "(". $livreName . ") Lire les pages " . $taskStartPage . " à " . $taskEndPage;
-
-            $task->description = "Lire les pages " . ($startPage + $i * $pagesPerTask) . " à " . ($startPage + ($i + 1) * $pagesPerTask - 1);
-
-            // Calcul de la date limite en fonction de l'unité de temps spécifiée
-            $task->due_date = $startDate->copy()->addDays($i); // Ajoute $i jours à la date de début
+            if ($taskStartPage > $endPage) break;
+            $taskEndPage = min($startPage + ($i + 1) * $pagesPerTask - 1, $endPage);
+            $task->task_name = "(" . $livreName . ") 📖 Lire les pages " . $taskStartPage . " à " . $taskEndPage;
+            $task->description = "Lire les pages " . $taskStartPage . " à " . $taskEndPage;
+            // Date limite = $i jours après la date de début
+            $task->due_date = $startDate->copy()->addDays($i);
             $task->save();
-            LogsController::createTask($user_id,$task->getKey(),$task->task_name,"SUCCESS");
-
+            LogsController::createTask($user_id, $task->getKey(), $task->task_name, "SUCCESS");
             $inside_project = new insideprojet();
             $inside_project->task_id = $task->getKey();
             $inside_project->projet_id = $projet->getKey();
@@ -146,12 +158,13 @@ class LivreController extends Controller
             $inside_project->save();
         }
 
-        return redirect()->back()->with("success","Votre livre a bien été créé !");
+        return redirect()->back()->with("success", "Votre livre a bien été créé !");
     }
 
-
-    // Fonction lancé dès la connexion de l'utilisateur
-    // Met en priorité les tâches lié à la lecture à la date d'aujourd'hui pour qu'elle apparaisse sur le menu
+    /**
+     * Fonction appelée à la connexion de l'utilisateur.
+     * Met en priorité les tâches de lecture du jour pour qu'elles apparaissent sur le menu principal.
+     */
     public static function SetTodayBookReadInPriority()
     {
         $user_id = Auth::user()->id;
@@ -160,20 +173,18 @@ class LivreController extends Controller
             "type" => "livre"
         ])->get();
 
-
-        foreach ($ListbookProject as $bookProject){
-            $insideProjectTask = insideprojet::where("projet_id","=",$bookProject->id)->get();
-            foreach ($insideProjectTask as $inside){
+        foreach ($ListbookProject as $bookProject) {
+            $insideProjectTask = insideprojet::where("projet_id", "=", $bookProject->id)->get();
+            foreach ($insideProjectTask as $inside) {
                 $task = Task::find($inside->task_id);
-                if($task->due_date == Carbon::today()->format("Y-m-d")){
-
-                    if (count(task_priorities::where(
-                        ["user_id" => $user_id,
-                         "task_id" => $task->id
-                        ]
-                    )->get()) > 0)
+                if ($task && $task->due_date == Carbon::today()->format("Y-m-d")) {
+                    // On ne crée la priorité que si elle n'existe pas déjà
+                    if (task_priorities::where([
+                        "user_id" => $user_id,
+                        "task_id" => $task->id
+                    ])->count() > 0) {
                         break;
-
+                    }
                     $priority = new task_priorities();
                     $priority->user_id = $user_id;
                     $priority->task_id = $task->id;
@@ -182,10 +193,6 @@ class LivreController extends Controller
                     break;
                 }
             }
-
         }
     }
-
-
-
 }

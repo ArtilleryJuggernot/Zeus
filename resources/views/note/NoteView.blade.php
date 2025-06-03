@@ -62,9 +62,20 @@
                     $max = (count($folder_tree));
                 @endphp
                 @foreach ($folder_tree as $index => $folder_arbo)
+                    @php
+                        $isUserArbo = false;
+                        $userArboName = null;
+                        if (preg_match('/^user_(\\d+)$/', $folder_arbo['name'], $m)) {
+                            $userArbo = \App\Models\User::find($m[1]);
+                            if ($userArbo) {
+                                $isUserArbo = true;
+                                $userArboName = $userArbo->name;
+                            }
+                        }
+                    @endphp
                     <a class="font-bold flex items-center text-blue-600 hover:text-pink-500 transition" href="@if($index == $max-1) {{route('note_view',$folder_arbo['id'])}} @else{{ route('folder_view', $folder_arbo['id']) }} @endif  ">
                         @if($index == 0) <span class="text-2xl mr-1">🏠</span> @elseif($index == $max-1) <span class="text-2xl mr-1">📝</span> @else <span class="text-2xl mr-1">📁</span> @endif
-                        <span>{{ $folder_arbo['name'] }}</span>
+                        <span>{{ $isUserArbo ? $userArboName : $folder_arbo['name'] }}</span>
                     </a>
                     @if($index  < count($folder_tree) - 1)
                         <span class="text-gray-400">&gt;</span>

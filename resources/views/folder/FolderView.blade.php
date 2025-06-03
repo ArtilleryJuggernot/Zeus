@@ -41,19 +41,43 @@
 <div class="mx-auto max-w-5xl p-4 animate-pop">
     <div class="flex items-center justify-center space-x-2 mb-4">
         @php
+            $isUserRoot = false;
+            $userName = null;
+            if (preg_match('/^user_(\\d+)$/', $folder->name, $m)) {
+                $user = \App\Models\User::find($m[1]);
+                if ($user) {
+                    $isUserRoot = true;
+                    $userName = $user->name;
+                }
+            }
+        @endphp
+        @php
             $folder_tree = \App\Http\Controllers\FolderController::generateFolderTree($folder->id);
         @endphp
         @foreach ($folder_tree as $index => $folder_arbo)
+            @php
+                $isUserArbo = false;
+                $userArboName = null;
+                if (preg_match('/^user_(\\d+)$/', $folder_arbo["name"], $m)) {
+                    $userArbo = \App\Models\User::find($m[1]);
+                    if ($userArbo) {
+                        $isUserArbo = true;
+                        $userArboName = $userArbo->name;
+                    }
+                }
+            @endphp
             <a href="{{ route("folder_view", $folder_arbo["id"]) }}" class="text-blue-600 hover:underline font-bold flex items-center text-lg">
                 @if($index == 0) 🏠 @else 📁 @endif
-                <span class="ml-1">{{ $folder_arbo["name"] }}</span>
+                <span class="ml-1">{{ $isUserArbo ? $userArboName : $folder_arbo["name"] }}</span>
             </a>
             @if($index < count($folder_tree) - 1)
                 <span class="text-gray-400 text-xl">➔</span>
             @endif
         @endforeach
     </div>
-    <h2 class="text-4xl font-extrabold text-center mb-8 bg-gradient-to-r from-blue-600 via-pink-500 to-yellow-400 text-transparent bg-clip-text drop-shadow-lg">Arborescence - {{$folder->name}}</h2>
+    <h2 class="text-4xl font-extrabold text-center mb-8 bg-gradient-to-r from-blue-600 via-pink-500 to-yellow-400 text-transparent bg-clip-text drop-shadow-lg">
+        Arborescence - {{ $isUserRoot ? $userName : $folder->name }}
+    </h2>
 </div>
 
 <!-- Section Ajout -->

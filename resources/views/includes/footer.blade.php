@@ -14,15 +14,8 @@
     <!-- Contenu de votre site ici -->
 
     <!-- Footer en position fixe en bas de la page -->
-    <footer class="bg-gray-900 text-white py-8 w-full bottom-0">
-        <div class="container mx-auto">
-            <div class="flex items-center justify-between">
-                <p class="text-sm">
-                    &copy; 2024 Zeus. v{{ env("APP_VERSION", "N/A") }} Tous droits réservés.
-                </p>
-                <!-- Ajoutez d'autres informations ou liens de votre choix -->
-            </div>
-        </div>
+    <footer class="bg-gray-900 text-white py-4 w-full text-center mt-auto">
+        <span class="text-sm">&copy; {{ date('Y') }} Zeus. v{{ env('APP_VERSION', 'N/A') }} Tous droits réservés.</span>
     </footer>
     </body>
 </html>
