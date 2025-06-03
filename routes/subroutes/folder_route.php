@@ -26,3 +26,7 @@ Route::post("/delete_folder",[\App\Http\Controllers\FolderController::class,"Del
 Route::post("/downloadFolder",[FolderController::class,"Download"])
     ->middleware(["is_notban","auth"])
     ->name("downloadFolder");
+
+Route::post('/folder-note-quick-update', [\App\Http\Controllers\FolderController::class, 'quickUpdate'])
+    ->middleware(["is_notban","auth"])
+    ->name('folder_note_quick_update');

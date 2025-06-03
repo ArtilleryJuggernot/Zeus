@@ -135,12 +135,16 @@
         }
     });
 
+
+    @if($agent->isMobile() ||$agent->isTablet() )
+
     document.getElementsByClassName("btn-searchbar")[0].addEventListener("click", () => {
         if(status) hideOverlay();
         else showOverlay();
         }
 
-    )
+    @endif
+    
 
     function showOverlay() {
         document.getElementById('container').style.display = 'block';

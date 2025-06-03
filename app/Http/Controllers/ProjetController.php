@@ -18,10 +18,11 @@ class ProjetController extends Controller
         $user_id = Auth::user()->id;
         $userProjetsDone = $this->getProjectsListWithCategories($user_id, 1);
         $userProjetsUnDone = $this->getProjectsListWithCategories($user_id, 0);
-
+        $categories = Categorie::where('owner_id', $user_id)->get();
         return view("projet.ProjetOverview", [
             "userProjetsDone" => $userProjetsDone,
             "userProjectUnDone" => $userProjetsUnDone,
+            "categories" => $categories
         ]);
     }
 
@@ -56,26 +57,39 @@ class ProjetController extends Controller
     }
 
 
-    public function View(int $id)
+    public function View(int $id, Request $request)
     {
         $user_id = Auth::user()->id;
-        $projet = Projet::with('tasks')->find($id);
+        $projet = Projet::with(['tasks.categories'])->find($id);
 
         if (!$projet)
             return redirect()->route("home")->with("failure", "Le projet que vous souhaitez voir n'existe pas");
 
-        $taskFinish = $projet->tasks->where("is_finish", 1);
-        $taskTODO = $projet->tasks->where("is_finish", 0);
+        // Gestion du tri
+        $sort = $request->get('sort', 'position'); // position (défaut), date_asc, date_desc
+        $tasks = $projet->tasks;
+        if ($sort === 'date_asc') {
+            $tasks = $tasks->sortBy('created_at');
+        } elseif ($sort === 'date_desc') {
+            $tasks = $tasks->sortByDesc('created_at');
+        } else { // par position (défaut)
+            $tasks = $tasks->sortBy(function($task) use ($id) {
+                return $task->getPositionForProject($id);
+            });
+        }
+
+        $taskFinish = $tasks->where("is_finish", 1);
+        $taskTODO = $tasks->where("is_finish", 0);
 
         foreach ($taskTODO as $task) {
             $task->pos = $task->getPositionForProject($id);
         }
+        foreach ($taskFinish as $task) {
+            $task->pos = $task->getPositionForProject($id);
+        }
 
         if ((count($taskTODO) + count($taskFinish)) == 0) $progression = 100; // Division par 0
-
         else $progression =   round((count($taskFinish) / (count($taskTODO) + count($taskFinish))) * 100,3);
-
-
 
         $tasksNotInProject = Task::where([
             ["owner_id", $user_id],
@@ -84,12 +98,6 @@ class ProjetController extends Controller
             ->whereDoesntHave('projects')
             ->get();
 
-
-        //dd($tasksWithoutProjet);
-
-        //dd($tasks);
-
-
         $usersPermissionsOnNote = Acces::getUsersPermissionsOnProject($id);
         $perm_user = 0;
         $autorisation_partage = false;
@@ -100,34 +108,16 @@ class ProjetController extends Controller
                 break;
             }
         }
-        $usersPermissionsOnNote = Acces::getUsersPermissionsOnProject($id);
-        $perm_user = 0;
-        $autorisation_partage = false;
-        foreach ($usersPermissionsOnNote as $acces) {
-            if ($acces->dest_id == $user_id) {
-                $autorisation_partage = true;
-                $perm_user = $acces;
-                break;
-            }
-        }
-
-
         $resourceCategories = possede_categorie::where('ressource_id', $id)
             ->where('type_ressource', "project")
             ->where('owner_id', $user_id)->get();
-
-// Obtenez toutes les catégories en utilisant le modèle Categorie
         $allCategories = Categorie::all()->where("owner_id", $user_id);
-
-// Obtenez les catégories possédées par la ressource
         $ownedCategoryIds = $resourceCategories->pluck('categorie_id')->toArray();
-
-// Séparez les catégories possédées et non possédées
         $ownedCategories = $allCategories->whereIn('category_id', $ownedCategoryIds)->pluck('category_name', 'category_id')->toArray();
         $notOwnedCategories = $allCategories->whereNotIn('category_id', $ownedCategoryIds)->pluck('category_name', 'category_id')->toArray();
+        $categories = Categorie::where('owner_id', $user_id)->get();
 
-
-        if ($projet->owner_id == $user_id || $autorisation_partage) { // TODO : Modif pour collab
+        if ($projet->owner_id == $user_id || $autorisation_partage) {
             return view("projet.ProjetView",
                 [
                     "projet" => $projet,
@@ -139,11 +129,11 @@ class ProjetController extends Controller
                     "ressourceCategories" => $resourceCategories,
                     "ownedCategories" => $ownedCategories,
                     "notOwnedCategories" => $notOwnedCategories,
-                    "tasksNotInProject" => $tasksNotInProject
+                    "tasksNotInProject" => $tasksNotInProject,
+                    "categories" => $categories,
+                    "sort" => $sort
                 ]);
         }
-
-
         return redirect()->route("home")->with("failure", "Vous n'êtes pas autorisé à voir cette ressource");
     }
 
@@ -199,7 +189,6 @@ class ProjetController extends Controller
 
     public function Store(Request $request)
     {
-        //dd($request);
         $validateData = $request->validate([
             "projet_name" => ["required", "string", "max:250"]
         ]);
@@ -210,7 +199,18 @@ class ProjetController extends Controller
         $projet->owner_id = $user_id;
         $projet->save();
         LogsController::CreateProject($user_id,$projet->getKey(),$projet->name);
-        return redirect()->back()->with(["success" => "Le projet à bien été créer"]);
+        // Association des catégories sélectionnées
+        if ($request->has('categories')) {
+            foreach ($request->input('categories') as $cat_id) {
+                possede_categorie::create([
+                    'ressource_id' => $projet->id,
+                    'categorie_id' => $cat_id,
+                    'type_ressource' => 'project',
+                    'owner_id' => $user_id
+                ]);
+            }
+        }
+        return redirect()->back()->with(["success" => "Le projet à bien été créé"]);
     }
 
     public function RemoveTaskFromProject(Request $request)
@@ -418,7 +418,37 @@ class ProjetController extends Controller
 
     }
 
-
-
+    public function updateProject(Request $request)
+    {
+        $validateData = $request->validate([
+            'projet_id' => ['required', 'integer'],
+            'projet_name' => ['required', 'string', 'max:250'],
+            'categories' => ['nullable', 'array']
+        ]);
+        $user_id = Auth::user()->id;
+        $projet = Projet::find($validateData['projet_id']);
+        if (!$projet || $projet->owner_id != $user_id) {
+            return redirect()->back()->with('failure', "Projet introuvable ou non autorisé");
+        }
+        $projet->name = $validateData['projet_name'];
+        $projet->save();
+        // Mise à jour des catégories
+        possede_categorie::where([
+            ['ressource_id', $projet->id],
+            ['type_ressource', 'project'],
+            ['owner_id', $user_id]
+        ])->delete();
+        if (!empty($validateData['categories'])) {
+            foreach ($validateData['categories'] as $cat_id) {
+                possede_categorie::create([
+                    'ressource_id' => $projet->id,
+                    'categorie_id' => $cat_id,
+                    'type_ressource' => 'project',
+                    'owner_id' => $user_id
+                ]);
+            }
+        }
+        return redirect()->back()->with('success', 'Projet mis à jour avec succès');
+    }
 
 }

@@ -437,4 +437,66 @@ class FolderController extends Controller
             //$zip->addFile($filePath, $relativePath);
 
     }
+
+    /**
+     * Mise à jour rapide du nom et des catégories d'un dossier ou d'une note
+     */
+    public function quickUpdate(Request $request)
+    {
+        $validateData = $request->validate([
+            'ressource_id' => ['required', 'integer'],
+            'ressource_type' => ['required', 'in:folder,note'],
+            'edit_name' => ['required', 'string', 'max:250', 'regex:/^(?=.*[A-Za-z0-9])[A-Za-z0-9._ \p{L}-]+$/u'],
+            'edit_categories' => ['nullable', 'array'],
+            'edit_categories.*' => ['integer'],
+        ]);
+
+        $id = $validateData['ressource_id'];
+        $type = $validateData['ressource_type'];
+        $newName = $validateData['edit_name'];
+        $categories = $validateData['edit_categories'] ?? [];
+        $user_id = Auth::user()->id;
+
+        if ($type === 'folder') {
+            $ressource = Folder::find($id);
+        } else {
+            $ressource = Note::find($id);
+        }
+        if (!$ressource) return redirect()->back()->with('failure', 'Ressource introuvable');
+        if ($ressource->owner_id != $user_id) return redirect()->back()->with('failure', 'Non autorisé');
+
+        // Mise à jour du nom et du path
+        $oldName = $ressource->name;
+        if ($ressource->name !== $newName) {
+            $oldPath = $ressource->path;
+            $pathParts = explode('/', $ressource->path);
+            $pathParts[count($pathParts) - 1] = $newName;
+            $newPath = implode('/', $pathParts);
+            // Vérifier collision
+            if (Storage::exists($newPath)) {
+                return redirect()->back()->with('failure', 'Un élément avec ce nom existe déjà à cet endroit.');
+            }
+            // Renommer dans le storage
+            Storage::move($oldPath, $newPath);
+            $ressource->name = $newName;
+            $ressource->path = $newPath;
+        }
+        $ressource->save();
+
+        // Mise à jour des catégories
+        possede_categorie::where([
+            ['ressource_id', $id],
+            ['type_ressource', $type],
+            ['owner_id', $user_id],
+        ])->delete();
+        foreach ($categories as $cat_id) {
+            possede_categorie::create([
+                'ressource_id' => $id,
+                'type_ressource' => $type,
+                'categorie_id' => $cat_id,
+                'owner_id' => $user_id,
+            ]);
+        }
+        return redirect()->back()->with('success', ucfirst($type).' mis à jour avec succès !');
+    }
 }

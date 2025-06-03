@@ -41,4 +41,16 @@ class Task extends Model
     }
 
 
+
+    public function categories()
+{
+    return $this->belongsToMany(
+        \App\Models\Categorie::class,
+        'possede_categorie',
+        'ressource_id', // Clé étrangère sur la table pivot pour la tâche
+        'categorie_id'  // Clé étrangère sur la table pivot pour la catégorie
+    )
+    ->where('type_ressource', 'task');
+}
+
 }

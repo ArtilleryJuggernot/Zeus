@@ -50,3 +50,7 @@ Route::post("/add_existing_to_project",[\App\Http\Controllers\ProjetController::
 Route::post("/unlink_task_from_project",[\App\Http\Controllers\ProjetController::class,"UnlinkTaskFromProject"])
     ->middleware(["is_notban","auth"])
     ->name("unlink_task_from_project");
+
+Route::post('/projet/update', [\App\Http\Controllers\ProjetController::class, 'updateProject'])
+    ->middleware(["is_notban","auth"])
+    ->name('update_project');
