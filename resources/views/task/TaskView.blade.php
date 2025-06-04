@@ -13,7 +13,7 @@
     <script src="{{ asset('js/notification.js') }}"></script>
     <script src="{{ asset('js/accordeon.js') }}"></script>
     <script src="{{ asset('js/shortcut_editor.js') }}"></script>
-    <script type="module" src="{{ asset('js/stack_edit/stack_edit_task.js') }}"></script>
+    <script type="module" src="{{ asset('js/stack_edit/stack_edit_task.js') }}?v{{filemtime(public_path('js/stack_edit/stack_edit_task.js')) }}"></script>
     <style>
         @keyframes pop {
             0% { transform: scale(0.8); opacity: 0; }
