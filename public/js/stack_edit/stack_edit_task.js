@@ -192,11 +192,6 @@ export function initStackEdit(){
 
 // Listen to StackEdit events and apply the changes to the textarea.
     stackedit.on('fileChange', (file) => {
-        var is_finish = document.getElementById("is_finish").checked;
-
-        if(is_finish) is_finish = "on";
-        else is_finish = "off"
-
         fetch('/save-task', {
             method: 'POST',
             headers: {
@@ -207,7 +202,6 @@ export function initStackEdit(){
                 content: file.content.text,
                 task_id: parseInt(task_id),
                 user_id: parseInt(user_id),
-                btn_is_finished: is_finish,
                 perm: perm
             })
 

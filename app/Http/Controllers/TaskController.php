@@ -191,56 +191,30 @@ class TaskController extends Controller
 
     public function Save(Request $request)
     {
-
-
-
-
         $validateData = $request->validate([
             "content" => ["required", "string"],
             "user_id" => ["required", "integer"],
             "task_id" => ["required", "integer"],
             "perm" => ["required", "in:RO,RW,F"],
-            "btn_is_finished" => ["required", "in:on,off"]
         ]);
-
-
-
 
         $content = $validateData['content'];
         $user_id = $validateData["user_id"];
         $note_id = $validateData["task_id"];
         $perm = $validateData["perm"];
-        $btn_finish = $validateData["btn_is_finished"];
-
-
 
         $task = Task::find($note_id);
         if (!$task) return redirect()->route("home")->with("failure", "La tache que vous tentez de modifier n'existe pas");
 
-
-
-
-
         $perm_test = $perm == "RW" || $perm == "F";
         if ($task->owner_id == Auth::user()->id || $perm_test) { // TODO : Système d'autorisation
             $task->description = $content;
-            if ($validateData["btn_is_finished"] == "on") {
-                $task->is_finish = 1;
-                $task->finished_at = Carbon::now();
-                $prio = task_priorities::where("task_id",$task->id)->first();
-                if ($prio) $prio->delete();
-            } else {
-                $task->is_finish = 0;
-            }
-
             $task->save();
-
-            LogsController::saveTask($user_id,$btn_finish,"SUCCESS",$note_id);
+            LogsController::saveTask($user_id,null,"SUCCESS",$note_id);
             return response()->json(['success' => true]);
         }
-        LogsController::saveTask($user_id,$btn_finish,"FAILURE",$note_id);
+        LogsController::saveTask($user_id,null,"FAILURE",$note_id);
         return response()->with("failure", false);
-
     }
 
     public function Store(Request $request)
